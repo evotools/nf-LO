@@ -50,6 +50,6 @@ RUN cd /app && wget https://github.com/lh3/minimap2/releases/download/v2.17/mini
     tar -xvf minimap2-2.17_x64-linux.tar.bz2 && \
     cd minimap2-2.17_x64-linux && cp ./minimap2 ./paftools.js ./k8 /usr/local/bin && \
     chmod a+x /usr/local/bin/minimap2 && chmod a+x /usr/local/bin/paftools.js && chmod a+x /usr/local/bin/k8 && \
-    cd /app && rm -rf ./minimap2*
+    cd /app && rm -rf ./minimap2-*
 RUN apt remove -y wget git unzip
 RUN chmod a+x /usr/local/bin/*
