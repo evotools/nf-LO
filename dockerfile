@@ -37,10 +37,19 @@ RUN cd /app && \
     cp src/lastz /usr/local/bin && \
     chmod a+x /usr/local/bin/lastz && \
     rm -rf /app/lastz
+RUN apt install -y unzip || apt install -y --fix-missing unzip 
+RUN apt install -y python3-pip || apt install -y --fix-missing python3-pip 
+RUN pip3 install -U 2to3
 RUN cd /app && \
-    wget http://last.cbrc.jp/last-*.zip && unzip last-1061.zip && \
+    wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
     cd ./last-*/scripts && \
-    2to3 maf-convert && mv maf-convert /usr/local/bin && chmod a+x /usr/local/bin/maf-convert && \
+    2to3 maf-convert && sed -i 's/python/python3/g' maf-convert && \
+    mv maf-convert /usr/local/bin && chmod a+x /usr/local/bin/maf-convert && \
     cd /app && rm -r /app/last-*
-RUN apt remove -y wget git
+RUN cd /app && wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
+    tar -xvf minimap2-2.17_x64-linux.tar.bz2 && \
+    cd minimap2-2.17_x64-linux && cp ./minimap2 ./paftools.js ./k8 /usr/local/bin && \
+    chmod a+x /usr/local/bin/minimap2 && chmod a+x /usr/local/bin/paftools.js && chmod a+x /usr/local/bin/k8 && \
+    cd /app && rm -rf ./minimap2*
+RUN apt remove -y wget git unzip
 RUN chmod a+x /usr/local/bin/*

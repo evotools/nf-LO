@@ -1,6 +1,6 @@
 ./nextflow.config
 ./toy
-./bin/vcf2h5.py
+./bin/
 *build/
 test/
 dockerbuild/

@@ -45,9 +45,9 @@ chainFar="-minScore=5000 -linearGap=loose"
 lastzNear="B=0 C=0 E=150 H=0 K=4500 L=3000 M=254 O=600 T=2 Y=15000"
 lastzMedium="B=0 C=0 E=30 H=0 K=3000 L=3000 M=50 O=400 T=1 Y=9400"
 lastzFar="B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400"
-blatNear="-t=dna -q=dna -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000"
-blatMedium="-t=dna -q=dna -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=1 -minScore=25 -minIdentity=85 -maxGap=2"
-blatFar="-t=dna -q=dna -tileSize=12 -stepSize=11 -oneOff=1 -minMatch=1 -minScore=20 -minIdentity=80 -maxGap=3"
+blatNear="-t=dna -q=dna -fastMap -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000"
+blatMedium="-t=dna -q=dna -fastMap -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=1 -minScore=25 -minIdentity=85 -maxGap=2"
+blatFar="-t=dna -q=dna -fastMap -tileSize=12 -stepSize=11 -oneOff=1 -minMatch=1 -minScore=20 -minIdentity=80 -maxGap=3"
 minimap2Near="-cx asm5"
 minimap2Medium="-cx asm10"
 minimap2Far="-cx asm20"
@@ -87,12 +87,18 @@ process splitsrc {
     file "source.lift" into src_lift_ch
 
     script:
-    """
-    mkdir SPLIT_src && chmod a+rw SPLIT_src
-    faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
-    """
-
+    if( params.aligner != "blat" )
+        """
+        mkdir SPLIT_src && chmod a+rw SPLIT_src
+        faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
+        """
+    else
+        """
+        mkdir SPLIT_src && chmod a+rw SPLIT_src
+        faSplit size -extra=500 -lift=source.lift ${params.source} 4500 SPLIT_src/
+        """
 }
+src_lift_ch.into{ src_lift_chL; src_lift_chB; src_lift_chM }
 
 
 process groupsrc {
@@ -164,6 +170,7 @@ process splittgt {
     faSplit size -lift=target.lift ${params.target} ${tgtChunkSize} SPLIT_tgt/
     """
 }
+tgt_lift_ch.into{ tgt_lift_chL; tgt_lift_chB; tgt_lift_chM }
 
 process grouptgt {
     tag "grouptgt"
@@ -254,83 +261,159 @@ pairspath
     .set{ pairspath_ch }
 
 /*
- * Make actual alignments
+ * Make alignments.
+ * Aligner process is chosen based on params.aligner
+ * Parameters are chosen based on params.distance internally
  */
 
-process align { 
-    tag "align.${srcname}.${tgtname}"
+pairspath_ch.into{ forlastz_ch; forblat_ch; forminimap2_ch }
+
+process lastz{    
+    tag "lastz.${srcname}.${tgtname}"
     publishDir "${params.outdir}/alignments"
 
     input: 
-        set srcname, srcfile, tgtname, tgtfile from pairspath_ch  
-        file tgtlift from tgt_lift_ch
-        file qrylift from src_lift_ch
+        set srcname, srcfile, tgtname, tgtfile from forlastz_ch  
+        file tgtlift from tgt_lift_chL
+        file qrylift from src_lift_chL
 
     output: 
-        tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_ch
+        tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chL
+
+    when:
+        params.aligner == "lastz"
   
     script:
-    if( params.aligner == 'lastz' & params.distance == 'near')
+    if( params.distance == 'near')
         """
         echo $lastzNear
-        lastz ${tgtfile} ${srcfile} ${lastzNear} --format=lav | 
-            lavToPsl stdin stdout | 
+        lastz ${tgtfile} ${srcfile} ${lastzNear} --format=lav |
+            lavToPsl stdin stdout |
                 liftUp -type=.psl stdout $tgtlift warn stdin |
                     liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
         """
-    else if( params.aligner == 'lastz' & params.distance == 'medium')
+    else if( params.distance == 'medium')
         """
         echo $lastzMedium
-        lastz ${tgtfile} ${srcfile} ${lastzMedium} --format=lav | 
-            lavToPsl stdin stdout | 
+        lastz ${tgtfile} ${srcfile} ${lastzMedium} --format=lav |
+            lavToPsl stdin stdout |
                 liftUp -type=.psl stdout $tgtlift warn stdin |
                     liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
         """
-    else if( params.aligner == 'lastz' & params.distance == 'far')
+    else if( params.distance == 'far')
         """
         echo $lastzFar
-        lastz ${tgtfile} ${srcfile} ${lastzFar} --format=lav | 
-            lavToPsl stdin stdout | 
+        lastz ${tgtfile} ${srcfile} ${lastzFar} --format=lav |
+            lavToPsl stdin stdout |
                 liftUp -type=.psl stdout $tgtlift warn stdin |
                     liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
         """
-    else if( params.aligner == 'minimap2' & params.distance == 'near' )
+    else
         """
-        minimap2 --cs=long ${tgtfile} ${srcfile} ${minimap2Near} | \ 
-            paftools view -f maf - | \
-            maf-convert psl - ${srcname}.${tgtname}.psl
+        echo "Distance not recognised"
         """
-    else if( params.aligner == 'minimap2' & params.distance == 'medium' )
-        """
-        minimap2 --cs=long ${tgtfile} ${srcfile} ${minimap2Medium} | \ 
-            paftools view -f maf - | \
-            maf-convert psl - ${srcname}.${tgtname}.psl
-        """
-    else if( params.aligner == 'minimap2' & params.distance == 'far' )
-        """
-        minimap2 --cs=long ${tgtfile} ${srcfile} ${minimap2Far} | \ 
-            paftools view -f maf - | \
-            maf-convert psl - ${srcname}.${tgtname}.psl
-        """
-    else if( params.aligner == 'blat' & params.distance == 'near' )
-        """
-        blat ${tgtfile} ${srcfile} ${blatNear} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
-        """
-    else if( params.aligner == 'blat' & params.distance == 'medium' )
-        """
-        blat ${tgtfile} ${srcfile} ${blatNear} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
-        """
-    else if( params.aligner == 'blat' & params.distance == 'far' )
-        """
-        blat ${tgtfile} ${srcfile} ${blatNear} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
-        """
+
 }
+
+process blat{    
+    tag "blat.${srcname}.${tgtname}"
+    publishDir "${params.outdir}/alignments"
+
+    input: 
+        set srcname, srcfile, tgtname, tgtfile from forblat_ch  
+        file tgtlift from tgt_lift_chB
+        file qrylift from src_lift_chB
+
+    output: 
+        tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chB
+
+    when:
+        params.aligner == "blat"
+  
+    script:
+    if( params.distance == 'near' )
+        """
+        blat ${tgtfile} ${srcfile} ${blatNear} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else if( params.distance == 'medium' )
+        """
+        blat ${tgtfile} ${srcfile} ${blatMedium} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else if( params.distance == 'far' )
+        """
+        blat ${tgtfile} ${srcfile} ${blatFar} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else
+        """
+        echo "Distance not recognised"
+        """
+
+}
+
+process minimap2{    
+    tag "minimap2.${srcname}.${tgtname}"
+    publishDir "${params.outdir}/alignments"
+
+    input: 
+        set srcname, srcfile, tgtname, tgtfile from forminimap2_ch  
+        file tgtlift from tgt_lift_chM
+        file qrylift from src_lift_chM
+
+    output: 
+        tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chM
+
+    when:
+        params.aligner == "minimap2"
+  
+    script:
+    if( params.distance == 'near' )
+        """
+        minimap2 -t ${task.cpus} --cs=long ${tgtfile} ${srcfile} ${minimap2Near} | 
+            paftools.js view -f maf - |
+            maf-convert psl - |
+            liftUp -type=.psl stdout $tgtlift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else if( params.distance == 'medium' )
+        """
+        minimap2 -t ${task.cpus} --cs=long ${tgtfile} ${srcfile} ${minimap2Medium} | 
+            paftools.js view -f maf - |
+            maf-convert psl - |
+            liftUp -type=.psl stdout $tgtlift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else if( params.distance == 'far' )
+        """
+        minimap2 -t ${task.cpus} --cs=long ${tgtfile} ${srcfile} ${minimap2Far} | 
+            paftools.js view -f maf - |
+            maf-convert psl - |
+            liftUp -type=.psl stdout $tgtlift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else
+        """
+        echo "Distance not recognised"
+        """
+
+}
+
+if ( params.aligner == "lastz" ){
+    al_files_chL.set{ al_files_ch }
+} else if ( params.aligner == "blat" ) {
+    al_files_chB.set{ al_files_ch }
+} else if ( params.aligner == "minimap2" ) {
+    al_files_chM.set{ al_files_ch }
+}
+
+/*
+ * Combine and process outputs 
+ */
 
 process axtchain {
     tag "axtchain"
@@ -394,8 +477,8 @@ process chainNet{
   
     script:
     """
-    chainPreNet ${rawchain} ${twoBitsizeT} ${twoBitsizeS} stdout | \
-        chainNet -verbose=0 stdin ${twoBitsizeT} ${twoBitsizeS} stdout /dev/null | \
+    chainPreNet ${rawchain} ${twoBitsizeT} ${twoBitsizeS} stdout |
+        chainNet -verbose=0 stdin ${twoBitsizeT} ${twoBitsizeS} stdout /dev/null |
         netSyntenic stdin netfile.net
     netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
     """
