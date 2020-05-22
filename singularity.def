@@ -1,0 +1,50 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%labels
+    Author andrea.talenti@ed.ac.uk
+    Version v1.0
+    MyLabel Liftover toolkit container
+
+%post
+    apt -y update
+    apt install -y wget git ||  apt install --fix-missing -y wget git
+    apt install -y python3 || apt install --fix-missing -y python3
+    apt install -y gcc ||  apt install --fix-missing -y gcc
+    apt install -y make || apt install --fix-missing -y make
+
+    mkdir /app
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtChain && mv axtChain /usr/local/bin && chmod a+x /usr/local/bin/axtChain && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/blat && mv blat /usr/local/bin/ && chmod +x /usr/local/bin/blat && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/gfClient && mv gfClient /usr/local/bin/ && chmod +x /usr/local/bin/gfClient && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/gfServer && mv gfServer /usr/local/bin/ && chmod +x /usr/local/bin/gfServer && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainAntiRepeat && mv chainAntiRepeat /usr/local/bin && chmod a+x /usr/local/bin/chainAntiRepeat && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainMergeSort && mv chainMergeSort /usr/local/bin && chmod a+x /usr/local/bin/chainMergeSort && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainNet && mv chainNet /usr/local/bin && chmod a+x /usr/local/bin/chainNet && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainPreNet && mv chainPreNet /usr/local/bin && chmod a+x /usr/local/bin/chainPreNet && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainStitchId && mv chainStitchId /usr/local/bin && chmod a+x /usr/local/bin/chainStitchId && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainSplit && mv chainSplit /usr/local/bin && chmod a+x /usr/local/bin/chainSplit && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faSplit && mv faSplit /usr/local/bin && chmod a+x /usr/local/bin/faSplit && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit && mv faToTwoBit /usr/local/bin && chmod a+x /usr/local/bin/faToTwoBit && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver && mv liftOver /usr/local/bin && chmod a+x /usr/local/bin/liftOver && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftUp && mv liftUp /usr/local/bin && chmod a+x /usr/local/bin/liftUp && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netChainSubset && mv netChainSubset /usr/local/bin && chmod a+x /usr/local/bin/netChainSubset && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netSyntenic && mv netSyntenic /usr/local/bin && chmod a+x /usr/local/bin/netSyntenic && cd ../
+    cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitInfo && mv twoBitInfo /usr/local/bin && chmod a+x /usr/local/bin/twoBitInfo && cd ../
+    # Install lastz
+    cd /app && \
+        git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
+        cd lastz && \
+        make && \
+        cp src/lastz /usr/local/bin && \
+        chmod a+x /usr/local/bin/lastz && \
+        rm -rf /app/lastz
+    # Install minimap2
+    cd /app && \
+        wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
+        tar xjf minimap2-2.17_x64-linux.tar.bz2
+        cd minimap2*/ && \
+        mv k8 minimap2 paftools.js /usr/local/bin
+    apt remove -y wget git
+    # Provide execution rights to everyone
+    chmod a+x /usr/local/bin/*

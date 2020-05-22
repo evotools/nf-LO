@@ -12,22 +12,45 @@
  */
 params.source = 'genome1.fa'
 params.target = 'genome2.fa'
-params.alignerparam = '--hspthresh=3000 --transition --masking=0 --gap=400,30 --inner=2200 --gappedthresh=3000 --ambiguous=iupac'
+params.distance = 'medium'
+params.aligner = 'lastz'
+params.tgtSize = 1000000
+params.srcSize = 500000
+params.srcOvlp=100000
 params.outdir = "${baseDir}/OUTPUTS" 
 params.annotation = 'NO_FILE'
-params.aligner = 'lastz'
 
 log.info """\
-Liftover from source to target    v 1.0 
+Liftover UCSC v 1.1 
 ================================
 source        : $params.source
 target        : $params.target
 aligner       : $params.aligner
-parameters    : $params.alignerparam
+distance      : $params.distance
+target chunk  : $params.tgtSize
+query chunk   : $params.srcSize
+query overlap : $params.srcOvlp
 output folder : $params.outdir
 annot         : $params.annotation
 
 """
+
+tgtChunkSize=params.tgtSize
+srcChunkSize=params.srcSize
+srcOvlpSize=params.srcOvlp
+
+chainNear="-minScore=5000 -linearGap=medium"
+chainMedium="-minScore=3000 -linearGap=medium"
+chainFar="-minScore=5000 -linearGap=loose"
+lastzNear="B=0 C=0 E=150 H=0 K=4500 L=3000 M=254 O=600 T=2 Y=15000"
+lastzMedium="B=0 C=0 E=30 H=0 K=3000 L=3000 M=50 O=400 T=1 Y=9400"
+lastzFar="B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400"
+blatNear="-t=dna -q=dna -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000"
+blatMedium="-t=dna -q=dna -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=1 -minScore=25 -minIdentity=85 -maxGap=2"
+blatFar="-t=dna -q=dna -tileSize=12 -stepSize=11 -oneOff=1 -minMatch=1 -minScore=20 -minIdentity=80 -maxGap=3"
+minimap2Near="-cx asm5"
+minimap2Medium="-cx asm10"
+minimap2Far="-cx asm20"
 
 /*
  * Step 1. Builds the genome index required by the mapping process and
@@ -36,10 +59,13 @@ annot         : $params.annotation
 
 process make2bit {
     tag "twoBit"
+    publishDir "$params.outdir/genome2bit"
 
     output:
     file "source.2bit" into twoBsrc_ch
     file "target.2bit" into twoBtgt_ch
+    file "source.2bit" into twoBsrc_ch2
+    file "target.2bit" into twoBtgt_ch2
     file "source.sizes" into twoBsrcNFO_ch
     file "target.sizes" into twoBtgtNFO_ch
 
@@ -54,29 +80,140 @@ process make2bit {
 
 process splitsrc {
     tag "splitsrc"
+    publishDir "$params.outdir/splitfa_src"
 
     output:
     path "SPLIT_src" into srcsplit_ch
+    file "source.lift" into src_lift_ch
 
     script:
     """
     mkdir SPLIT_src && chmod a+rw SPLIT_src
-    faSplit byname ${params.source} SPLIT_src/
+    faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
     """
 
 }
 
+
+process groupsrc {
+    tag "groupsrc"
+    publishDir "$params.outdir/groupedfa_src"
+
+    input:
+    path src_fld from srcsplit_ch
+
+    output:
+    path "./CLUST_src" into srcclst_ch
+
+    script:
+    $/
+    #!/usr/bin/env python3
+
+    def faSize(infile):
+        return sum([len(line.strip()) for line in open(infile) if ">" not in line])
+
+
+    if __name__ == "__main__":
+        import os
+        infld=os.path.realpath( "${src_fld}" )
+        outFld = "./CLUST_src"
+        os.mkdir(outFld)
+        if not os.path.exists(outFld): os.mkdir(outFld)
+
+        flist = os.listdir(infld)
+        sizes = [faSize(os.path.join(infld, f)) for f in flist]
+        tmpdata = list(zip(sizes,flist))
+        tmpdata.sort(reverse = True)
+        total = 0
+        n = 0
+        fname = "{}/src{}.fa"
+        toWrite = []
+
+        for n,(size,seq) in enumerate(tmpdata):
+            total += size
+            if total < int(${params.srcSize}):
+                toWrite.append(os.path.join(infld, seq))
+            else:
+                if len(toWrite) > 0: 
+                    outf = open(fname.format(outFld, n), "w" )
+                    [outf.write(line) for f in toWrite for line in open(f) ]
+                    outf.close()
+                n += 1
+                toWrite = [os.path.join(infld, seq)]
+                total = size
+        outf = open(fname.format(outFld, n), "w" )
+        [outf.write(line) for f in toWrite for line in open(f) ]
+        outf.close()
+    /$
+
+}
+
+
 process splittgt {
     tag "splittgt"
+    publishDir "$params.outdir/splitfa_tgt"
+
 
     output:
     path "SPLIT_tgt" into tgtsplit_ch
+    file "target.lift" into tgt_lift_ch
 
     script:
     """
     mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
-    faSplit byname ${params.target} SPLIT_tgt/
+    faSplit size -lift=target.lift ${params.target} ${tgtChunkSize} SPLIT_tgt/
     """
+}
+
+process grouptgt {
+    tag "grouptgt"
+    publishDir "$params.outdir/groupedfa_tgt"
+
+    input:
+    path tgt_fld from tgtsplit_ch
+
+    output:
+    path "./CLUST_tgt" into tgtclst_ch
+
+    script:
+    $/
+    #!/usr/bin/env python3
+
+    def faSize(infile):
+        return sum([len(line.strip()) for line in open(infile) if ">" not in line])
+
+
+    if __name__ == "__main__":
+        import os
+        infld=os.path.realpath( "${tgt_fld}" )
+        outFld = "./CLUST_tgt"
+        if not os.path.exists(outFld): os.mkdir(outFld)
+
+        flist = os.listdir(infld)
+        sizes = [faSize(os.path.join(infld, f)) for f in flist]
+        tmpdata = list(zip(sizes,flist))
+        tmpdata.sort(reverse = True)
+        total = 0
+        n = 0
+        fname = "./{}/tgt{}.fa"
+        toWrite = []
+        for n,(size,seq) in enumerate(tmpdata):
+            total += size
+            if total < int(${params.srcSize}):
+                toWrite.append(os.path.join(infld, seq))
+            else:
+                if len(toWrite) > 0: 
+                    outf = open(fname.format(outFld, n), "w" )
+                    [outf.write(line) for f in toWrite for line in open(f) ]
+                    outf.close()
+                n += 1
+                toWrite = [os.path.join(infld, seq)]
+                total = size
+        outf = open(fname.format(outFld, n), "w" )
+        [outf.write(line) for f in toWrite for line in open(f) ]
+        outf.close()
+    /$
+
 }
 
 /*
@@ -87,8 +224,8 @@ process pairs {
     tag "mkpairs"
 
     input:
-    path sources from srcsplit_ch
-    path targets from tgtsplit_ch
+    path sources from srcclst_ch
+    path targets from tgtclst_ch
 
     output:
     path "pairs.csv" into pairspath
@@ -122,75 +259,152 @@ pairspath
 
 process align { 
     tag "align.${srcname}.${tgtname}"
+    publishDir "${params.outdir}/alignments"
 
     input: 
-        set srcname, srcfile, tgtname, tgtfile from pairspath_ch   
+        set srcname, srcfile, tgtname, tgtfile from pairspath_ch  
+        file tgtlift from tgt_lift_ch
+        file qrylift from src_lift_ch
 
     output: 
-        file "${srcname}.${tgtname}.axt.gz" into al_files_ch
+        tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_ch
   
     script:
-    if( params.aligner == 'lastz' )
+    if( params.aligner == 'lastz' & params.distance == 'near')
         """
-        lastz ${tgtfile} ${srcfile} ${params.alignerparam} --format=axt | awk '\$1!~"#" {print}' | gzip -c > ${srcname}.${tgtname}.axt.gz
+        echo $lastzNear
+        lastz ${tgtfile} ${srcfile} ${lastzNear} --format=lav | 
+            lavToPsl stdin stdout | 
+                liftUp -type=.psl stdout $tgtlift warn stdin |
+                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
         """
-    else if( params.aligner == 'blat' )
+    else if( params.aligner == 'lastz' & params.distance == 'medium')
         """
-        blat ${tgtfile} ${srcfile} ${params.alignerparam} -out=axt tmp.axt 
-        cat tmp.axt | awk '\$1!~"#" {print}' | gzip -c > ${srcname}.${tgtname}.axt.gz
+        echo $lastzMedium
+        lastz ${tgtfile} ${srcfile} ${lastzMedium} --format=lav | 
+            lavToPsl stdin stdout | 
+                liftUp -type=.psl stdout $tgtlift warn stdin |
+                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else if( params.aligner == 'lastz' & params.distance == 'far')
+        """
+        echo $lastzFar
+        lastz ${tgtfile} ${srcfile} ${lastzFar} --format=lav | 
+            lavToPsl stdin stdout | 
+                liftUp -type=.psl stdout $tgtlift warn stdin |
+                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else if( params.aligner == 'minimap2' & params.distance == 'near' )
+        """
+        minimap2 --cs=long ${tgtfile} ${srcfile} ${minimap2Near} | \ 
+            paftools view -f maf - | \
+            maf-convert psl - ${srcname}.${tgtname}.psl
+        """
+    else if( params.aligner == 'minimap2' & params.distance == 'medium' )
+        """
+        minimap2 --cs=long ${tgtfile} ${srcfile} ${minimap2Medium} | \ 
+            paftools view -f maf - | \
+            maf-convert psl - ${srcname}.${tgtname}.psl
+        """
+    else if( params.aligner == 'minimap2' & params.distance == 'far' )
+        """
+        minimap2 --cs=long ${tgtfile} ${srcfile} ${minimap2Far} | \ 
+            paftools view -f maf - | \
+            maf-convert psl - ${srcname}.${tgtname}.psl
+        """
+    else if( params.aligner == 'blat' & params.distance == 'near' )
+        """
+        blat ${tgtfile} ${srcfile} ${blatNear} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else if( params.aligner == 'blat' & params.distance == 'medium' )
+        """
+        blat ${tgtfile} ${srcfile} ${blatNear} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        """
+    else if( params.aligner == 'blat' & params.distance == 'far' )
+        """
+        blat ${tgtfile} ${srcfile} ${blatNear} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
         """
 }
-
-process singleaxt {
-    tag "oneaxt"
-    publishDir "${params.outdir}/axt"
-
-    input:
-        file axts from al_files_ch.collect()
-
-    output:
-        file "axtfile.axt.gz" into axt_file_ch
-
-    script:
-    """
-    for i in ${axts}; do
-        gunzip -c \$i
-    done | gzip -c > axtfile.axt.gz
-    """
-}
-
 
 process axtchain {
     tag "axtchain"
-    publishDir "${params.outdir}/chain"
+    publishDir "${params.outdir}/singlechains"
+
+    input:
+        tuple srcname, tgtname, psl from al_files_ch
+        file twoBitS from twoBsrc_ch2
+        file twoBitT from twoBtgt_ch2
+
+    output:
+        file "${srcname}.${tgtname}.chain" into chain_files_ch
+
+    script:
+    if( params.distance == 'near' )
+    """
+    axtChain $chainNear -verbose=0 -psl $psl ${twoBitT} ${twoBitS} stdout | chainAntiRepeat ${twoBitT} ${twoBitS} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+    else if (params.distance == 'medium')
+    """
+    axtChain $chainMedium -verbose=0 -psl $psl ${twoBitT} ${twoBitS} stdout | chainAntiRepeat ${twoBitT} ${twoBitS} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+    else if (params.distance == 'far')
+    """
+    axtChain $chainFar -verbose=0 -psl $psl ${twoBitT} ${twoBitS} | chainAntiRepeat ${twoBitT} ${twoBitS} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+}
+
+
+process chainMerge {
+    tag "chainmerge"
+    publishDir "${params.outdir}/rawchain", mode: 'copy', overwrite: true
  
     input: 
-        file axt from axt_file_ch
+        file chains from chain_files_ch.collect()
+        
+    output: 
+        file "rawchain.chain" into rawchain_ch  
+  
+    script:
+    """
+    chainMergeSort $chains | chainSplit run stdin -lump=1 
+    mv run/000.chain ./rawchain.chain
+    """
+}
+
+process chainNet{
+    tag "chainmerge"
+    publishDir "${params.outdir}/chainnet", mode: 'copy', overwrite: true
+ 
+    input:
+        file rawchain from rawchain_ch  
         file twoBitS from twoBsrc_ch
         file twoBitT from twoBtgt_ch
         file twoBitsizeS from twoBsrcNFO_ch
         file twoBitsizeT from twoBtgtNFO_ch
         
     output: 
-        file "liftover.chain.gz" into liftover_ch  
+        file "liftover.chain" into liftover_ch  
         file "netfile.net" into netfile_ch  
   
     script:
     """
-    gunzip -c ${axt} | axtChain -verbose=0 -linearGap=medium stdin ${twoBitT} ${twoBitS} stdout | chainAntiRepeat ${twoBitT} ${twoBitS} stdin tmp1.chain
-    chainMergeSort tmp1.chain | chainSplit run stdin -lump=1 
-    mv run/000.chain ./tmp2.chain
-    chainPreNet tmp2.chain ${twoBitsizeT} ${twoBitsizeS} stdout | \
+    chainPreNet ${rawchain} ${twoBitsizeT} ${twoBitsizeS} stdout | \
         chainNet -verbose=0 stdin ${twoBitsizeT} ${twoBitsizeS} stdout /dev/null | \
         netSyntenic stdin netfile.net
-    netChainSubset -verbose=0 netfile.net tmp2.chain stdout | chainStitchId stdin stdout | gzip -c > liftover.chain.gz
+    netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
     """
 }
 
 
 process liftover{
     tag "liftover"
-    publishDir "${params.outdir}/liftover"
+    publishDir "${params.outdir}/lifted", mode: 'copy', overwrite: true
  
     input:
         file liftover from liftover_ch

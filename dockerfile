@@ -28,6 +28,8 @@ RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftU
 RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netChainSubset && mv netChainSubset /usr/local/bin && chmod a+x /usr/local/bin/netChainSubset && cd ../
 RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netSyntenic && mv netSyntenic /usr/local/bin && chmod a+x /usr/local/bin/netSyntenic && cd ../
 RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitInfo && mv twoBitInfo /usr/local/bin && chmod a+x /usr/local/bin/twoBitInfo && cd ../
+RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToPsl && mv lavToPsl /usr/local/bin && chmod a+x /usr/local/bin/lavToPsl && cd ../
+RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToAxt && mv lavToAxt /usr/local/bin && chmod a+x /usr/local/bin/lavToAxt && cd ../
 RUN cd /app && \
     git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
     cd lastz && \
@@ -35,5 +37,10 @@ RUN cd /app && \
     cp src/lastz /usr/local/bin && \
     chmod a+x /usr/local/bin/lastz && \
     rm -rf /app/lastz
+RUN cd /app && \
+    wget http://last.cbrc.jp/last-*.zip && unzip last-1061.zip && \
+    cd ./last-*/scripts && \
+    2to3 maf-convert && mv maf-convert /usr/local/bin && chmod a+x /usr/local/bin/maf-convert && \
+    cd /app && rm -r /app/last-*
 RUN apt remove -y wget git
 RUN chmod a+x /usr/local/bin/*
