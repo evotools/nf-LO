@@ -10,8 +10,9 @@ Nextflow needs to be installed and in your path to be able to run the pipeline.
 To do so, follow the instructions [here](https://www.nextflow.io/)
 
 ### Containers
-We are working on a docker and singularity builds shipping all the dependencies neede for the pipeline. 
-Once this will be ready, this will be the recommended mode of use of the software.
+A docker image is available with all the dependencies at tale88/nf-lo. This docker ships everything, with the exception of maf-convert, that needs to be installed separately and is necessary to run nf-LO with minimap2.
+Also, a singularity build can be found in {yet to add}. 
+This is the recommended mode of usage of the software, since all the dependencies come shipped in the container.
 
 ### Manual installation
 In the case the system doesn't support docker/singularity, it is possible to download them all through the script install.sh.
@@ -25,8 +26,12 @@ Remember to add the ```bin``` folder to your path with the command:
 ```
 export PATH=$PATH:$PWD/bin
 ```
+Or link te folder to the working directory:
+```
+ln -s /PATH/TO/bin
+```
 
-Now you're ready to go!
+Ready to go!
 
 
 ## Running the pipeline
