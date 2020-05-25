@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ubuntu:18.04
+From: alpine:lastest
 
 %labels
     Author andrea.talenti@ed.ac.uk
@@ -7,11 +7,10 @@ From: ubuntu:18.04
     MyLabel Liftover toolkit container
 
 %post
-    apt -y update
-    apt install -y wget git ||  apt install --fix-missing -y wget git
-    apt install -y python || apt install --fix-missing -y python
-    apt install -y gcc ||  apt install --fix-missing -y gcc
-    apt install -y make || apt install --fix-missing -y make
+    apk update \                                                                                                                                                                                                                        
+        &&   apk add ca-certificates wget \                                                                                                                                                                                                      
+        &&   update-ca-certificates
+    apk add wget git python gcc make libc-dev unzip && rm -rf /var/cache/apk/*
 
     mkdir /app
     cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtChain && mv axtChain /usr/local/bin && chmod a+x /usr/local/bin/axtChain && cd ../
@@ -43,7 +42,7 @@ From: ubuntu:18.04
         cd /app && \
         rm -rf ./lastz
     # Install maf-converter from last
-    apt install -y unzip || apt install -y --fix-missing unzip 
+    
     cd /app && \
         wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
         cd ./last-*/scripts && \
@@ -62,5 +61,5 @@ From: ubuntu:18.04
         chmod a+x /usr/local/bin/k8 && \
         cd /app && rm -rf ./minimap2-*
     # Clean-up
-    apt remove -y wget git unzip
+    apk del wget git unzip
     chmod a+x /usr/local/bin/*
