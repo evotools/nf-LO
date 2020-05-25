@@ -89,12 +89,18 @@ process splitsrc {
     script:
     if( params.aligner != "blat" )
         """
-        mkdir SPLIT_src && chmod a+rw SPLIT_src
+        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
         faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
         """
+    else if( params.aligner != "lastz" )
+        """
+        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
+        faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
+        """
+    
     else
         """
-        mkdir SPLIT_src && chmod a+rw SPLIT_src
+        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
         faSplit size -extra=500 -lift=source.lift ${params.source} 4500 SPLIT_src/
         """
 }
@@ -110,10 +116,11 @@ process groupsrc {
 
     output:
     path "./CLUST_src" into srcclst_ch
+    path "./CLUST_src" into srcclst_ch2
 
     script:
     $/
-    #!/usr/bin/env python3
+    #!/usr/bin/env python
 
     def faSize(infile):
         return sum([len(line.strip()) for line in open(infile) if ">" not in line])
@@ -181,10 +188,11 @@ process grouptgt {
 
     output:
     path "./CLUST_tgt" into tgtclst_ch
+    path "./CLUST_tgt" into tgtclst_ch2
 
     script:
     $/
-    #!/usr/bin/env python3
+    #!/usr/bin/env python
 
     def faSize(infile):
         return sum([len(line.strip()) for line in open(infile) if ">" not in line])
@@ -238,7 +246,7 @@ process pairs {
     path "pairs.csv" into pairspath
 
     $/
-    #!/usr/bin/env python3
+    #!/usr/bin/env python
     import os
     infld1 = os.path.realpath( "${sources}" )
     infld2 = os.path.realpath( "${targets}" )
@@ -275,7 +283,7 @@ process lastz{
     input: 
         set srcname, srcfile, tgtname, tgtfile from forlastz_ch  
         file tgtlift from tgt_lift_chL
-        file qrylift from src_lift_chL
+        file srclift from src_lift_chL
 
     output: 
         tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chL
@@ -287,26 +295,26 @@ process lastz{
     if( params.distance == 'near')
         """
         echo $lastzNear
-        lastz ${tgtfile} ${srcfile} ${lastzNear} --format=lav |
+        lastz ${srcfile} ${tgtfile} ${lastzNear} --format=lav |
             lavToPsl stdin stdout |
-                liftUp -type=.psl stdout $tgtlift warn stdin |
-                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+                liftUp -type=.psl stdout $srclift warn stdin |
+                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'medium')
         """
         echo $lastzMedium
-        lastz ${tgtfile} ${srcfile} ${lastzMedium} --format=lav |
+        lastz ${srcfile} ${tgtfile} ${lastzMedium} --format=lav |
             lavToPsl stdin stdout |
-                liftUp -type=.psl stdout $tgtlift warn stdin |
-                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+                liftUp -type=.psl stdout $srclift warn stdin |
+                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'far')
         """
         echo $lastzFar
-        lastz ${tgtfile} ${srcfile} ${lastzFar} --format=lav |
+        lastz ${srcfile} ${tgtfile} ${lastzFar} --format=lav |
             lavToPsl stdin stdout |
-                liftUp -type=.psl stdout $tgtlift warn stdin |
-                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+                liftUp -type=.psl stdout $srclift warn stdin |
+                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else
         """
@@ -333,21 +341,21 @@ process blat{
     script:
     if( params.distance == 'near' )
         """
-        blat ${tgtfile} ${srcfile} ${blatNear} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        blat ${srcfile} ${tgtfile} ${blatNear} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $srclift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'medium' )
         """
-        blat ${tgtfile} ${srcfile} ${blatMedium} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        blat ${srcfile} ${tgtfile} ${blatMedium} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $srclift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'far' )
         """
-        blat ${tgtfile} ${srcfile} ${blatFar} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $tgtlift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+        blat ${srcfile} ${tgtfile} ${blatFar} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $srclift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else
         """
@@ -374,27 +382,27 @@ process minimap2{
     script:
     if( params.distance == 'near' )
         """
-        minimap2 -t ${task.cpus} --cs=long ${tgtfile} ${srcfile} ${minimap2Near} | 
+        minimap2 -t ${task.cpus} --cs=long ${srcfile} ${tgtfile} ${minimap2Near} | 
             paftools.js view -f maf - |
             maf-convert psl - |
-            liftUp -type=.psl stdout $tgtlift warn stdin |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+            liftUp -type=.psl stdout $srclift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'medium' )
         """
-        minimap2 -t ${task.cpus} --cs=long ${tgtfile} ${srcfile} ${minimap2Medium} | 
+        minimap2 -t ${task.cpus} --cs=long ${srcfile} ${tgtfile} ${minimap2Medium} | 
             paftools.js view -f maf - |
             maf-convert psl - |
-            liftUp -type=.psl stdout $tgtlift warn stdin |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+            liftUp -type=.psl stdout $srclift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'far' )
         """
-        minimap2 -t ${task.cpus} --cs=long ${tgtfile} ${srcfile} ${minimap2Far} | 
+        minimap2 -t ${task.cpus} --cs=long ${srcfile} ${tgtfile} ${minimap2Far} | 
             paftools.js view -f maf - |
             maf-convert psl - |
-            liftUp -type=.psl stdout $tgtlift warn stdin |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $qrylift warn stdin 
+            liftUp -type=.psl stdout $srclift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else
         """
@@ -430,15 +438,15 @@ process axtchain {
     script:
     if( params.distance == 'near' )
     """
-    axtChain $chainNear -verbose=0 -psl $psl ${twoBitT} ${twoBitS} stdout | chainAntiRepeat ${twoBitT} ${twoBitS} stdin stdout > ${srcname}.${tgtname}.chain
+    axtChain $chainNear -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
     """
     else if (params.distance == 'medium')
     """
-    axtChain $chainMedium -verbose=0 -psl $psl ${twoBitT} ${twoBitS} stdout | chainAntiRepeat ${twoBitT} ${twoBitS} stdin stdout > ${srcname}.${tgtname}.chain
+    axtChain $chainMedium -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
     """
     else if (params.distance == 'far')
     """
-    axtChain $chainFar -verbose=0 -psl $psl ${twoBitT} ${twoBitS} | chainAntiRepeat ${twoBitT} ${twoBitS} stdin stdout > ${srcname}.${tgtname}.chain
+    axtChain $chainFar -verbose=0 -psl $psl ${twoBitS} ${twoBitT} | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
     """
 }
 
@@ -477,8 +485,8 @@ process chainNet{
   
     script:
     """
-    chainPreNet ${rawchain} ${twoBitsizeT} ${twoBitsizeS} stdout |
-        chainNet -verbose=0 stdin ${twoBitsizeT} ${twoBitsizeS} stdout /dev/null |
+    chainPreNet ${rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
+        chainNet -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null |
         netSyntenic stdin netfile.net
     netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
     """

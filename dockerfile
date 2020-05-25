@@ -6,7 +6,7 @@ RUN apt update
 
 # Install python and other dependencies
 RUN apt install -y wget git ||  apt install --fix-missing -y wget git
-RUN apt install -y python3 || apt install --fix-missing -y python3
+RUN apt install -y python || apt install --fix-missing -y python
 RUN apt install -y gcc ||  apt install --fix-missing -y gcc
 RUN apt install -y make || apt install --fix-missing -y make
 
@@ -35,15 +35,19 @@ RUN cd /app && \
     cd lastz && \
     make && \
     cp src/lastz /usr/local/bin && \
+    cp tools/build_fasta_hsx.py /usr/local/bin && \
+    cp tools/hsx_file.py /usr/local/bin && \
+    cp tools/hassock_hash.py /usr/local/bin && \
     chmod a+x /usr/local/bin/lastz && \
-    rm -rf /app/lastz
+    chmod a+x /usr/local/bin/build_fasta_hsx.py && \
+    chmod a+x /usr/local/bin/hsx_file.py && \
+    chmod a+x /usr/local/bin/hassock_hash.py && \
+    cd /app && \
+    rm -rf ./lastz
 RUN apt install -y unzip || apt install -y --fix-missing unzip 
-RUN apt install -y python3-pip || apt install -y --fix-missing python3-pip 
-RUN pip3 install -U 2to3
 RUN cd /app && \
     wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
     cd ./last-*/scripts && \
-    2to3 maf-convert && sed -i 's/python/python3/g' maf-convert && \
     mv maf-convert /usr/local/bin && chmod a+x /usr/local/bin/maf-convert && \
     cd /app && rm -r /app/last-*
 RUN cd /app && wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
