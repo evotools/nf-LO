@@ -7,7 +7,7 @@ RUN apk update \
   &&   update-ca-certificates
 
 # Install python and other dependencies
-RUN apk add wget git python gcc make libc-dev && rm -rf /var/cache/apk/*
+RUN apk add wget git python gcc make libc-dev unzip && rm -rf /var/cache/apk/*
 
 # Install packages
 RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtChain && mv axtChain /usr/local/bin && chmod a+x /usr/local/bin/axtChain && cd ../
@@ -37,12 +37,6 @@ RUN cd /app && \
     chmod a+x /usr/local/bin/lastz && \
     cd /app && \
     rm -rf ./lastz
-RUN apk add unzip 
-RUN cd /app && \
-    wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
-    cd ./last-*/scripts && \
-    mv maf-convert /usr/local/bin && chmod a+x /usr/local/bin/maf-convert && \
-    cd /app && rm -r /app/last-*
 RUN cd /app && wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
     tar -xvf minimap2-2.17_x64-linux.tar.bz2 && \
     cd minimap2-2.17_x64-linux && cp ./minimap2 ./paftools.js ./k8 /usr/local/bin && \
