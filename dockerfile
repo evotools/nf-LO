@@ -35,13 +35,7 @@ RUN cd /app && \
     cd lastz && \
     make && \
     cp src/lastz /usr/local/bin && \
-    cp tools/build_fasta_hsx.py /usr/local/bin && \
-    cp tools/hsx_file.py /usr/local/bin && \
-    cp tools/hassock_hash.py /usr/local/bin && \
     chmod a+x /usr/local/bin/lastz && \
-    chmod a+x /usr/local/bin/build_fasta_hsx.py && \
-    chmod a+x /usr/local/bin/hsx_file.py && \
-    chmod a+x /usr/local/bin/hassock_hash.py && \
     cd /app && \
     rm -rf ./lastz
 RUN apt install -y unzip || apt install -y --fix-missing unzip 
