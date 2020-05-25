@@ -1,14 +1,13 @@
-FROM ubuntu:18.04
+FROM alpine:latest
 WORKDIR /app
 
 # Install ubuntu dependencies
-RUN apt update
+RUN apk update \                                                                                                                                                                                                                        
+  &&   apk add ca-certificates wget \                                                                                                                                                                                                      
+  &&   update-ca-certificates
 
 # Install python and other dependencies
-RUN apt install -y wget git ||  apt install --fix-missing -y wget git
-RUN apt install -y python || apt install --fix-missing -y python
-RUN apt install -y gcc ||  apt install --fix-missing -y gcc
-RUN apt install -y make || apt install --fix-missing -y make
+RUN apk add wget git python gcc make libc-dev && rm -rf /var/cache/apk/*
 
 # Install packages
 RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtChain && mv axtChain /usr/local/bin && chmod a+x /usr/local/bin/axtChain && cd ../
@@ -38,7 +37,7 @@ RUN cd /app && \
     chmod a+x /usr/local/bin/lastz && \
     cd /app && \
     rm -rf ./lastz
-RUN apt install -y unzip || apt install -y --fix-missing unzip 
+RUN apk add unzip 
 RUN cd /app && \
     wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
     cd ./last-*/scripts && \
@@ -49,5 +48,5 @@ RUN cd /app && wget https://github.com/lh3/minimap2/releases/download/v2.17/mini
     cd minimap2-2.17_x64-linux && cp ./minimap2 ./paftools.js ./k8 /usr/local/bin && \
     chmod a+x /usr/local/bin/minimap2 && chmod a+x /usr/local/bin/paftools.js && chmod a+x /usr/local/bin/k8 && \
     cd /app && rm -rf ./minimap2-*
-RUN apt remove -y wget git unzip
+RUN apk del wget git unzip
 RUN chmod a+x /usr/local/bin/*
