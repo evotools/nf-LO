@@ -330,7 +330,7 @@ process blat{
     input: 
         set srcname, srcfile, tgtname, tgtfile from forblat_ch  
         file tgtlift from tgt_lift_chB
-        file qrylift from src_lift_chB
+        file srclift from src_lift_chB
 
     output: 
         tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chB
@@ -371,7 +371,7 @@ process minimap2{
     input: 
         set srcname, srcfile, tgtname, tgtfile from forminimap2_ch  
         file tgtlift from tgt_lift_chM
-        file qrylift from src_lift_chM
+        file srclift from src_lift_chM
 
     output: 
         tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chM
