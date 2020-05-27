@@ -49,7 +49,16 @@ Ready to go!
 
 
 ## Running the pipeline
-To run the pipeline locally, simply copy ```main.nf``` in the folder where you want to run the analysis and type:
+To run the pipeline locally, simply copy ```main.nf``` in the folder where you want to run the analysis.
+To run the example, first download the data:
+```
+mkdir test && cd test
+wget https://sra-download.ncbi.nlm.nih.gov/traces/wgs03/wgs_aux/JZ/EF/JZEF01/JZEF01.1.fsa_nt.gz && gunzip JZEF01.1.fsa_nt.gz
+wget https://sra-download.ncbi.nlm.nih.gov/traces/wgs03/wgs_aux/JZ/EG/JZEG01/JZEG01.1.fsa_nt.gz && gunzip JZEG01.1.fsa_nt.gz
+```
+
+Then, copy ```main.nf``` in the folder and run the pipeline:
+
 ```
 nextflow run main.nf \
     --source $PWD/test/JZEF01.1.fsa_nt \
