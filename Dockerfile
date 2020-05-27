@@ -28,7 +28,6 @@ RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netCh
 RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netSyntenic && mv netSyntenic /usr/local/bin && chmod a+x /usr/local/bin/netSyntenic && cd ../
 RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitInfo && mv twoBitInfo /usr/local/bin && chmod a+x /usr/local/bin/twoBitInfo && cd ../
 RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToPsl && mv lavToPsl /usr/local/bin && chmod a+x /usr/local/bin/lavToPsl && cd ../
-RUN cd /app && wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToAxt && mv lavToAxt /usr/local/bin && chmod a+x /usr/local/bin/lavToAxt && cd ../
 RUN cd /app && \
     git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
     cd lastz && \

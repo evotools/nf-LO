@@ -34,7 +34,6 @@ if [ ${machine} == "Linux" ]; then
     if [ -e netSyntenic ]; then rm netSyntenic; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netSyntenic
     if [ -e twoBitInfo ]; then rm twoBitInfo; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitInfo
     if [ -e lavToPsl ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToPsl
-    if [ -e lavToAxt ]; then rm lavToAxt; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToAxt
 elif [ ${machine} == "Mac" ]; then
     if [ -e axtChain ]; then rm axtChain; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/axtChain
     if [ -e blat ]; then rm blat; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat
@@ -54,7 +53,6 @@ elif [ ${machine} == "Mac" ]; then
     if [ -e netSyntenic ]; then rm netSyntenic; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/netSyntenic
     if [ -e twoBitInfo ]; then rm twoBitInfo; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/twoBitInfo
     if [ -e lavToPsl ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/lavToPsl
-    if [ -e lavToAxt ]; then rm lavToAxt; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/lavToAxt
 fi
 # Install lastz
 if [ -e lastz ]; then rm lastz; fi 
