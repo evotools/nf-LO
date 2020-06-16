@@ -45,9 +45,10 @@ chainFar="-minScore=5000 -linearGap=loose"
 lastzNear="B=0 C=0 E=150 H=0 K=4500 L=3000 M=254 O=600 T=2 Y=15000"
 lastzMedium="B=0 C=0 E=30 H=0 K=3000 L=3000 M=50 O=400 T=1 Y=9400"
 lastzFar="B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400"
-blatNear="-t=dna -q=dna -fastMap -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000"
-blatMedium="-t=dna -q=dna -fastMap -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=1 -minScore=25 -minIdentity=85 -maxGap=2"
-blatFar="-t=dna -q=dna -fastMap -tileSize=12 -stepSize=11 -oneOff=1 -minMatch=1 -minScore=20 -minIdentity=80 -maxGap=3"
+blatFast="-fastMap -tileSize=12 -minIdentity=98"
+blatNear="-t=dna -q=dna -fastMap -noHead -tileSize=11 -minScore=100 -minIdentity=98"
+blatMedium="-t=dna -q=dna -fastMap -noHead -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000"
+blatFar="-t=dna -q=dna -fastMap -noHead -tileSize=12 -oneOff=1 -minMatch=1 -minScore=30 -minIdentity=80 -maxGap=3 -maxIntron=75000"
 minimap2Near="-cx asm5"
 minimap2Medium="-cx asm10"
 minimap2Far="-cx asm20"
@@ -85,24 +86,20 @@ process splitsrc {
     output:
     path "SPLIT_src" into srcsplit_ch
     file "source.lift" into src_lift_ch
+    file "11.ooc" optional true into ooc_ch
 
     script:
-    if( params.aligner != "blat" )
-        """
-        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-        faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
-        """
-    else if( params.aligner != "lastz" )
-        """
-        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-        faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
-        """
-    
+    if (params.aligner != "blat")
+    """
+    mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
+    faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
+    """
     else
-        """
-        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-        faSplit size -extra=500 -lift=source.lift ${params.source} 4500 SPLIT_src/
-        """
+    """
+    blat ${params.source} /dev/null /dev/null -makeOoc=11.ooc -repMatch=1024
+    mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
+    faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
+    """
 }
 src_lift_ch.into{ src_lift_chL; src_lift_chB; src_lift_chM }
 
@@ -172,10 +169,16 @@ process splittgt {
     file "target.lift" into tgt_lift_ch
 
     script:
-    """
-    mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
-    faSplit size -lift=target.lift ${params.target} ${tgtChunkSize} SPLIT_tgt/
-    """
+    if( params.aligner == "blat" )
+        """
+        mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
+        faSplit size -oneFile -lift=target.lift ${params.target} 5000 SPLIT_tgt/tmp
+        """
+    else
+        """
+        mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
+        faSplit size -lift=target.lift ${params.target} ${tgtChunkSize} SPLIT_tgt/
+        """
 }
 tgt_lift_ch.into{ tgt_lift_chL; tgt_lift_chB; tgt_lift_chM }
 
@@ -191,6 +194,7 @@ process grouptgt {
     path "./CLUST_tgt" into tgtclst_ch2
 
     script:
+    if( params.aligner != "blat" )
     $/
     #!/usr/bin/env python
 
@@ -227,6 +231,35 @@ process grouptgt {
         outf = open(fname.format(outFld, n), "w" )
         [outf.write(line) for f in toWrite for line in open(f) ]
         outf.close()
+    /$
+    else    
+    $/
+    #!/usr/bin/env python
+
+    if __name__ == "__main__":
+        import os
+        infld=os.path.realpath( "${tgt_fld}" )
+        outFld = "./CLUST_tgt"
+        os.mkdir(outFld)
+        if not os.path.exists(outFld): os.mkdir(outFld)
+
+        fasta = os.listdir(infld)[0]
+        nseqs = sum([1 for i in open(os.path.join("${tgt_fld}", fasta)) if ">" in i])
+        nseqXfile = nseqs / 200
+        n = 1
+        tot = 0
+        fname = "{}/tgt{}.fa"
+        toWrite = []
+        outf = open(fname.format(outFld, n), "w" )
+        for line in open(os.path.join("${tgt_fld}", fasta)):
+            if ">" in line:
+                tot += 1
+            if tot > nseqXfile:
+                outf.close()
+                n += 1
+                outf = open(fname.format(outFld, n), "w" )
+                tot = 1
+            outf.write(line)
     /$
 
 }
@@ -331,6 +364,7 @@ process blat{
         set srcname, srcfile, tgtname, tgtfile from forblat_ch  
         file tgtlift from tgt_lift_chB
         file srclift from src_lift_chB
+        file ooc from ooc_ch
 
     output: 
         tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chB
@@ -339,21 +373,27 @@ process blat{
         params.aligner == "blat"
   
     script:
-    if( params.distance == 'near' )
+    if( params.distance == 'fast' )
         """
-        blat ${srcfile} ${tgtfile} ${blatNear} -out=psl tmp.psl 
+        blat ${srcfile} ${tgtfile} ${blatFast} -ooc=${ooc} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $srclift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
+        """
+    else if( params.distance == 'near' )
+        """
+        blat ${srcfile} ${tgtfile} ${blatNear} -ooc=${ooc} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'medium' )
         """
-        blat ${srcfile} ${tgtfile} ${blatMedium} -out=psl tmp.psl 
+        blat ${srcfile} ${tgtfile} ${blatMedium} -ooc=${ooc} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'far' )
         """
-        blat ${srcfile} ${tgtfile} ${blatFar} -out=psl tmp.psl 
+        blat ${srcfile} ${tgtfile} ${blatFar} -ooc=${ooc} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """

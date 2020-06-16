@@ -1,6 +1,7 @@
-./nextflow.config
-./toy
-./bin/
+nextflow.config
+toy*
+bin/
 *build/
 test/
 dockerbuild/
+sifbuild/
