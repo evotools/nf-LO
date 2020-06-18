@@ -21,15 +21,15 @@ params.outdir = "${baseDir}/OUTPUTS"
 params.annotation = 'NO_FILE'
 
 log.info """\
-Liftover UCSC v 1.1 
+UCSC-like LiftOver v 1.2 
 ================================
 source        : $params.source
 target        : $params.target
 aligner       : $params.aligner
 distance      : $params.distance
 target chunk  : $params.tgtSize
-query chunk   : $params.srcSize
-query overlap : $params.srcOvlp
+source chunk   : $params.srcSize
+source overlap : $params.srcOvlp
 output folder : $params.outdir
 annot         : $params.annotation
 
@@ -86,7 +86,8 @@ process splitsrc {
     output:
     path "SPLIT_src" into srcsplit_ch
     file "source.lift" into src_lift_ch
-    file "11.ooc" optional true into ooc_ch
+    file "11.ooc" optional true into ooc11_ch
+    file "12.ooc" optional true into ooc12_ch
 
     script:
     if (params.aligner != "blat")
@@ -97,6 +98,7 @@ process splitsrc {
     else
     """
     blat ${params.source} /dev/null /dev/null -makeOoc=11.ooc -repMatch=1024
+    blat ${params.source} /dev/null /dev/null -makeOoc=12.ooc -repMatch=1024 -tileSize=12
     mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
     faSplit size -lift=source.lift -extra=${srcOvlpSize} ${params.source} ${srcChunkSize} SPLIT_src/
     """
@@ -245,7 +247,7 @@ process grouptgt {
 
         fasta = os.listdir(infld)[0]
         nseqs = sum([1 for i in open(os.path.join("${tgt_fld}", fasta)) if ">" in i])
-        nseqXfile = nseqs / 200
+        nseqXfile = nseqs / 400
         n = 1
         tot = 0
         fname = "{}/tgt{}.fa"
@@ -364,7 +366,8 @@ process blat{
         set srcname, srcfile, tgtname, tgtfile from forblat_ch  
         file tgtlift from tgt_lift_chB
         file srclift from src_lift_chB
-        file ooc from ooc_ch
+        file ooc11 from ooc11_ch
+        file ooc12 from ooc12_ch
 
     output: 
         tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chB
@@ -375,25 +378,25 @@ process blat{
     script:
     if( params.distance == 'fast' )
         """
-        blat ${srcfile} ${tgtfile} ${blatFast} -ooc=${ooc} -out=psl tmp.psl 
+        blat ${srcfile} ${tgtfile} ${blatFast} -ooc=${ooc12} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'near' )
         """
-        blat ${srcfile} ${tgtfile} ${blatNear} -ooc=${ooc} -out=psl tmp.psl 
+        blat ${srcfile} ${tgtfile} ${blatNear} -ooc=${ooc11} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'medium' )
         """
-        blat ${srcfile} ${tgtfile} ${blatMedium} -ooc=${ooc} -out=psl tmp.psl 
+        blat ${srcfile} ${tgtfile} ${blatMedium} -ooc=${ooc11} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
     else if( params.distance == 'far' )
         """
-        blat ${srcfile} ${tgtfile} ${blatFar} -ooc=${ooc} -out=psl tmp.psl 
+        blat ${srcfile} ${tgtfile} ${blatFar} -ooc=${ooc12} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
