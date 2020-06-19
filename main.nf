@@ -454,13 +454,43 @@ process minimap2{
 
 }
 
+
+process nucmer{    
+    tag "nucmer.${srcname}.${tgtname}"
+    publishDir "${params.outdir}/alignments"
+
+    input: 
+        set srcname, srcfile, tgtname, tgtfile from forminimap2_ch  
+        file tgtlift from tgt_lift_chM
+        file srclift from src_lift_chM
+
+    output: 
+        tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chN
+
+    when:
+        params.aligner == "nucmer"
+  
+    script:
+    """
+    nucmer -t ${task.cpus} --prefix=${refName}.${queryName} ${reference} ${query}
+    paftools.js delta2paf {refName}.${queryName} |
+        paftools.js view -f maf - |
+        maf-convert psl - |
+        liftUp -type=.psl stdout $srclift warn stdin |
+        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
+    """
+}
+
+
 if ( params.aligner == "lastz" ){
     al_files_chL.set{ al_files_ch }
 } else if ( params.aligner == "blat" ) {
     al_files_chB.set{ al_files_ch }
 } else if ( params.aligner == "minimap2" ) {
     al_files_chM.set{ al_files_ch }
-}
+} else if ( params.aligner == "nucmer" ) {
+    al_files_chN.set{ al_files_ch }
+} 
 
 /*
  * Combine and process outputs 
