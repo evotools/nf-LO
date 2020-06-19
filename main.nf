@@ -21,17 +21,17 @@ params.outdir = "${baseDir}/OUTPUTS"
 params.annotation = 'NO_FILE'
 
 log.info """\
-UCSC-like LiftOver v 1.2 
+UCSC-like LiftOver v 1.3 
 ================================
-source        : $params.source
-target        : $params.target
-aligner       : $params.aligner
-distance      : $params.distance
-target chunk  : $params.tgtSize
+source         : $params.source
+target         : $params.target
+aligner        : $params.aligner
+distance       : $params.distance
+target chunk   : $params.tgtSize
 source chunk   : $params.srcSize
 source overlap : $params.srcOvlp
-output folder : $params.outdir
-annot         : $params.annotation
+output folder  : $params.outdir
+annot          : $params.annotation
 
 """
 
@@ -557,7 +557,7 @@ process chainNet{
         file "netfile.net" into netfile_ch  
   
     script:
-    if ( params.aligner != "blat" )
+    if ( params.aligner != "blat" & params.aligner != "nucmer" )
     """
     chainPreNet ${rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
         chainNet -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null |
