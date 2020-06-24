@@ -58,7 +58,7 @@ RUN wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x
 RUN wget https://github.com/mummer4/mummer/releases/download/v4.0.0beta2/mummer-4.0.0beta2.tar.gz && \
     tar xvfz mummer-4.0.0beta2.tar.gz && \
     cd mummer-4.0.0beta2/ && ./configure && make && make install && \
-    cd /app && rm -rf ./mummer
+    cd /app && rm -rf ./mummer-4.0.0beta2/
 
 # Clean image
 RUN apk del wget git unzip
