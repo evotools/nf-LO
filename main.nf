@@ -247,7 +247,8 @@ process grouptgt {
 
         fasta = os.listdir(infld)[0]
         nseqs = sum([1 for i in open(os.path.join("${tgt_fld}", fasta)) if ">" in i])
-        nseqXfile = nseqs / 400
+        totalL = sum([len(i.strip()) for i in open(os.path.join("${tgt_fld}", fasta)) if ">" not in i])
+        nseqXfile = nseqs / round(int(totalL / int("${params.tgtSize}")))
         n = 1
         tot = 0
         fname = "{}/tgt{}.fa"
@@ -309,7 +310,7 @@ pairspath
  * Parameters are chosen based on params.distance internally
  */
 
-pairspath_ch.into{ forlastz_ch; forblat_ch; forminimap2_ch }
+pairspath_ch.into{ forlastz_ch; forblat_ch; forminimap2_ch; fornucmer_ch; forlast_ch }
 
 process lastz{    
     tag "lastz.${srcname}.${tgtname}"
@@ -460,7 +461,7 @@ process nucmer{
     publishDir "${params.outdir}/alignments"
 
     input: 
-        set srcname, srcfile, tgtname, tgtfile from forminimap2_ch  
+        set srcname, srcfile, tgtname, tgtfile from fornucmer_ch  
         file tgtlift from tgt_lift_chM
         file srclift from src_lift_chM
 
@@ -481,6 +482,31 @@ process nucmer{
     """
 }
 
+process last{    
+    tag "last.${srcname}.${tgtname}"
+    publishDir "${params.outdir}/alignments"
+
+    input: 
+        set srcname, srcfile, tgtname, tgtfile from forlast_ch  
+        file tgtlift from tgt_lift_chM
+        file srclift from src_lift_chM
+
+    output: 
+        tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chS
+
+    when:
+        params.aligner == "last"
+  
+    script:
+    """
+    lastdb localDB ${srcfile}
+    lastal localDB ${tgtfile} ${minimap2Near} | 
+        maf-convert psl - |
+        liftUp -type=.psl stdout $srclift warn stdin |
+        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB
+    """
+}
+
 
 if ( params.aligner == "lastz" ){
     al_files_chL.set{ al_files_ch }
@@ -490,7 +516,9 @@ if ( params.aligner == "lastz" ){
     al_files_chM.set{ al_files_ch }
 } else if ( params.aligner == "nucmer" ) {
     al_files_chN.set{ al_files_ch }
-} 
+} else if ( params.aligner == "last" ) {
+    al_files_chS.set{ al_files_ch }
+}
 
 /*
  * Combine and process outputs 
