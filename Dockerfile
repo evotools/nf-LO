@@ -7,7 +7,7 @@ RUN apk update \
   &&   update-ca-certificates
 
 # Install python and other dependencies
-RUN apk add wget git python2 gcc make libc-dev unzip perl5 && rm -rf /var/cache/apk/*
+RUN apk add wget git python2 gcc make libc-dev unzip perl && rm -rf /var/cache/apk/*
 
 # Install Kent toolkit
 WORKDIR /app
