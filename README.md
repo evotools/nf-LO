@@ -19,7 +19,9 @@ This script will download a series of software and save them in the ./bin folder
  1. [lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz)
  2. [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/)
  3. [minimap2](https://github.com/lh3/minimap2)
- 4. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
+ 4. [last](http://last.cbrc.jp/)
+ 5. [nucmer](https://github.com/mummer4/mummer)
+ 6. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
     - axtChain
     - chainAntiRepeat
     - chainMergeSort
@@ -35,7 +37,6 @@ This script will download a series of software and save them in the ./bin folder
     - netSyntenic
     - twoBitInfo
     - lavToPsl
- 5. maf-convert from [last](http://last.cbrc.jp/)
 Remember to add the ```bin``` folder to your path with the command:
 ```
 export PATH=$PATH:$PWD/bin
