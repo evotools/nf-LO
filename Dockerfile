@@ -55,8 +55,9 @@ RUN wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x
     cd /app && rm -rf ./minimap2-*
 
 # Get mummer4
-RUN git clone --recursive https://github.com/mummer4/mummer.git && \
-    cd mummer && ./configure && make && make install && \
+RUN wget https://github.com/mummer4/mummer/releases/download/v4.0.0beta2/mummer-4.0.0beta2.tar.gz && \
+    tar xvfz mummer-4.0.0beta2.tar.gz && \
+    cd mummer-4.0.0beta2/ && ./configure && make && make install && \
     cd /app && rm -rf ./mummer
 
 # Clean image
