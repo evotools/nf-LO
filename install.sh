@@ -81,10 +81,10 @@ wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
 wget https://github.com/mummer4/mummer/releases/download/v4.0.0beta2/mummer-4.0.0beta2.tar.gz && \
     tar xvfz mummer-4.0.0beta2.tar.gz && \
     cd mummer-4.0.0beta2/ && mkdir INSTALL && \
-    ./configure --prefix=$PWD/INSTALL && make && make install \
+    ./configure --prefix=$PWD/INSTALL && make && make install && \
     cp INSTALL/bin/nucmer ../ && \
     cd ../ 
-    
+
 # Install minimap2
 if [ ${machine} == "Linux" ]; then
     if [ -e minimap2 ]; then rm minimap2 paftools.js k8; fi
