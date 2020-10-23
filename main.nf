@@ -62,6 +62,11 @@ process make2bit {
     tag "twoBit"
     publishDir "$params.outdir/genome2bit"
 
+    cpus { 1 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 6.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
+
     output:
     file "source.2bit" into twoBsrc_ch
     file "target.2bit" into twoBtgt_ch
@@ -82,6 +87,11 @@ process make2bit {
 process splitsrc {
     tag "splitsrc"
     publishDir "$params.outdir/splitfa_src"
+
+    cpus { 1 * task.attempt }
+    memory { 16.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
 
     output:
     path "SPLIT_src" into srcsplit_ch
@@ -109,6 +119,11 @@ src_lift_ch.into{ src_lift_chL; src_lift_chB; src_lift_chM }
 process groupsrc {
     tag "groupsrc"
     publishDir "$params.outdir/groupedfa_src"
+
+    cpus { 1 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 6.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
 
     input:
     path src_fld from srcsplit_ch
@@ -165,6 +180,11 @@ process splittgt {
     tag "splittgt"
     publishDir "$params.outdir/splitfa_tgt"
 
+    cpus { 1 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 6.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
+
 
     output:
     path "SPLIT_tgt" into tgtsplit_ch
@@ -187,6 +207,11 @@ tgt_lift_ch.into{ tgt_lift_chL; tgt_lift_chB; tgt_lift_chM }
 process grouptgt {
     tag "grouptgt"
     publishDir "$params.outdir/groupedfa_tgt"
+
+    cpus { 1 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 6.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
 
     input:
     path tgt_fld from tgtsplit_ch
@@ -274,6 +299,11 @@ process grouptgt {
 process pairs {
     tag "mkpairs"
 
+    cpus { 1 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 6.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
+
     input:
     path sources from srcclst_ch
     path targets from tgtclst_ch
@@ -315,6 +345,11 @@ pairspath_ch.into{ forlastz_ch; forblat_ch; forminimap2_ch; fornucmer_ch; forlas
 process lastz{    
     tag "lastz.${srcname}.${tgtname}"
     publishDir "${params.outdir}/alignments"
+
+    cpus { 1 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 24.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
 
     input: 
         set srcname, srcfile, tgtname, tgtfile from forlastz_ch  
@@ -362,6 +397,11 @@ process lastz{
 process blat{    
     tag "blat.${srcname}.${tgtname}"
     publishDir "${params.outdir}/alignments"
+
+    cpus { 1 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 24.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
 
     input: 
         set srcname, srcfile, tgtname, tgtfile from forblat_ch  
@@ -412,6 +452,11 @@ process minimap2{
     tag "minimap2.${srcname}.${tgtname}"
     publishDir "${params.outdir}/alignments"
 
+    cpus { 2 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
+
     input: 
         set srcname, srcfile, tgtname, tgtfile from forminimap2_ch  
         file tgtlift from tgt_lift_chM
@@ -460,6 +505,11 @@ process nucmer{
     tag "nucmer.${srcname}.${tgtname}"
     publishDir "${params.outdir}/alignments"
 
+    cpus { 4 * task.attempt }
+    memory { 16.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
+
     input: 
         set srcname, srcfile, tgtname, tgtfile from fornucmer_ch  
         file tgtlift from tgt_lift_chM
@@ -485,6 +535,11 @@ process nucmer{
 process last{    
     tag "last.${srcname}.${tgtname}"
     publishDir "${params.outdir}/alignments"
+
+    cpus { 1 * task.attempt }
+    memory { 8.GB * task.attempt }
+    time { 24.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
 
     input: 
         set srcname, srcfile, tgtname, tgtfile from forlast_ch  
@@ -528,6 +583,11 @@ process axtchain {
     tag "axtchain"
     publishDir "${params.outdir}/singlechains"
 
+    cpus { 1 * task.attempt }
+    memory { 32.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
+
     input:
         tuple srcname, tgtname, psl from al_files_ch
         file twoBitS from twoBsrc_ch2
@@ -555,6 +615,11 @@ process axtchain {
 process chainMerge {
     tag "chainmerge"
     publishDir "${params.outdir}/rawchain", mode: 'copy', overwrite: true
+
+    cpus { 1 * task.attempt }
+    memory { 32.GB * task.attempt }
+    time { 24.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
  
     input: 
         file chains from chain_files_ch.collect()
@@ -570,8 +635,13 @@ process chainMerge {
 }
 
 process chainNet{
-    tag "chainmerge"
+    tag "chainnet"
     publishDir "${params.outdir}/chainnet", mode: 'copy', overwrite: true
+
+    cpus { 1 * task.attempt }
+    memory { 32.GB * task.attempt }
+    time { 24.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
  
     input:
         file rawchain from rawchain_ch  
@@ -604,6 +674,11 @@ process chainNet{
 process liftover{
     tag "liftover"
     publishDir "${params.outdir}/lifted", mode: 'copy', overwrite: true
+
+    cpus { 1 * task.attempt }
+    memory { 32.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
  
     input:
         file liftover from liftover_ch
