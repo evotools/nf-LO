@@ -56,4 +56,3 @@ dependencies:
   - xz=5.2.5=haf1e3a3_1
   - zlib=1.2.11=h7795811_1010
   - zstd=1.4.5=h289c70a_2
-prefix: /Users/atalenti/opt/anaconda3/envs/nf-LO
