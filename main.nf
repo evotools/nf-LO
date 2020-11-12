@@ -45,7 +45,7 @@ chainFar="-minScore=5000 -linearGap=loose"
 lastzNear="B=0 C=0 E=150 H=0 K=4500 L=3000 M=254 O=600 T=2 Y=15000"
 lastzMedium="B=0 C=0 E=30 H=0 K=3000 L=3000 M=50 O=400 T=1 Y=9400"
 lastzFar="B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400"
-blatFast="-fastMap -tileSize=12 -minIdentity=98"
+blatBalanced="-fastMap -tileSize=12 -minIdentity=98"
 blatNear="-t=dna -q=dna -fastMap -noHead -tileSize=11 -minScore=100 -minIdentity=98"
 blatMedium="-t=dna -q=dna -fastMap -noHead -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000"
 blatFar="-t=dna -q=dna -fastMap -noHead -tileSize=12 -oneOff=1 -minMatch=1 -minScore=30 -minIdentity=80 -maxGap=3 -maxIntron=75000"
@@ -417,9 +417,9 @@ process blat{
         params.aligner == "blat"
   
     script:
-    if( params.distance == 'fast' )
+    if( params.distance == 'balanced' )
         """
-        blat ${srcfile} ${tgtfile} ${blatFast} -ooc=${ooc12} -out=psl tmp.psl 
+        blat ${srcfile} ${tgtfile} ${blatBalanced} -ooc=${ooc12} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
