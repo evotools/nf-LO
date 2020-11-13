@@ -7,8 +7,6 @@
  * Outputs will be saved in the folder specified in outdir.
  * If an annotation is provided as bed/gff, liftover will lift it. 
  * If no annotation is provided, set to 'NO_FILE' or ''
- * Karyotype can be specified as ranges (e.g. 1-22), single different 
- * chromosomes can be added after comma (e.g. 1-22,X,Y,Mt).
  */
 params.source = 'genome1.fa'
 params.target = 'genome2.fa'
@@ -21,7 +19,7 @@ params.outdir = "${baseDir}/OUTPUTS"
 params.annotation = 'NO_FILE'
 params.custom = ''
 
-if ( params.custom != '' && params.distance == 'custom' )
+if ( params.custom != '' && params.distance == 'custom' ) {
     params.distance = 'custom'
     log.info """\
 UCSC-like LiftOver v 1.3 
@@ -37,8 +35,9 @@ source overlap : $params.srcOvlp
 output folder  : $params.outdir
 annot          : $params.annotation
 
-"""
-else
+""" 
+}
+else {
     log.info """\
 UCSC-like LiftOver v 1.3 
 ================================
@@ -53,6 +52,7 @@ output folder  : $params.outdir
 annot          : $params.annotation
 
 """
+}
 
 
 tgtChunkSize=params.tgtSize
