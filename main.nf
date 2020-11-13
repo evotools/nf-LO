@@ -19,8 +19,27 @@ params.srcSize = 500000
 params.srcOvlp=100000
 params.outdir = "${baseDir}/OUTPUTS" 
 params.annotation = 'NO_FILE'
+params.custom = ''
 
-log.info """\
+if ( params.custom != '' && params.distance == 'custom' )
+    params.distance = 'custom'
+    log.info """\
+UCSC-like LiftOver v 1.3 
+================================
+source         : $params.source
+target         : $params.target
+aligner        : $params.aligner
+distance       : $params.distance
+custom params  : $params.custom
+target chunk   : $params.tgtSize
+source chunk   : $params.srcSize
+source overlap : $params.srcOvlp
+output folder  : $params.outdir
+annot          : $params.annotation
+
+"""
+else
+    log.info """\
 UCSC-like LiftOver v 1.3 
 ================================
 source         : $params.source
@@ -34,6 +53,7 @@ output folder  : $params.outdir
 annot          : $params.annotation
 
 """
+
 
 tgtChunkSize=params.tgtSize
 srcChunkSize=params.srcSize
@@ -387,6 +407,14 @@ process lastz{
                 liftUp -type=.psl stdout $srclift warn stdin |
                     liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
+    else if( params.distance == 'custom' )
+        """
+        echo $lastzFar
+        lastz ${srcfile} ${tgtfile} ${params.custom} --format=lav |
+            lavToPsl stdin stdout |
+                liftUp -type=.psl stdout $srclift warn stdin |
+                    liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
+        """
     else
         """
         echo "Distance not recognised"
@@ -438,6 +466,12 @@ process blat{
     else if( params.distance == 'far' )
         """
         blat ${srcfile} ${tgtfile} ${blatFar} -ooc=${ooc12} -out=psl tmp.psl 
+        liftUp -type=.psl stdout $srclift warn tmp.psl |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
+        """
+    else if( params.distance == 'custom' )
+        """
+        blat ${srcfile} ${tgtfile} ${params.custom} -ooc=${ooc12} -out=psl tmp.psl 
         liftUp -type=.psl stdout $srclift warn tmp.psl |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
@@ -493,6 +527,14 @@ process minimap2{
             liftUp -type=.psl stdout $srclift warn stdin |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
         """
+    else if( params.distance == 'custom' )
+        """
+        minimap2 -t ${task.cpus} --cs=long ${srcfile} ${tgtfile} ${params.custom} | 
+            paftools.js view -f maf - |
+            maf-convert psl - |
+            liftUp -type=.psl stdout $srclift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
+        """
     else
         """
         echo "Distance not recognised"
@@ -523,7 +565,7 @@ process nucmer{
   
     script:
     """
-    nucmer -t ${task.cpus} --prefix=${refName}.${queryName} ${reference} ${query}
+    nucmer ${params.custom} -t ${task.cpus} --prefix=${refName}.${queryName} ${reference} ${query}
     paftools.js delta2paf {refName}.${queryName} |
         paftools.js view -f maf - |
         maf-convert psl - |
@@ -555,7 +597,7 @@ process last{
     script:
     """
     lastdb localDB ${srcfile}
-    lastal localDB ${tgtfile} ${minimap2Near} | 
+    lastal localDB ${tgtfile} ${${params.custom}} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB
