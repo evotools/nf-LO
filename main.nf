@@ -565,12 +565,12 @@ process nucmer{
   
     script:
     """
-    nucmer ${params.custom} -t ${task.cpus} --prefix=${refName}.${queryName} ${reference} ${query}
-    paftools.js delta2paf {refName}.${queryName} |
+    nucmer ${params.custom} -t ${task.cpus} --prefix=${srcname}.${tgtname} ${srcfile} ${tgtfile}
+    paftools.js delta2paf ${srcname}.${tgtname}.delta |
         paftools.js view -f maf - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
+        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm ${srcname}.${tgtname}.delta
     """
 }
 
