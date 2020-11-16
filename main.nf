@@ -543,37 +543,6 @@ process minimap2{
 }
 
 
-process nucmer{    
-    tag "nucmer.${srcname}.${tgtname}"
-    publishDir "${params.outdir}/alignments"
-
-    cpus { 4 * task.attempt }
-    memory { 16.GB * task.attempt }
-    time { 12.hour * task.attempt }
-    clusterOptions "-P roslin_ctlgh -l h_vmem=${task.memory.toString().replaceAll(/[\sB]/,'')}"
-
-    input: 
-        set srcname, srcfile, tgtname, tgtfile from fornucmer_ch  
-        file tgtlift from tgt_lift_chM
-        file srclift from src_lift_chM
-
-    output: 
-        tuple srcname, tgtname, "${srcname}.${tgtname}.psl" into al_files_chN
-
-    when:
-        params.aligner == "nucmer"
-  
-    script:
-    """
-    nucmer ${params.custom} -t ${task.cpus} --prefix=${srcname}.${tgtname} ${srcfile} ${tgtfile}
-    paftools.js delta2paf ${srcname}.${tgtname}.delta |
-        paftools.js view -f maf - |
-        maf-convert psl - |
-        liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm ${srcname}.${tgtname}.delta
-    """
-}
-
 process last{    
     tag "last.${srcname}.${tgtname}"
     publishDir "${params.outdir}/alignments"
@@ -596,32 +565,37 @@ process last{
   
     script:
     if( params.distance == 'near' )
-    """
-    lastdb -P0 -uNEAR -R01 localDB ${srcfile}
-    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 localDB ${tgtfile} > align.mat
-    lastal -m50 -E0.05 -C2 -p align.mat localDB ${tgtfile} | 
-        maf-convert psl - |
-        liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB align.mat
-    """
+        """
+        lastdb -P0 -uNEAR -R01 localDB ${srcfile}
+        lastal -m50 -E0.05 -C2 localDB ${tgtfile} | 
+            maf-convert psl - |
+            liftUp -type=.psl stdout $srclift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB.*
+        """
     else if ( params.distance == 'medium' )
-    """
-    lastdb -P0 -uMAM8 -R01 localDB ${srcfile}
-    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 localDB ${tgtfile} > align.mat
-    lastal -m75 -E0.05 -C2 -p align.mat localDB ${tgtfile} | 
-        maf-convert psl - |
-        liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB align.mat
-    """
+        """
+        lastdb -P0 -uMAM8 -R01 localDB ${srcfile}
+        lastal -m75 -E0.05 -C2 localDB ${tgtfile} | 
+            maf-convert psl - |
+            liftUp -type=.psl stdout $srclift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB.*
+        """
     else if ( params.distance == 'far' )
-    """
-    lastdb -P0 -uMAM4 -R01 localDB ${srcfile}
-    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 localDB ${tgtfile} > align.mat
-    lastal -m100 -E0.05 -C2 -p align.mat localDB ${tgtfile} | 
-        maf-convert psl - |
-        liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB align.mat
-    """
+        """
+        lastdb -P0 -uMAM4 -R01 localDB ${srcfile}
+        lastal -m100 -E0.05 -C2 localDB ${tgtfile} | 
+            maf-convert psl - |
+            liftUp -type=.psl stdout $srclift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB.*
+        """
+    else
+        """
+        lastdb -P0 -uMAM8 -R01 localDB ${srcfile}
+        lastal ${params.custom} localDB ${tgtfile} | 
+            maf-convert psl - |
+            liftUp -type=.psl stdout $srclift warn stdin |
+            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB.*
+        """
 }
 
 
@@ -631,11 +605,11 @@ if ( params.aligner == "lastz" ){
     al_files_chB.set{ al_files_ch }
 } else if ( params.aligner == "minimap2" ) {
     al_files_chM.set{ al_files_ch }
-} else if ( params.aligner == "nucmer" ) {
-    al_files_chN.set{ al_files_ch }
 } else if ( params.aligner == "last" ) {
     al_files_chS.set{ al_files_ch }
-}
+} /* else if ( params.aligner == "nucmer" ) {
+ *   al_files_chN.set{ al_files_ch }
+  }*/ 
 
 /*
  * Combine and process outputs 
