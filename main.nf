@@ -595,12 +595,32 @@ process last{
         params.aligner == "last"
   
     script:
+    if( params.distance == 'near' )
     """
-    lastdb localDB ${srcfile}
-    lastal localDB ${tgtfile} ${${params.custom}} | 
+    lastdb -P0 -uNEAR -R01 localDB ${srcfile}
+    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 localDB ${tgtfile} > align.mat
+    lastal -m50 -E0.05 -C2 -p align.mat localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB
+        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB align.mat
+    """
+    else if ( params.distance == 'medium' )
+    """
+    lastdb -P0 -uMAM8 -R01 localDB ${srcfile}
+    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 localDB ${tgtfile} > align.mat
+    lastal -m75 -E0.05 -C2 -p align.mat localDB ${tgtfile} | 
+        maf-convert psl - |
+        liftUp -type=.psl stdout $srclift warn stdin |
+        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB align.mat
+    """
+    else if ( params.distance == 'far' )
+    """
+    lastdb -P0 -uMAM4 -R01 localDB ${srcfile}
+    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 localDB ${tgtfile} > align.mat
+    lastal -m100 -E0.05 -C2 -p align.mat localDB ${tgtfile} | 
+        maf-convert psl - |
+        liftUp -type=.psl stdout $srclift warn stdin |
+        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB align.mat
     """
 }
 
