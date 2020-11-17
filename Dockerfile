@@ -3,7 +3,7 @@ WORKDIR /app
 
 # Install ubuntu dependencies
 RUN apt-get -qq update && \
-    apt-get -qq install -y wget git python2 build-essential make unzip perl zlib-dev
+    apt-get -qq install -y wget git python2 build-essential make unzip perl zlib1g-dev
 
 # Install Kent toolkit
 WORKDIR /app
