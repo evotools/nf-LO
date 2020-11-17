@@ -8,7 +8,7 @@ RUN apk update \
 
 # Install python and other dependencies
 RUN apk add wget git python2 gcc make libc-dev unzip perl && rm -rf /var/cache/apk/*
-RUN apk add --update alpine-sdk
+RUN apk add --update alpine-sdk zlib-dev
 
 # Install Kent toolkit
 WORKDIR /app
