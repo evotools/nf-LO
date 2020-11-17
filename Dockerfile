@@ -1,14 +1,9 @@
-FROM alpine:latest
+FROM ubuntu:20.04
 WORKDIR /app
 
 # Install ubuntu dependencies
-RUN apk update \                                                                                                                                                                                                                        
-  &&   apk add ca-certificates wget \                                                                                                                                                                                                      
-  &&   update-ca-certificates
-
-# Install python and other dependencies
-RUN apk add wget git python2 gcc make libc-dev unzip perl && rm -rf /var/cache/apk/*
-RUN apk add --update alpine-sdk zlib-dev bash
+RUN apt-get -qq update && \
+    apt-get -qq install -y wget git python2 build-essential make unzip perl zlib-dev
 
 # Install Kent toolkit
 WORKDIR /app
@@ -48,10 +43,9 @@ RUN wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x
 #    cd /app && rm -rf ./mummer-4.0.0beta2/
 
 # Clean image
-RUN apk del wget git unzip
+RUN apt-get -qq remove wget git unzip && \
+    apt-get -qq autoremove -y && \
+    apt-get -qq autoclean -y 
 
 # Make all executable
 RUN chmod a+x /usr/local/bin/*
-
-# Add entrypoint 
-ENTRYPOINT ["/bin/bash"]
