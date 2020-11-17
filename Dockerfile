@@ -54,4 +54,4 @@ RUN apk del wget git unzip
 RUN chmod a+x /usr/local/bin/*
 
 # Add entrypoint 
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["/bin/bash"]
