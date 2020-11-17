@@ -12,28 +12,16 @@ RUN apk add --update alpine-sdk zlib-dev bash
 
 # Install Kent toolkit
 WORKDIR /app
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtChain && mv axtChain /usr/local/bin && chmod a+x /usr/local/bin/axtChain
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/blat && mv blat /usr/local/bin/ && chmod +x /usr/local/bin/blat
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/gfClient && mv gfClient /usr/local/bin/ && chmod +x /usr/local/bin/gfClient
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/gfServer && mv gfServer /usr/local/bin/ && chmod +x /usr/local/bin/gfServer
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainAntiRepeat && mv chainAntiRepeat /usr/local/bin && chmod a+x /usr/local/bin/chainAntiRepeat
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainMergeSort && mv chainMergeSort /usr/local/bin && chmod a+x /usr/local/bin/chainMergeSort
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainNet && mv chainNet /usr/local/bin && chmod a+x /usr/local/bin/chainNet
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainPreNet && mv chainPreNet /usr/local/bin && chmod a+x /usr/local/bin/chainPreNet
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainStitchId && mv chainStitchId /usr/local/bin && chmod a+x /usr/local/bin/chainStitchId
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainSplit && mv chainSplit /usr/local/bin && chmod a+x /usr/local/bin/chainSplit
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faSplit && mv faSplit /usr/local/bin && chmod a+x /usr/local/bin/faSplit
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit && mv faToTwoBit /usr/local/bin && chmod a+x /usr/local/bin/faToTwoBit
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver && mv liftOver /usr/local/bin && chmod a+x /usr/local/bin/liftOver
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftUp && mv liftUp /usr/local/bin && chmod a+x /usr/local/bin/liftUp
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netChainSubset && mv netChainSubset /usr/local/bin && chmod a+x /usr/local/bin/netChainSubset
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netSyntenic && mv netSyntenic /usr/local/bin && chmod a+x /usr/local/bin/netSyntenic
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitInfo && mv twoBitInfo /usr/local/bin && chmod a+x /usr/local/bin/twoBitInfo
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToPsl && mv lavToPsl /usr/local/bin && chmod a+x /usr/local/bin/lavToPsl
+RUN for i in axtChain blat gfClient gfServer chainAntiRepeat chainMergeSort \
+        chainNet chainPreNet chainStitchId chainSplit faSplit faToTwoBit liftOver liftUp \
+        netChainSubset netSyntenic twoBitInfo lavToPsl; do \
+    wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/${i} && \
+    mv ${i} /usr/local/bin && \
+    chmod a+x /usr/local/bin/${i}; \
+    done
 
 # Get lastz
-RUN \
-    git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
+RUN git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
     cd lastz && \
     make && \
     cp src/lastz /usr/local/bin && \
@@ -42,8 +30,7 @@ RUN \
     rm -rf ./lastz
 
 # Get maf-convert from last
-RUN \
-    wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
+RUN wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
     cd ./last-1061/ && make && make install && \
     cd /app && rm -r /app/last-*
 
@@ -65,3 +52,6 @@ RUN apk del wget git unzip
 
 # Make all executable
 RUN chmod a+x /usr/local/bin/*
+
+# Add entrypoint 
+ENTRYPOINT ["bash"]
