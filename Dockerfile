@@ -15,9 +15,9 @@ RUN for i in axtChain axtToMaf blat chainAntiRepeat chainMergeSort \
         chainNet chainPreNet chainStitchId chainSplit chainToAxt \
         faSplit faToTwoBit liftOver liftUp \
         mafCoverage netChainSubset netSyntenic twoBitInfo lavToPsl; do \
-    wget -q https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/${i} && \
-    mv ${i} /usr/local/bin && \
-    chmod a+x /usr/local/bin/${i}; \
+            wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/${i} && \
+            mv ${i} /usr/local/bin && \
+            chmod a+x /usr/local/bin/${i}; \
     done
 
 # Get lastz
