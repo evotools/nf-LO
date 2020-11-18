@@ -1,21 +1,21 @@
-FROM alpine:latest
+FROM ubuntu:20.04
 WORKDIR /app
 
 # Install ubuntu dependencies
-RUN apk update \                                                                                                                                                                                                                        
-  &&   apk add ca-certificates wget \                                                                                                                                                                                                      
-  &&   update-ca-certificates
-
-# Install python and other dependencies
-RUN apk add wget git python2 gcc make libc-dev unzip perl && rm -rf /var/cache/apk/*
-RUN apk add --update alpine-sdk zlib-dev bash
+RUN apt-get -qq update
+RUN apt-get -qq install -y wget git 
+RUN apt-get -qq install -y build-essential
+RUN apt-get -qq install -y python2 make linux-libc-dev 
+RUN apt-get -qq install -y unzip perl 
+RUN apt-get -qq install -y zlib1g-dev
 
 # Install Kent toolkit
 WORKDIR /app
-RUN for i in axtChain blat gfClient gfServer chainAntiRepeat chainMergeSort \
-        chainNet chainPreNet chainStitchId chainSplit faSplit faToTwoBit liftOver liftUp \
-        netChainSubset netSyntenic twoBitInfo lavToPsl; do \
-    wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/${i} && \
+RUN for i in axtChain axtToMaf blat chainAntiRepeat chainMergeSort \
+        chainNet chainPreNet chainStitchId chainSplit chainToAxt \
+        faSplit faToTwoBit liftOver liftUp \
+        mafCoverage netChainSubset netSyntenic twoBitInfo lavToPsl; do \
+    wget -q https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/${i} && \
     mv ${i} /usr/local/bin && \
     chmod a+x /usr/local/bin/${i}; \
     done
@@ -35,7 +35,7 @@ RUN wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
     cd /app && rm -r /app/last-*
 
 # Get minimap2
-RUN wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
+RUN wget -q https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
     tar -xvf minimap2-2.17_x64-linux.tar.bz2 && \
     cd minimap2-2.17_x64-linux && cp ./minimap2 ./paftools.js ./k8 /usr/local/bin && \
     chmod a+x /usr/local/bin/minimap2 && chmod a+x /usr/local/bin/paftools.js && chmod a+x /usr/local/bin/k8 && \
@@ -48,10 +48,7 @@ RUN wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x
 #    cd /app && rm -rf ./mummer-4.0.0beta2/
 
 # Clean image
-RUN apk del wget git unzip
+RUN apt-get -qq remove wget git unzip && apt-get -qq autoclean -y && apt-get -qq autoremove -y 
 
 # Make all executable
 RUN chmod a+x /usr/local/bin/*
-
-# Add entrypoint 
-ENTRYPOINT ["/bin/bash"]
