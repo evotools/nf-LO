@@ -2,16 +2,22 @@ FROM ubuntu:18.04
 WORKDIR /app
 
 # Install ubuntu dependencies
+RUN cat /etc/apt/sources.list
+
+# Changing to US archives of UBUNTU
+RUN sed -i'' 's/archive\.ubuntu\.com/us\.archive\.ubuntu\.com/' /etc/apt/sources.list
+
+# Install deps
 RUN apt-get -qq update
 RUN apt-get -qq install -y wget git 
 RUN apt-get -qq install -y build-essential
-RUN apt-get -qq install -y python2 make linux-libc-dev 
+RUN apt-get -qq install -y python make linux-libc-dev 
 RUN apt-get -qq install -y unzip perl 
-RUN apt-get -qq install -y zlib1g-dev
+RUN apt-get -qq install -y zlib1g-dev libkrb5-3
 
 # Install Kent toolkit
 WORKDIR /app
-RUN for i in axtChain axtToMaf blat chainAntiRepeat chainMergeSort \
+RUN for i in axtChain axtToMaf chainAntiRepeat chainMergeSort \
         chainNet chainPreNet chainStitchId chainSplit chainToAxt \
         faSplit faToTwoBit liftOver liftUp \
         mafCoverage netChainSubset netSyntenic twoBitInfo lavToPsl; do \
@@ -19,6 +25,11 @@ RUN for i in axtChain axtToMaf blat chainAntiRepeat chainMergeSort \
             mv ${i} /usr/local/bin && \
             chmod a+x /usr/local/bin/${i}; \
     done
+
+# Install blat
+RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/blat && \
+        mv blat /usr/local/bin && \
+        chmod a+x /usr/local/bin/blat
 
 # Get lastz
 RUN git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
