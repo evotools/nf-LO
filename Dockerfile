@@ -63,3 +63,6 @@ RUN apt-get -qq remove wget git unzip && apt-get -qq autoclean -y && apt-get -qq
 
 # Make all executable
 RUN chmod a+x /usr/local/bin/*
+
+# Set correct workdir
+WORKDIR /app/data
