@@ -20,19 +20,21 @@ if (params.help) {
 }
 
 // If params.custom is set, define that as distance
-if ( params.custom != '' && params.distance == 'custom' ) {
-    params.distance = 'custom' }
+if ( params.custom != '' && params.distance == 'custom' ) { params.distance = 'custom' }
 
 // Print run informations
-log.info """\
+log.info '''
+------------------------------------
         __           _      ____  
-       / _|         | |    / __ \ 
+       / _|         | |    / __ \\ 
  _ __ | |_   ______ | |   | |  | |
-| '_ \|  _| /_____/ | |   | |  | |
+| '_ \\|  _| |_____| | |   | |  | |
 | | | | |           | |___| |__| |
-|_| |_|_|           |______\____/ 
-      
-UCSC-like LiftOver v 1.4
+|_| |_|_|           |______\\____/ 
+------------------------------------
+      '''
+log.info """\
+Nextflow LiftOver v 1.4
 ================================
 source         : $params.source
 target         : $params.target
