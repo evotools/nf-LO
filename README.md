@@ -28,7 +28,6 @@ This script will download a series of software and save them in the ./bin folder
  2. [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/)
  3. [minimap2](https://github.com/lh3/minimap2)
  4. [last](http://last.cbrc.jp/)
- 5. [nucmer](https://github.com/mummer4/mummer)
  6. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
     - axtChain
     - chainAntiRepeat
