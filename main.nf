@@ -59,12 +59,6 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
 if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target genome not specified!' }
 
-/*
-include {PREPROCESS} from './modules/subworkflows/preprocess' params(params)
-
-include {POSTPROC} from './modules/subworkflows/postprocess'
-*/
-
 workflow {
         if ( params.aligner == 'lastz' ){
                 include {LASTZ as WORKER} from './modules/subworkflows/lastz' params(params)
@@ -77,15 +71,3 @@ workflow {
         }
         WORKER()
 }
-
-/*
-workflow {
-        main:
-                PREPROCESS()
-                ALIGN( PREPROCESS.out.[0], PREPROCESS.out.[1], PREPROCESS.out.[2], PREPROCESS.out.[3], PREPROCESS.out.[4]],
-                        PREPROCESS.out.[5]], PREPROCESS.out.[6]] )
-                POSTPROC(ALIGN.out, PREPROCESS.out.twoBsrc, PREPROCESS.out.twoBtgt, PREPROCESS.out.twoBsrcNFO, PREPROCESS.out.twoBtgtNFO)
-        emit:
-                POSTPROC.out
-}
-*/
