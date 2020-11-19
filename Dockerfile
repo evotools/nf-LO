@@ -59,7 +59,7 @@ RUN wget -q https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.1
 #    cd /app && rm -rf ./mummer-4.0.0beta2/
 
 # Clean image
-RUN apt-get -qq remove wget git unzip && apt-get -qq autoclean -y && apt-get -qq autoremove -y 
+RUN apt-get -qq remove git unzip && apt-get -qq autoclean -y && apt-get -qq autoremove -y 
 
 # Make all executable
 RUN chmod a+x /usr/local/bin/*
