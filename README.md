@@ -2,15 +2,23 @@
 ## Nextflow LiftOver pipeline
 
 ## Introduction
-*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/) and [minimap2](https://github.com/lh3/minimap2)), therefore providing different-species (lastz), same-species (blat) and ultra-fast liftovers from a source to a target genome.  
+*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2) and [last](http://last.cbrc.jp/)), therefore providing different-species (lastz), same-species (blat) and ultra-fast liftovers from a source to a target genome.  
 
 ## Dependencies
 ### Nextflow
 Nextflow needs to be installed and in your path to be able to run the pipeline. 
 To do so, follow the instructions [here](https://www.nextflow.io/)
 
-### Containers
-A docker image is available with all the dependencies at tale88/nf-lo. This docker ships everything, with the exception of maf-convert, that needs to be installed separately and is necessary to run nf-LO with minimap2. Alernatively, a singularity build can be downloaded with the following. 
+### Profiles
+*nf-LO* comes with a series of pre-defined profiles:
+ - standard: this profile runs all dependencies in docker and other basic presets to facilitate the use
+ - local: runs using local exe instead of containerized/conda dependencies (see manual installation for further details)
+ - docker: force the use of docker 
+ - singularity: runs the dependencies within singularity
+ - conda: runs the dependencies within conda
+ - uge: runs using UGE scheduling system
+ - sge: runs using SGE scheduling system
+A docker image is available with all the dependencies at tale88/nf-lo. This docker ships all necessary dependencies to run nf-LO. 
 This is the recommended mode of usage of the software, since all the dependencies come shipped in the container.
 
 ### Manual installation
@@ -50,32 +58,18 @@ Ready to go!
 
 
 ## Running the pipeline
-To run the pipeline locally, simply copy ```main.nf``` in the folder where you want to run the analysis.
-To run the example, first download the data:
+To test the pipeline locally, simply run:
 ```
-mkdir test && cd test
-wget https://sra-download.ncbi.nlm.nih.gov/traces/wgs03/wgs_aux/JZ/EF/JZEF01/JZEF01.1.fsa_nt.gz && gunzip JZEF01.1.fsa_nt.gz
-wget https://sra-download.ncbi.nlm.nih.gov/traces/wgs03/wgs_aux/JZ/EG/JZEG01/JZEG01.1.fsa_nt.gz && gunzip JZEG01.1.fsa_nt.gz
+nextflow run RenzoTale88/nf-LO 
+    --distance near \
+    --aligner lastz \
+    --tgtSize 2000000 \
+    --srcSize 1000000 \
+    --srcOvlp 100000 \
+    -profile test,docker
 ```
-
-Then, copy ```main.nf``` in the folder and run the pipeline:
-
-```
-nextflow run main.nf \
-    --source $PWD/test/JZEF01.1.fsa_nt \
-    --target $PWD/test/JZEG01.1.fsa_nt \
-    --outdir $PWD/test/OUTPUT_NEW \
-    --distance medium \
-    --aligner minimap2 \
-    --tgtSize 1000000 \
-    --srcSize 500000 \
-    --srcOvlp 100000 
-```
-This will run the pipeline on the two toy genomes provided and return a liftover. It will perform the analysis chunking the target in 1Mb windows, and the source in 500Kb, with 100Kb extra bytes as overlaps (600Kb long in total). The aligner will be minimap2 and the distance set to medium (asm10). The whole process should take few minutes to complete. Using other aligners will likely increase the run time, but should still be reasonably low.
-
-If you want to run the pipeline using the docker container, you can add ```-with-docker tale88/nf-lo``` at the end of your command line, and this should run the pipeline downloading the docker container specified inclusive of all the dependencies.
-
-If instead, you prefer using a singularity image, you can run it through ```-with-singularity library://renzo_tale/default/nf-lo```
+This will download and run the pipeline on the two toy genomes provided and generate liftover files. If you have all dependencies installed locally
+you can omit ```docker``` from the profile configuration.
 
 # References
 Adaptive seeds tame genomic sequence comparison. Kiełbasa SM, Wan R, Sato K, Horton P, Frith MC. Genome Res. 2011 21(3):487-93; http://dx.doi.org/10.1101/gr.113985.110
