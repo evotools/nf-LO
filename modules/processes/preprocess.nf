@@ -10,7 +10,7 @@ srcOvlpSize=params.srcOvlp
 
 process make2bit {
     tag "twoBit"
-    publishDir "$params.outdir/genome2bit"
+    publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
     label 'small'
 
     input:
@@ -54,7 +54,6 @@ process makeooc {
 
 process splitsrc {
     tag "splitsrc"
-    publishDir "$params.outdir/splitfa_src"
     label 'small'
 
     input:
@@ -73,7 +72,6 @@ process splitsrc {
 
 process groupsrc {
     tag "groupsrc"
-    publishDir "$params.outdir/groupedfa_src"
     label 'medium'
 
     input:
@@ -128,7 +126,6 @@ process groupsrc {
 
 process splittgt {
     tag "splittgt"
-    publishDir "$params.outdir/splitfa_tgt"
     label 'small'
 
     input:
@@ -154,7 +151,6 @@ process splittgt {
 
 process grouptgt {
     tag "grouptgt"
-    publishDir "$params.outdir/groupedfa_tgt"
     label 'medium'
 
     input:
@@ -272,7 +268,7 @@ process pairs {
 
 process make2bitS {
     tag "twoBit"
-    publishDir "$params.outdir/genome2bit"
+    publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
     label 'small'
 
     input:
@@ -290,7 +286,7 @@ process make2bitS {
 
 process makeSizeS {
     tag "twoBit"
-    publishDir "$params.outdir/genome2bit"
+    publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
     label 'small'
 
     input:
@@ -307,7 +303,7 @@ process makeSizeS {
 
 process make2bitT {
     tag "twoBit"
-    publishDir "$params.outdir/genome2bit"
+    publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
     label 'small'
 
     input:
@@ -324,7 +320,7 @@ process make2bitT {
 
 process makeSizeT {
     tag "twoBit"
-    publishDir "$params.outdir/genome2bit"
+    publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
     label 'small'
 
     input:

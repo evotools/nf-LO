@@ -6,7 +6,7 @@ chainFar="-minScore=5000 -linearGap=loose"
 
 process axtchain {
     tag "axtchain"
-    publishDir "${params.outdir}/singlechains"
+    publishDir "${params.outdir}/singlechains", mode: params.publish_dir_mode, overwrite: true
     label 'small'
 
     input:
@@ -39,7 +39,7 @@ process axtchain {
 
 process chainMerge {
     tag "chainmerge"
-    publishDir "${params.outdir}/rawchain", mode: 'copy', overwrite: true
+    publishDir "${params.outdir}/rawchain", mode: params.publish_dir_mode, overwrite: true
     label 'medium'
 
     input: 
@@ -90,7 +90,7 @@ process chainNet{
 
 process liftover{
     tag "liftover"
-    publishDir "${params.outdir}/lifted", mode: 'copy', overwrite: true
+    publishDir "${params.outdir}/lifted", mode: params.publish_dir_mode, overwrite: true
     label 'medium'
  
     input:
