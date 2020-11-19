@@ -60,11 +60,6 @@ Ready to go!
 To test the pipeline locally, simply run:
 ```
 nextflow run RenzoTale88/nf-LO 
-    --distance near \
-    --aligner lastz \
-    --tgtSize 2000000 \
-    --srcSize 1000000 \
-    --srcOvlp 100000 \
     -profile test,docker
 ```
 This will download and run the pipeline on the two toy genomes provided and generate liftover files. If you have all dependencies installed locally
