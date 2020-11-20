@@ -24,18 +24,18 @@ if ( params.custom != '' && params.distance == 'custom' ) { params.distance = 'c
 
 // Print run informations
 log.info '''
-------------------------------------
+=====================================
         __           _      ____  
        / _|         | |    / __ \\ 
  _ __ | |_   ______ | |   | |  | |
 | '_ \\|  _| |_____| | |   | |  | |
 | | | | |           | |___| |__| |
 |_| |_|_|           |______\\____/ 
-------------------------------------
+=====================================
       '''
 log.info """\
 Nextflow LiftOver v 1.4
-================================
+=====================================
 source         : $params.source
 target         : $params.target
 aligner        : $params.aligner
@@ -47,6 +47,7 @@ source chunk   : $params.srcSize
 source overlap : $params.srcOvlp
 output folder  : $params.outdir
 annot          : $params.annotation
+annot type     : $params.annotation_format
 
 """ 
 

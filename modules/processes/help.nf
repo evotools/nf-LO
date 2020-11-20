@@ -21,7 +21,9 @@ def helpMessage() {
     Mandatory arguments:
       --source [file]                 Path to fa(sta)[.gz] for source genome. (Default: './data/source.fa')
       --target [file]                 Path to fa(sta)[.gz] for target genome. (Default: './data/target.fa')
-      --annotation [file]             Path to BED file to lift. Not mandatory. (Default: false)
+      --annotation [file]             Path to BED/GFF file to lift. Not mandatory. (Default: false)
+      --annotation_format [str]       Path to BED/GFF file to lift. Not mandatory. (Default: false)
+                                      Available: bed, gff
       -profile [str]                  Configuration profile to use. Can use multiple (comma separated)
                                       Available: standard, conda, docker, singularity, eddie, sge, uge
 
