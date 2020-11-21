@@ -33,9 +33,6 @@ workflow GSALIGN {
         twoBitT = make2bit.out.twoBtgt
         twoBitSN = make2bit.out.twoBsrcNFO
         twoBitTN = make2bit.out.twoBtgtNFO
-        
-        // Prepare Ooc files
-        makeooc(ch_source)
 
         // split and group source
         splitsrc(ch_source)
@@ -55,7 +52,7 @@ workflow GSALIGN {
             .set{ pairspath_ch }
 
         // Run gsalign
-        gsalign(pairspath_ch, tgt_lift, src_lift, makeooc.out.ooc11, makeooc.out.ooc12)  
+        gsalign(pairspath_ch, tgt_lift, src_lift)  
         axtchain( gsalign.out.al_files_ch, twoBitS, twoBitT)   
 
         // 
