@@ -2,7 +2,7 @@
 ## Nextflow LiftOver pipeline
 
 ## Introduction
-*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2) and [last](http://last.cbrc.jp/)), therefore providing different-species (lastz), same-species (blat) and ultra-fast liftovers from a source to a target genome.  
+*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign) and [last](http://last.cbrc.jp/)), therefore providing different-species (lastz), same-species (blat and GSAlign) and ultra-fast liftovers from a source to a target genome.  
 
 ## Dependencies
 ### Nextflow
@@ -28,6 +28,7 @@ This script will download a series of software and save them in the ./bin folder
  2. [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/)
  3. [minimap2](https://github.com/lh3/minimap2)
  4. [last](http://last.cbrc.jp/)
+ 5. [GSAlign](https://github.com/hsinnan75/GSAlign)
  6. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
     - axtChain
     - chainAntiRepeat

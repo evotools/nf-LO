@@ -69,6 +69,8 @@ workflow {
                 include {BLAT as WORKER} from './modules/subworkflows/blat' params(params)
         } else if ( params.aligner == 'minimap2' ){
                 include {MINIMAP2 as WORKER} from './modules/subworkflows/minimap2' params(params)
+        } else if ( params.aligner == 'gsalign' ){
+                include {GSALIGN as WORKER} from './modules/subworkflows/GSAlign' params(params)
         }
         WORKER()
 }

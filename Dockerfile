@@ -52,11 +52,14 @@ RUN wget -q https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.1
     chmod a+x /usr/local/bin/minimap2 && chmod a+x /usr/local/bin/paftools.js && chmod a+x /usr/local/bin/k8 && \
     cd /app && rm -rf ./minimap2-*
 
-# Get mummer4
-#RUN wget https://github.com/mummer4/mummer/releases/download/v4.0.0beta2/mummer-4.0.0beta2.tar.gz && \
-#    tar xvfz mummer-4.0.0beta2.tar.gz && \
-#    cd mummer-4.0.0beta2/ && ./configure && make && make install && \
-#    cd /app && rm -rf ./mummer-4.0.0beta2/
+# Install GSAlign
+RUN git clone https://github.com/hsinnan75/GSAlign.git && \
+    cd GSAlign && \
+    make all
+ENV PATH=$PATH:/app/GSAlign/bin
+
+# Install crossmap
+RUN pip install CrossMap
 
 # Clean image
 RUN apt-get -qq remove git unzip && apt-get -qq autoclean -y && apt-get -qq autoremove -y 
