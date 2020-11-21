@@ -11,7 +11,7 @@ RUN sed -i'' 's/archive\.ubuntu\.com/us\.archive\.ubuntu\.com/' /etc/apt/sources
 RUN apt-get -qq update
 RUN apt-get -qq install -y wget git 
 RUN apt-get -qq install -y build-essential
-RUN apt-get -qq install -y python make linux-libc-dev 
+RUN apt-get -qq install -y python make linux-libc-dev python-pip
 RUN apt-get -qq install -y unzip perl 
 RUN apt-get -qq install -y zlib1g-dev libkrb5-3
 
