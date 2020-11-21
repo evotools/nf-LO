@@ -41,9 +41,7 @@ RUN git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git &
     rm -rf ./lastz
 
 # Get maf-convert from last
-RUN wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
-    cd ./last-1061/ && make && make install && \
-    cd /app && rm -r /app/last-*
+RUN apt-get -qq install -y last-align
 
 # Get minimap2
 RUN wget -q https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
