@@ -25,7 +25,7 @@ if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target ge
 if (params.annotation) { ch_annot = file(params.annotation) } else { log.info 'No annotation given' }
 
 // Create gsalign alignments workflow
-workflow BLAT {
+workflow GSALIGN {
     main:
         // Make 2bit genomes
         make2bit(ch_source, ch_target)
