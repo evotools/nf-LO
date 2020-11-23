@@ -9,8 +9,8 @@ unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)     machine=Linux;;
     Darwin*)    machine=Mac;;
-    CYGWIN*)    machine=Cygwin;;
-    MINGW*)     machine=MinGw;;
+    #CYGWIN*)    machine=Cygwin;;
+    #MINGW*)     machine=MinGw;;
     *)          machine="UNKNOWN:${unameOut}"
 esac
 echo ${machine}
@@ -77,13 +77,15 @@ wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
     mv scripts/* ../ && cd ../ && \
     rm -r ./last-*
 
-# Install mummer4
-wget https://github.com/mummer4/mummer/releases/download/v4.0.0beta2/mummer-4.0.0beta2.tar.gz && \
-    tar xvfz mummer-4.0.0beta2.tar.gz && \
-    cd mummer-4.0.0beta2/ && mkdir INSTALL && \
-    ./configure --prefix=$PWD/INSTALL && make && make install && \
-    cp INSTALL/bin/nucmer ../ && \
-    cd ../ 
+# Install GSAlign
+git clone https://github.com/hsinnan75/GSAlign.git && \
+    cd GSAlign && \
+    make all && \
+    cp bin/* ../ && \
+    rm -r GSAlign
+
+# Install crossmap
+pip install scipy CrossMap
 
 # Install minimap2
 if [ ${machine} == "Linux" ]; then
@@ -93,6 +95,7 @@ if [ ${machine} == "Linux" ]; then
         mv minimap2-2.17_x64-linux/minimap2 ./ && mv minimap2-2.17_x64-linux/paftools.js ./ && mv minimap2-2.17_x64-linux/k8 ./ && \
         rm -rf ./minimap2-*
 fi
+
 # Clean-up
 cd ../
 chmod a+x ./bin/*
