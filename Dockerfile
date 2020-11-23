@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM continuumio/miniconda:4.7.12-alpine
 WORKDIR /app
 
 # Install ubuntu dependencies
@@ -7,63 +7,28 @@ RUN cat /etc/apt/sources.list
 # Changing to US archives of UBUNTU
 RUN sed -i'' 's/archive\.ubuntu\.com/us\.archive\.ubuntu\.com/' /etc/apt/sources.list
 
-# Install deps
-RUN apt-get -qq update
-RUN apt-get -qq install -y wget git 
-RUN apt-get -qq install -y build-essential
-RUN apt-get -qq install -y python make linux-libc-dev python-pip
-RUN apt-get -qq install -y unzip perl 
-RUN apt-get -qq install -y zlib1g-dev libkrb5-3
+LABEL authors="andrea.talenti@ed.ac.uk" \
+      description="Docker image containing base requirements for nf-LO pipelines"
 
-# Install Kent toolkit
-WORKDIR /app
-RUN for i in axtChain axtToMaf chainAntiRepeat chainMergeSort \
-        chainNet chainPreNet chainStitchId chainSplit chainToAxt \
-        faSplit faToTwoBit liftOver liftUp \
-        mafCoverage netChainSubset netSyntenic twoBitInfo lavToPsl; do \
-            wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/"${i}" && \
-            mv ${i} /usr/local/bin && \
-            chmod a+x /usr/local/bin/${i}; \
-    done
+# Install procps so that Nextflow can poll CPU usage and 
+# deep clean the apt cache to reduce image/layer size
+RUN apt-get update \
+ && apt-get install -y procps \
+ && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Install blat
-RUN wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/blat && \
-        mv blat /usr/local/bin && \
-        chmod a+x /usr/local/bin/blat
+# Install the conda environment
+COPY environment.yml /
+RUN conda env create -f /environment.yml && conda clean -a
 
-# Get lastz
-RUN git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
-    cd lastz && \
-    make && \
-    cp src/lastz /usr/local/bin && \
-    chmod a+x /usr/local/bin/lastz && \
-    cd /app && \
-    rm -rf ./lastz
+# Add conda installation dir to PATH (instead of doing 'conda activate')
+ENV PATH /opt/conda/envs/nf-core-chipseq-1.2.1/bin:$PATH
 
-# Get maf-convert from last
-RUN apt-get -qq install -y last-align
+# Dump the details of the installed packages to a file for posterity
+RUN conda env export --name nf-core-chipseq-1.2.1 > nf-core-chipseq-1.2.1.yml
 
-# Get minimap2
-RUN wget -q https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
-    tar -xvf minimap2-2.17_x64-linux.tar.bz2 && \
-    cd minimap2-2.17_x64-linux && cp ./minimap2 ./paftools.js ./k8 /usr/local/bin && \
-    chmod a+x /usr/local/bin/minimap2 && chmod a+x /usr/local/bin/paftools.js && chmod a+x /usr/local/bin/k8 && \
-    cd /app && rm -rf ./minimap2-*
-
-# Install GSAlign
-RUN git clone https://github.com/hsinnan75/GSAlign.git && \
-    cd GSAlign && \
-    make all
-ENV PATH=$PATH:/app/GSAlign/bin
-
-# Install crossmap
-RUN pip install scipy CrossMap
-
-# Clean image
-RUN apt-get -qq remove git unzip && apt-get -qq autoclean -y && apt-get -qq autoremove -y 
-
-# Make all executable
-RUN chmod a+x /usr/local/bin/*
+# Instruct R processes to use these empty files instead of clashing with a local version
+RUN touch .Rprofile
+RUN touch .Renviron
 
 # Set correct workdir
 WORKDIR /app/data
