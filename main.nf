@@ -48,6 +48,7 @@ source overlap : $params.srcOvlp
 output folder  : $params.outdir
 annot          : $params.annotation
 annot type     : $params.annotation_format
+liftover meth. : $params.liftover_algorithm
 
 """ 
 
