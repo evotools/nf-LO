@@ -1,14 +1,13 @@
 // This subworkflow contains only the workflow to lift input files
-include {liftover} from '../processes/postprocess'
+if (params.liftover_algorithm == 'crossmap' || (params.annotation_format != 'bed' && params.annotation_format != 'gff') ){
+    include {crossmap as lifter} from '../processes/postprocess'
+} else {
+    include {liftover as lifter} from '../processes/postprocess'
+}
 workflow LIFTOVER {
     take:
         chain
         ch_annot
-    main:
-        if (params.liftover_algorithm == 'croosmap' || (params.format != 'bed' && params.format != 'gff') ){
-            include {crossmap as liftover} from '../processes/postprocess'
-        } else {
-            include {liftover} from '../processes/postprocess'
-        }
-        liftover(chain, ch_annot)
+    main:   
+        lifter(chain, ch_annot)
 }
