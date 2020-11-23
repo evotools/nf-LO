@@ -140,12 +140,12 @@ process splittgt {
     if( params.aligner == "blat" )
         """
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
-        faSplit size -oneFile -lift=target.lift -extra=500 ${params.target} 4500 SPLIT_tgt/tmp
+        faSplit size -oneFile -lift=target.lift -extra=500 ${target} 4500 SPLIT_tgt/tmp
         """
     else
         """
         mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
-        faSplit size -lift=target.lift ${params.target} ${tgtChunkSize} SPLIT_tgt/
+        faSplit size -lift=target.lift ${target} ${tgtChunkSize} SPLIT_tgt/
         """
 }
 
