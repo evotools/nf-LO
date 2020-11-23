@@ -57,7 +57,7 @@ RUN git clone https://github.com/hsinnan75/GSAlign.git && \
 ENV PATH=$PATH:/app/GSAlign/bin
 
 # Install crossmap
-RUN pip install CrossMap
+RUN pip install scipy CrossMap
 
 # Clean image
 RUN apt-get -qq remove git unzip && apt-get -qq autoclean -y && apt-get -qq autoremove -y 
