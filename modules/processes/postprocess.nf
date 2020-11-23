@@ -108,10 +108,32 @@ process liftover{
     """
     else if ( params.annotation_format == 'bam' )
     """
-    CrossMap.py bam -a ${chain} ${annotation} lifted     
+    liftOver -gff ${annotation} ${chain} lifted.bed unmapped.bed    
     """
+}
+
+
+
+process crossmap{
+    tag "crossmap"
+    publishDir "${params.outdir}/lifted", mode: params.publish_dir_mode, overwrite: true
+    label 'medium'
+ 
+    input:
+        path chain
+        path annotation
+
+    output:
+        path "lifted.${params.annotation_format}", emit: lifted_ch
+        path "*unmap*",  optional: true, emit: unmapped_ch
+
+    script:
+    if ( params.annotation_format == 'bam' )
+        """
+        CrossMap.py bam -a ${chain} ${annotation} lifted.${params.annotation_format} 
+        """
     else 
-    """
-    CrossMap.py ${params.annotation_format} ${chain} ${annotation} lifted     
-    """
+        """
+        CrossMap.py ${params.annotation_format} ${chain} ${annotation} lifted.${params.annotation_format}     
+        """
 }

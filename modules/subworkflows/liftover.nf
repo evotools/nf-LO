@@ -5,5 +5,10 @@ workflow LIFTOVER {
         chain
         ch_annot
     main:
+        if (params.liftover_algorithm == 'croosmap' || (params.format != 'bed' && params.format != 'gff') ){
+            include {crossmap as liftover} from '../processes/postprocess'
+        } else {
+            include {liftover} from '../processes/postprocess'
+        }
         liftover(chain, ch_annot)
 }

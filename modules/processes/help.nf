@@ -41,6 +41,10 @@ def helpMessage() {
     --customChain                     Use custom parameters for the chaining instead of the pre-defined (Default: false)
                                       Specify the string of custom parameters for the alignments. If want to run with base parameters,
                                       just use ' '
+    
+    Liftover
+    --liftover_algorithm              Define the algorith to use to liftover the positions
+                                      Supported software are liftOver and CrossMap.py
 
     Other
       --outdir [file]                 The output directory where the results will be saved (Default: './results')
