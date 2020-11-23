@@ -1,34 +1,35 @@
-FROM continuumio/miniconda:4.7.12-alpine
-WORKDIR /app
-
-# Install ubuntu dependencies
-RUN cat /etc/apt/sources.list
-
-# Changing to US archives of UBUNTU
-RUN sed -i'' 's/archive\.ubuntu\.com/us\.archive\.ubuntu\.com/' /etc/apt/sources.list
+FROM continuumio/miniconda3 AS build
 
 LABEL authors="andrea.talenti@ed.ac.uk" \
       description="Docker image containing base requirements for nf-LO pipelines"
 
-# Install procps so that Nextflow can poll CPU usage and 
-# deep clean the apt cache to reduce image/layer size
-RUN apt-get update \
- && apt-get install -y procps \
- && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+# Install the package as normal:
+COPY environment.yml .
+RUN conda env create -f environment.yml
 
-# Install the conda environment
-COPY environment.yml /
-RUN conda env create -f /environment.yml && conda clean -a
+# Install conda-pack:
+RUN conda install -c conda-forge conda-pack
 
-# Add conda installation dir to PATH (instead of doing 'conda activate')
-ENV PATH /opt/conda/envs/nf-core-chipseq-1.2.1/bin:$PATH
+# Use conda-pack to create a standalone enviornment
+# in /venv:
+RUN conda-pack -n nf-LO -o /tmp/env.tar && \
+  mkdir /venv && cd /venv && tar xf /tmp/env.tar && \
+  rm /tmp/env.tar
 
-# Dump the details of the installed packages to a file for posterity
-RUN conda env export --name nf-core-chipseq-1.2.1 > nf-core-chipseq-1.2.1.yml
+# We've put venv in same path it'll be in final image,
+# so now fix up paths:
+RUN /venv/bin/conda-unpack
 
-# Instruct R processes to use these empty files instead of clashing with a local version
-RUN touch .Rprofile
-RUN touch .Renviron
 
-# Set correct workdir
-WORKDIR /app/data
+# The runtime-stage image; we can use Debian as the
+# base image since the Conda env also includes Python
+# for us.
+FROM debian:buster AS runtime
+
+# Copy /venv from the previous stage:
+COPY --from=build /venv /venv
+
+# When image is run, run the code with the environment
+# activated:
+ENV PATH /venv/bin/:$PATH
+SHELL ["/bin/bash", "-c"]
