@@ -73,4 +73,10 @@ workflow {
                 include {GSALIGN as WORKER} from './modules/subworkflows/GSAlign' params(params)
         }
         WORKER()
+        if ( params.target ) { 
+                ch_annot = file(params.annotation)
+                include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
+                LIFTOVER(WORKER.out[0], ch_annot) 
+        } 
+                
 }
