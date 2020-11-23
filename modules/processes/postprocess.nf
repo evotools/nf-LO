@@ -106,8 +106,12 @@ process liftover{
     """
     liftOver ${annotation} ${chain} lifted.bed unmapped.bed
     """
-    else if ( params.annotation_format == 'gff' )
+    else if ( params.annotation_format == 'bam' )
     """
-    liftOver -gff ${annotation} ${chain} lifted.bed unmapped.bed    
+    CrossMap.py bam -a ${chain} ${annotation} lifted     
+    """
+    else 
+    """
+    CrossMap.py ${params.annotation_format} ${chain} ${annotation} lifted     
     """
 }
