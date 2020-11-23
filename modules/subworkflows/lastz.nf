@@ -62,7 +62,7 @@ workflow LASTZ {
 
         if ( params.annotation ) { 
             ch_annot = file(params.annotation) 
-            liftover(chainNet.out.liftover_ch)
+            liftover(chainNet.out.liftover_ch, ch_annot)
         } 
 
     emit:

@@ -58,9 +58,9 @@ workflow LAST {
         // Create liftover file from chain
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
 
-        if (params.annotation) { 
-            ch_source = file(params.annotation) 
-            liftover(chainNet.out.liftover_ch)
+        if ( params.annotation ) { 
+            ch_annot = file(params.annotation) 
+            liftover(chainNet.out.liftover_ch, ch_annot)
         } 
 
     emit:

@@ -95,6 +95,7 @@ process liftover{
  
     input:
         path chain
+        path annotation
 
     output:
         path "lifted.bed", emit: lifted_ch
@@ -103,10 +104,10 @@ process liftover{
     script:
     if ( params.annotation_format == 'bed' )
     """
-    liftOver ${params.annotation} ${chain} lifted.bed unmapped.bed
+    liftOver ${annotation} ${chain} lifted.bed unmapped.bed
     """
     else if ( params.annotation_format == 'gff' )
     """
-    liftOver -gff ${params.annotation} ${chain} lifted.bed unmapped.bed    
+    liftOver -gff ${annotation} ${chain} lifted.bed unmapped.bed    
     """
 }

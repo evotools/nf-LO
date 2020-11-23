@@ -62,6 +62,11 @@ workflow BLAT {
         chainMerge( axtchain.out.collect() )
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
 
+        if ( params.annotation ) { 
+            ch_annot = file(params.annotation) 
+            liftover(chainNet.out.liftover_ch, ch_annot)
+        } 
+        
     emit:
         chainNet.out.liftover_ch
         chainNet.out.netfile_ch
