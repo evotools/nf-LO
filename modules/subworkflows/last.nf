@@ -50,11 +50,10 @@ workflow LAST {
             .set{ pairspath_ch }
 
         // Run last
-        last(pairspath_ch, tgt_lift, src_lift)  
-        axtchain( last.out.al_files_ch, twoBitS, twoBitT)   
+        last(pairspath_ch, tgt_lift, src_lift, twoBitS, twoBitT)  
 
         // Combine the chain files
-        chainMerge( axtchain.out.collect() )
+        chainMerge( last.out.collect() )
         // Create liftover file from chain
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
 

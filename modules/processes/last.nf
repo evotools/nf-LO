@@ -1,16 +1,23 @@
 //Processes for last alignments
 
+chainNear="-minScore=5000 -linearGap=medium"
+chainMedium="-minScore=3000 -linearGap=medium"
+chainFar="-minScore=5000 -linearGap=loose"
+
+
 process last_near{    
     tag "last_${params.distance}.${srcname}.${tgtname}"
     label 'small'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path twoBitS
+        path twoBitT
 
     output: 
-        tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
+        path "${srcname}.${tgtname}.chain"
   
     script:
     """
@@ -18,7 +25,10 @@ process last_near{
     lastal -m50 -E0.05 -C2 localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB.*
+        liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
+        axtChain $chainNear -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
+        && rm localDB.*
     """
 }
 
@@ -29,11 +39,13 @@ process last_medium{
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path twoBitS
+        path twoBitT
 
     output: 
-        tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
+        path "${srcname}.${tgtname}.chain"
   
     script:
     """
@@ -41,7 +53,10 @@ process last_medium{
     lastal -m75 -E0.05 -C2 localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB.*
+        liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
+        axtChain $chainMedium -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
+        && rm localDB.*
     """
 }
 
@@ -52,11 +67,13 @@ process last_far{
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path twoBitS
+        path twoBitT
 
     output: 
-        tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
+        path "${srcname}.${tgtname}.chain"
   
     script:
     """
@@ -64,7 +81,10 @@ process last_far{
     lastal -m100 -E0.05 -C2 localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB.*
+        liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
+        axtChain $chainFar -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
+        && rm localDB.*
     """
 }
 
@@ -75,11 +95,13 @@ process last_custom{
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path twoBitS
+        path twoBitT
 
     output: 
-        tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
+        path "${srcname}.${tgtname}.chain"
   
     script:
     """
@@ -87,7 +109,10 @@ process last_custom{
     lastal ${params.custom} localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
-        liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm localDB.*
+        liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
+        axtChain $params.customChain -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
+        && rm localDB.*
     """
 }
 
