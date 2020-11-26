@@ -132,6 +132,10 @@ process crossmap{
         """
         CrossMap.py vcf -a ${chain} ${annotation} ${tgt_ch} lifted.${params.annotation_format} 
         """
+    else if ( params.annotation_format == 'maf' )
+        """
+        CrossMap.py maf -a ${chain} ${annotation} ${tgt_ch} ${params.maf_tgt_name} lifted.${params.annotation_format} 
+        """
     else 
         """
         CrossMap.py ${params.annotation_format} ${chain} ${annotation} lifted.${params.annotation_format}     
