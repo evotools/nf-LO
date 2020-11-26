@@ -60,19 +60,18 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 /* Check mandatory params */
 if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
 if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target genome not specified!' }
-
+if ( params.aligner == 'lastz' ){
+        include {LASTZ as WORKER} from './modules/subworkflows/lastz' params(params)
+} else if ( params.aligner == 'last' ){
+        include {LAST as WORKER} from './modules/subworkflows/last' params(params)
+} else if ( params.aligner == 'blat' ){
+        include {BLAT as WORKER} from './modules/subworkflows/blat' params(params)
+} else if ( params.aligner == 'minimap2' ){
+        include {MINIMAP2 as WORKER} from './modules/subworkflows/minimap2' params(params)
+} else if ( params.aligner == 'gsalign' ){
+        include {GSALIGN as WORKER} from './modules/subworkflows/GSAlign' params(params)
+}
 workflow {
-        if ( params.aligner == 'lastz' ){
-                include {LASTZ as WORKER} from './modules/subworkflows/lastz' params(params)
-        } else if ( params.aligner == 'last' ){
-                include {LAST as WORKER} from './modules/subworkflows/last' params(params)
-        } else if ( params.aligner == 'blat' ){
-                include {BLAT as WORKER} from './modules/subworkflows/blat' params(params)
-        } else if ( params.aligner == 'minimap2' ){
-                include {MINIMAP2 as WORKER} from './modules/subworkflows/minimap2' params(params)
-        } else if ( params.aligner == 'gsalign' ){
-                include {GSALIGN as WORKER} from './modules/subworkflows/GSAlign' params(params)
-        }
         WORKER()
         if ( params.target ) { 
                 ch_annot = file(params.annotation)

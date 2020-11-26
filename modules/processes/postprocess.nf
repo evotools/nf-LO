@@ -102,13 +102,8 @@ process liftover{
         path "unmapped.bed", emit: unmapped_ch
 
     script:
-    if ( params.annotation_format == 'bed' )
     """
     liftOver ${annotation} ${chain} lifted.bed unmapped.bed
-    """
-    else if ( params.annotation_format == 'bam' )
-    """
-    liftOver -gff ${annotation} ${chain} lifted.bed unmapped.bed    
     """
 }
 
