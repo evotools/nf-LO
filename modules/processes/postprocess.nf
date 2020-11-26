@@ -117,6 +117,7 @@ process crossmap{
     input:
         path chain
         path annotation
+        path tgt_ch
 
     output:
         path "lifted.${params.annotation_format}", emit: lifted_ch
@@ -126,6 +127,10 @@ process crossmap{
     if ( params.annotation_format == 'bam' )
         """
         CrossMap.py bam -a ${chain} ${annotation} lifted.${params.annotation_format} 
+        """
+    else if ( params.annotation_format == 'vcf' )
+        """
+        CrossMap.py vcf -a ${chain} ${annotation} ${tgt_ch} lifted.${params.annotation_format} 
         """
     else 
         """

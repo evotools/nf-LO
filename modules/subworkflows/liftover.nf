@@ -15,6 +15,7 @@ workflow LIFTOVER {
     take:
         chain
         ch_annot
+        ch_tgt
     main:   
-        lifter(chain, ch_annot)
+        lifter(chain, ch_annot, ch_tgt)
 }

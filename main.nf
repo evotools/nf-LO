@@ -77,6 +77,6 @@ workflow {
                 ch_annot = Channel.fromPath(params.annotation)
                 if (!file(params.annotation).exists()) exit 0, "Genome annotation file ${params.annotation} not found. Closing."
                 include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
-                LIFTOVER(WORKER.out[0], ch_annot) 
+                LIFTOVER(WORKER.out[0], ch_annot, ch_target) 
         }                
 }
