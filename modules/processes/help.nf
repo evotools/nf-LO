@@ -23,7 +23,8 @@ def helpMessage() {
       --target [file]                 Path to fa(sta)[.gz] for target genome. (Default: './data/target.fa')
       --annotation [file]             Path to BED/GFF file to lift. Not mandatory. (Default: false)
       --annotation_format [str]       Path to BED/GFF file to lift. Not mandatory. (Default: false)
-                                      Available: bed, gff
+                                      Available: bed, gff, wig, bigwig, maf, vcf, bam
+                                      Use bam works also with sam and cram, and gff with gtf
       -profile [str]                  Configuration profile to use. Can use multiple (comma separated)
                                       Available: standard, conda, docker, singularity, eddie, sge, uge
 
@@ -45,6 +46,7 @@ def helpMessage() {
     Liftover
     --liftover_algorithm              Define the algorith to use to liftover the positions
                                       Supported software are liftOver and CrossMap.py
+    --maf_tgt_name                    Specify the name of the target genome in the maf alignments (for CrossMap only)
 
     Other
       --outdir [file]                 The output directory where the results will be saved (Default: './results')
