@@ -71,12 +71,15 @@ if ( params.aligner == 'lastz' ){
 } else if ( params.aligner == 'gsalign' ){
         include {GSALIGN as WORKER} from './modules/subworkflows/GSAlign' params(params)
 }
+include {PREPROC} from './modules/subworkflows/preprocess' params(params)
+include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
+
 workflow {
-        WORKER()
+        PREPROC()
+        WORKER( PREPROC.out )
         if (params.annotation) {
-                ch_annot = Channel.fromPath(params.annotation)
                 if (!file(params.annotation).exists()) exit 0, "Genome annotation file ${params.annotation} not found. Closing."
-                include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
+                ch_annot = Channel.fromPath(params.annotation)
                 LIFTOVER(WORKER.out[0], ch_annot, ch_target) 
         }                
 }
