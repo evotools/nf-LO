@@ -66,7 +66,7 @@ process splitsrc {
     script:
     """
     mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-    faSplit size -lift=source.lift -extra=${srcOvlpSize} ${source} ${srcChunkSize} SPLIT_src/
+    faSplit size -lift=source.lift ${source} ${srcChunkSize} SPLIT_src/
     """
 }
 
@@ -145,7 +145,7 @@ process splittgt {
     else
         """
         mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
-        faSplit size -lift=target.lift ${target} ${tgtChunkSize} SPLIT_tgt/
+        faSplit size -lift=target.lift -extra=${srcOvlpSize} ${target} ${tgtChunkSize} SPLIT_tgt/
         """
 }
 
