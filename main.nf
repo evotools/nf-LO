@@ -61,25 +61,25 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
 if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target genome not specified!' }
 if ( params.aligner == 'lastz' ){
-        include {LASTZ as WORKER} from './modules/subworkflows/lastz' params(params)
+        include {LASTZ as ALIGNER} from './modules/subworkflows/lastz' params(params)
 } else if ( params.aligner == 'last' ){
-        include {LAST as WORKER} from './modules/subworkflows/last' params(params)
+        include {LAST as ALIGNER} from './modules/subworkflows/last' params(params)
 } else if ( params.aligner == 'blat' ){
-        include {BLAT as WORKER} from './modules/subworkflows/blat' params(params)
+        include {BLAT as ALIGNER} from './modules/subworkflows/blat' params(params)
 } else if ( params.aligner == 'minimap2' ){
-        include {MINIMAP2 as WORKER} from './modules/subworkflows/minimap2' params(params)
+        include {MINIMAP2 as ALIGNER} from './modules/subworkflows/minimap2' params(params)
 } else if ( params.aligner == 'gsalign' ){
-        include {GSALIGN as WORKER} from './modules/subworkflows/GSAlign' params(params)
+        include {GSALIGN as ALIGNER} from './modules/subworkflows/GSAlign' params(params)
 }
 include {PREPROC} from './modules/subworkflows/preprocess' params(params)
 include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
 
 workflow {
         PREPROC()
-        WORKER( PREPROC.out )
+        ALIGNER( PREPROC.out )
         if (params.annotation) {
                 if (!file(params.annotation).exists()) exit 0, "Genome annotation file ${params.annotation} not found. Closing."
                 ch_annot = Channel.fromPath(params.annotation)
-                LIFTOVER(WORKER.out[0], ch_annot, ch_target) 
+                LIFTOVER(ALIGNER.out[0], ch_annot, ch_target) 
         }                
 }
