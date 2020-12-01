@@ -42,9 +42,9 @@ aligner        : $params.aligner
 distance       : $params.distance
 custom align   : $params.custom
 custom chain   : $params.customChain
-target chunk   : $params.tgtSize
 source chunk   : $params.srcSize
-source overlap : $params.srcOvlp
+target chunk   : $params.tgtSize
+target overlap : $params.tgtOvlp
 output folder  : $params.outdir
 annot          : $params.annotation
 annot type     : $params.annotation_format

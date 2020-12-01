@@ -7,7 +7,7 @@ chainFar="-minScore=5000 -linearGap=loose"
 
 process last_near{    
     tag "last_${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -35,7 +35,7 @@ process last_near{
 
 process last_medium{    
     tag "last_${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -63,7 +63,7 @@ process last_medium{
 
 process last_far{    
     tag "last_${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -91,7 +91,7 @@ process last_far{
 
 process last_custom{    
     tag "last_${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
