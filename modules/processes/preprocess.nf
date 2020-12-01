@@ -6,7 +6,7 @@
 
 tgtChunkSize=params.tgtSize
 srcChunkSize=params.srcSize
-srcOvlpSize=params.srcOvlp
+tgtOvlpSize=params.tgtOvlp
 
 process make2bit {
     tag "twoBit"
@@ -145,7 +145,7 @@ process splittgt {
     else
         """
         mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
-        faSplit size -lift=target.lift -extra=${srcOvlpSize} ${target} ${tgtChunkSize} SPLIT_tgt/
+        faSplit size -lift=target.lift -extra=${tgtOvlpSize} ${target} ${tgtChunkSize} SPLIT_tgt/
         """
 }
 
