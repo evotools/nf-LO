@@ -1,5 +1,5 @@
 // Include dependencies
-include {make2bit} from "../processes/preprocess" params(params)
+include {make2bit; src2bit; tgt2bit} from "../processes/preprocess" params(params)
 include {splitsrc} from "../processes/preprocess" params(params)
 include {splittgt} from "../processes/preprocess" params(params)
 include {groupsrc} from "../processes/preprocess" params(params)
@@ -14,11 +14,13 @@ if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target ge
 workflow PREPROC {
     main:        
         // Make 2bit genomes
-        make2bit(ch_source, ch_target)
-        twoBitS = make2bit.out.twoBsrc
-        twoBitT = make2bit.out.twoBtgt
-        twoBitSN = make2bit.out.twoBsrcNFO
-        twoBitTN = make2bit.out.twoBtgtNFO
+        // make2bit(ch_source, ch_target)
+        src2bit(ch_source)
+        tgt2bit(ch_target)
+        twoBitS = src2bit.out.twoBsrc
+        twoBitT = tgt2bit.out.twoBtgt
+        twoBitSN = src2bit.out.twoBsrcNFO
+        twoBitTN = tgt2bit.out.twoBtgtNFO
         
         // split and group source
         splitsrc(ch_source)

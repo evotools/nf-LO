@@ -32,6 +32,45 @@ process make2bit {
     """
 }
 
+
+process src2bit {
+    tag "src2Bit"
+    publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
+    label 'small'
+
+    input:
+    path source
+
+    output:
+    path "source.2bit", emit: twoBsrc
+    path "source.sizes", emit: twoBsrcNFO
+
+    script:
+    """
+    faToTwoBit ${source} source.2bit
+    twoBitInfo source.2bit source.sizes
+    """
+}
+
+process tgt2bit {
+    tag "tgt2Bit"
+    publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
+    label 'small'
+
+    input:
+    path target
+
+    output:
+    path "target.2bit", emit: twoBtgt
+    path "target.sizes", emit: twoBtgtNFO
+
+    script:
+    """
+    faToTwoBit ${target} target.2bit
+    twoBitInfo target.2bit target.sizes
+    """
+}
+
 process makeooc {
     tag "ooc"
     publishDir "$params.outdir/splitfa_src"
