@@ -41,7 +41,7 @@ target         : $params.target
 aligner        : $params.aligner
 distance       : $params.distance
 custom align   : $params.custom
-custom chain   : $params.customChain
+custom chain   : $params.chainCustom
 source chunk   : $params.srcSize
 target chunk   : $params.tgtSize
 target overlap : $params.tgtOvlp
