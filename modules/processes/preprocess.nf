@@ -103,7 +103,7 @@ process splitsrc {
     path "source.lift", emit: src_lift_ch
 
     script:
-    if (params.source != "blat")
+    if ( params.aligner != "blat" )
     """
     mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
     faSplit size -lift=source.lift ${source} ${srcChunkSize} SPLIT_src/
@@ -293,6 +293,7 @@ process pairs {
     output:
     path "pairs.csv", emit: pairspath
 
+    script:
     $/
     #!/usr/bin/env python
     import os
