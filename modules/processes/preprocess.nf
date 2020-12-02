@@ -103,9 +103,17 @@ process splitsrc {
     path "source.lift", emit: src_lift_ch
 
     script:
+    if (params.source != "blat")
     """
     mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
     faSplit size -lift=source.lift ${source} ${srcChunkSize} SPLIT_src/
+    """
+    else 
+    """
+    samtools faidx ${source}
+    myvalue=`python -c 'a = [int(line.strip().split()[1]) for line in open("${source}" + ".fai") if int(line.strip().split()[1])>10000000 )]; print(max(a))'`
+    mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
+    faSplit size -lift=source.lift ${source} \$myvalue SPLIT_src/
     """
 }
 
