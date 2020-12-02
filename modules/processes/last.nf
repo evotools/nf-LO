@@ -110,7 +110,7 @@ process last_custom{
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
-        axtChain $params.customChain -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        axtChain $params.chainCustom -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
         chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
         && rm localDB.*
     """
