@@ -7,7 +7,7 @@ blatFar="-t=dna -q=dna -fastMap -noHead -tileSize=12 -oneOff=1 -minMatch=1 -minS
 
 
 process blat_near{    
-    tag "blat.${distance}.${srcname}.${tgtname}"
+    tag "blat.${params.distance}.${srcname}.${tgtname}"
     label 'small'
 
     input: 
@@ -119,56 +119,3 @@ process blat{
         liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
     """
 }
-
-
-/*
-process blat{    
-    tag "blat.${srcname}.${tgtname}"
-
-    input: 
-        tuple val(srcname), file(srcfile), val(tgtname), file(tgtfile) 
-        file tgtlift 
-        file srclift 
-        file ooc11
-        file ooc12
-
-    output: 
-        tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
-  
-    script:
-    if( params.distance == 'balanced' )
-        """
-        blat ${srcfile} ${tgtfile} ${blatBalanced} -ooc=${ooc12} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $srclift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
-        """
-    else if( params.distance == 'near' )
-        """
-        blat ${srcfile} ${tgtfile} ${blatNear} -ooc=${ooc11} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $srclift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
-        """
-    else if( params.distance == 'medium' )
-        """
-        blat ${srcfile} ${tgtfile} ${blatMedium} -ooc=${ooc11} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $srclift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
-        """
-    else if( params.distance == 'far' )
-        """
-        blat ${srcfile} ${tgtfile} ${blatFar} -ooc=${ooc12} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $srclift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
-        """
-    else if( params.distance == 'custom' )
-        """
-        blat ${srcfile} ${tgtfile} ${params.custom} -ooc=${ooc12} -out=psl tmp.psl 
-        liftUp -type=.psl stdout $srclift warn tmp.psl |
-            liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
-        """
-    else
-        """
-        echo "Distance not recognised"
-        """
-}
-*/
