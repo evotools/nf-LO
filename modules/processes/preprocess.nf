@@ -103,17 +103,17 @@ process splitsrc {
     path "source.lift", emit: src_lift_ch
 
     script:
-    if ( params.aligner != "blat" )
-    """
-    mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-    faSplit size -lift=source.lift ${source} ${srcChunkSize} SPLIT_src/
-    """
+    if ( params.aligner == "blat" || params.aligner == 'GSAlign' )
+        """
+        myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
+        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
+        faSplit size -oneFile -lift=source.lift ${source} \$myvalue SPLIT_src/
+        """
     else 
-    """
-    myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
-    mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-    faSplit size -oneFile -lift=source.lift ${source} \$myvalue SPLIT_src/
-    """
+        """
+        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
+        faSplit size -lift=source.lift ${source} ${srcChunkSize} SPLIT_src/
+        """
 }
 
 process groupsrc {

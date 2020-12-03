@@ -18,6 +18,7 @@ dependencies:
   - ucsc-chainsplit
   - ucsc-chainstitchid
   - ucsc-fasplit
+  - ucsc-fasize
   - ucsc-fatotwobit
   - ucsc-lavtopsl
   - ucsc-liftover
