@@ -11,7 +11,7 @@ tgtOvlpSize=params.tgtOvlp
 process make2bit {
     tag "twoBit"
     publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
-    label 'small'
+    label 'medium'
 
     input:
     path source
@@ -36,7 +36,7 @@ process make2bit {
 process src2bit {
     tag "src2Bit"
     publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
-    label 'small'
+    label 'medium'
 
     input:
     path source
@@ -47,8 +47,13 @@ process src2bit {
 
     script:
     """
-    faToTwoBit ${source} source.2bit
-    twoBitInfo source.2bit source.sizes
+    if [ `faSize -tab ${source} | awk '\$1=="baseCount" {print \$2}'` -lt 4000000000 ]; then
+        faToTwoBit ${source} source.2bit
+        twoBitInfo source.2bit source.sizes
+    else
+        faToTwoBit -long ${source} source.2bit
+        twoBitInfo source.2bit source.sizes
+    fi
     """
 }
 
@@ -66,8 +71,13 @@ process tgt2bit {
 
     script:
     """
-    faToTwoBit ${target} target.2bit
-    twoBitInfo target.2bit target.sizes
+    if [ `faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'` -lt 4000000000 ]; then
+        faToTwoBit ${target} target.2bit
+        twoBitInfo target.2bit target.sizes
+    else
+        faToTwoBit -long ${target} target.2bit
+        twoBitInfo target.2bit target.sizes
+    fi
     """
 }
 
