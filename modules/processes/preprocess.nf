@@ -110,10 +110,9 @@ process splitsrc {
     """
     else 
     """
-    samtools faidx ${source}
-    myvalue=`python -c 'a = [int(line.strip().split()[1]) for line in open("${source}" + ".fai") if int(line.strip().split()[1])>10000000 )]; print(max(a))'`
+    myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
     mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-    faSplit size -lift=source.lift ${source} \$myvalue SPLIT_src/
+    faSplit size -oneFile -lift=source.lift ${source} \$myvalue SPLIT_src/
     """
 }
 
