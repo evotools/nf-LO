@@ -113,11 +113,11 @@ process splitsrc {
     path "source.lift", emit: src_lift_ch
 
     script:
-    if ( params.aligner == "blat" || params.aligner == 'GSAlign' )
+    if ( params.aligner == "blat" || params.aligner == 'gsalign' )
         """
         myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
         mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-        faSplit size -oneFile -lift=source.lift ${source} \$myvalue SPLIT_src/
+        faSplit size -oneFile -lift=source.lift ${source} \$myvalue SPLIT_src/src
         """
     else 
         """
