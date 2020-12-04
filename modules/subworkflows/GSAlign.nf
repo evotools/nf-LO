@@ -10,6 +10,7 @@ if (params.distance == 'near'){
 } else if (params.distance == 'same') {
     include {gsalign_balanced as gsalign} from '../processes/GSAlign'
 }
+include {bwt_index} from '../processes/GSAlign'
 include {axtchain; chainMerge; chainNet} from "../processes/postprocess"
 
 // Prepare input channels
@@ -29,9 +30,11 @@ workflow GSALIGN {
         twoBitTN  
 
     main:
+        // make index
+        bwt_index( pairspath_ch.groupTuple(by: [0, 1] ).unique() )
 
         // Run gsalign
-        gsalign(pairspath_ch, tgt_lift, src_lift)  
+        gsalign( pairspath_ch, tgt_lift, src_lift, bwt_index.out.collect() )  
         axtchain( gsalign.out.al_files_ch, twoBitS, twoBitT)   
 
         // 

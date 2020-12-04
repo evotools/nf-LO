@@ -6,15 +6,15 @@ process gsalign_same{
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path index
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
     script:
     """
-    bwt_index ${srcfile} ${srcname} && chmod a+rw ${srcname}.*
     GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -idy 90 -no_vcf -o ${srcname}.${tgtname}.tmp
     if [ -e ${srcname}.${tgtname}.tmp.maf ]; then
         sed 's/ref.//g' ${srcname}.${tgtname}.tmp.maf | 
@@ -36,15 +36,15 @@ process gsalign_near{
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path index
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
     script:
     """
-    bwt_index ${srcfile} ${srcname} && chmod a+rw ${srcname}.*
     GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -idy 80 -no_vcf -o ${srcname}.${tgtname}.tmp
     if [ -e ${srcname}.${tgtname}.tmp.maf ]; then
         sed 's/ref.//g' ${srcname}.${tgtname}.tmp.maf | 
@@ -66,15 +66,15 @@ process gsalign_medium{
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path index
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
     script:
     """
-    bwt_index ${srcfile} ${srcname} && chmod a+rw ${srcname}.*
     GSAlign -i ${srcname} -q ${tgtfile} -t ${task.cpus} -idy 75 -no_vcf -o ${srcname}.${tgtname}.tmp
     if [ -e ${srcname}.${tgtname}.tmp.maf ]; then
         sed 's/ref.//g' ${srcname}.${tgtname}.tmp.maf | 
@@ -96,16 +96,15 @@ process gsalign_far{
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path index
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
     script:
     """
-    bwt_index ${srcfile} ${srcname} && chmod a+rw ${srcname}.*
-    GSAlign -i ${srcname} -q ${tgtfile} -t ${task.cpus} -idy 70 -no_vcf -o ${srcname}.${tgtname}.tmp
     if [ -e ${srcname}.${tgtname}.tmp.maf ]; then
         sed 's/ref.//g' ${srcname}.${tgtname}.tmp.maf | 
             sed 's/qry.//g' |
@@ -126,15 +125,15 @@ process gsalign_custom{
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        path tgtlift 
+        path srclift 
+        path index
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
     script:
     """
-    bwt_index ${srcfile} ${srcname} && chmod a+rw ${srcname}.*
     GSAlign -i ${srcname} -q ${tgtfile} -t ${task.cpus} ${params.custom} -no_vcf -o ${srcname}.${tgtname}.tmp
     if [ -e ${srcname}.${tgtname}.tmp.maf ]; then
         sed 's/ref.//g' ${srcname}.${tgtname}.tmp.maf | 
@@ -147,5 +146,22 @@ process gsalign_custom{
             liftUp -type=.psl stdout $srclift warn stdin |
             liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin
     fi
+    """
+}
+
+
+process bwt_index{    
+    tag "bwt_index"
+    label 'small'
+
+    input: 
+        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+
+    output: 
+        path "${srcname}.*"
+  
+    script:
+    """
+    bwt_index ${srcfile} ${srcname} && chmod a+rw ${srcname}.*
     """
 }
