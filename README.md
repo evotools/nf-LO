@@ -57,6 +57,11 @@ ln -s /PATH/TO/bin
 Ready to go!
 
 
+## Input genomes
+Source and target genomes can be either a local or remote (un)compressed fasta file. Source genome is the genome of origin, from which lift the positions. Target genome is the genome *to* which lift the position. 
+We recommend to use soft-masked genomes to reduce computation time for aligners such as lastz. If the genome is unmasked, we provide (nf-RM)[https://www.github.com/RenzoTale88/nf-RM.git], a pipeline to perform repetitive element masking of genomes. 
+
+
 ## Running the pipeline
 To test the pipeline locally, simply run:
 ```
