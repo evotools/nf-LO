@@ -116,6 +116,9 @@ process splitsrc {
     if ( params.aligner == "blat" || params.aligner == 'gsalign' )
         """
         myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
+        if [ -z \$myvalue ]; then
+            myvalue=`faSize -tab ${source} | awk '\$1=="baseCount" {print \$2}'`
+        fi
         mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
         faSplit size -oneFile -lift=source.lift ${source} \$myvalue SPLIT_src/src
         """
