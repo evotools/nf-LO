@@ -6,12 +6,11 @@ include {groupsrc} from "../processes/preprocess" params(params)
 include {grouptgt} from "../processes/preprocess" params(params)
 include {pairs} from "../processes/preprocess" params(params)
 
-// Prepare input channels
-if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
-if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target genome not specified!' }
-
 // Create minimap2 alignments workflow
 workflow PREPROC {
+    take:
+        ch_source
+        ch_target
     main:        
         // Make 2bit genomes
         // make2bit(ch_source, ch_target)

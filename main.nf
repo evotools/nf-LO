@@ -49,7 +49,6 @@ output folder  : $params.outdir
 annot          : $params.annotation
 annot type     : $params.annotation_format
 liftover meth. : $params.liftover_algorithm
-
 """ 
 
 // Check parameters
@@ -75,7 +74,7 @@ include {PREPROC} from './modules/subworkflows/preprocess' params(params)
 include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
 
 workflow {
-        PREPROC()
+        PREPROC( ch_source, ch_target )
         ALIGNER( PREPROC.out )
         if (params.annotation) {
                 if (!file(params.annotation).exists()) exit 0, "Genome annotation file ${params.annotation} not found. Closing."
