@@ -113,7 +113,7 @@ process splitsrc {
     path "source.lift", emit: src_lift_ch
 
     script:
-    if ( params.aligner == "blat" || params.aligner == 'gsalign' )
+    if ( params.aligner == "blat" || params.aligner == 'gsalign' || params.aligner == 'last' )
         """
         myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then

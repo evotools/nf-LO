@@ -8,6 +8,7 @@ if (params.distance == 'near'){
 } else if (params.distance == 'custom') {
     include {last_custom as last} from '../processes/last'
 }
+include { make_db } from '../processes/last'
 include {axtchain; chainMerge; chainNet; liftover} from "../processes/postprocess"
 
 // Prepare input channels
@@ -27,8 +28,11 @@ workflow LAST {
         twoBitTN  
 
     main:
+        // Make DB
+        make_db( pairspath_ch.groupTuple(by: [0, 1] ).unique() )
+
         // Run last
-        last(pairspath_ch, tgt_lift, src_lift, twoBitS, twoBitT)  
+        last( pairspath_ch, tgt_lift, src_lift, twoBitS, twoBitT, make_db.out.collect() )  
 
         // Combine the chain files
         chainMerge( last.out.collect() )

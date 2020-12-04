@@ -24,7 +24,7 @@ workflow PREPROC {
         // split and group source
         splitsrc(ch_source)
         src_lift = splitsrc.out.src_lift_ch
-        if ( params.aligner == 'blat' || params.aligner == 'gsalign' ){
+        if ( params.aligner == 'blat' || params.aligner == 'gsalign' || params.aligner == 'last' ){
             ch_fragm_out = splitsrc.out.srcsplit_ch
         } else {
             groupsrc(splitsrc.out.srcsplit_ch)
