@@ -32,7 +32,7 @@ process last_near{
   
     script:
     """
-    lastal -m50 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
+    lastal -m50 -E0.05 -C2 -p ${training} localDB ${tgtfile} | last-postmask - | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
@@ -61,7 +61,7 @@ process last_medium{
   
     script:
     """
-    lastal -m75 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
+    lastal -m75 -E0.05 -C2 -p ${training} localDB ${tgtfile} | last-postmask - | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
@@ -90,7 +90,7 @@ process last_far{
   
     script:
     """
-    lastal -m100 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
+    lastal -m100 -E0.05 -C2 -p ${training} localDB ${tgtfile} | last-postmask - | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
@@ -119,7 +119,7 @@ process last_custom{
   
     script:
     """
-    lastal ${params.custom} -p ${training} localDB ${tgtfile} | 
+    lastal ${params.custom} -p ${training} localDB ${tgtfile} | last-postmask - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
@@ -148,7 +148,7 @@ process make_db{
 
 process last_train {
     tag "last_train"
-    label "large"
+    label "small"
 
     input: 
     path lastDB
