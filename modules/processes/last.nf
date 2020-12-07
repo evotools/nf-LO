@@ -159,6 +159,6 @@ process last_train {
 
     output:
     """
-    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 lastDB ${tgt} > training.mat
+    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 localDB ${tgt} > training.mat
     """
 }
