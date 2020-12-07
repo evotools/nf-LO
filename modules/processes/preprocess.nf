@@ -208,7 +208,7 @@ process splittgt {
             myvalue=`faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'`
         fi
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
-        faSplit size -oneFile -lift=source.lift ${target} \$myvalue SPLIT_tgt/tgt
+        faSplit size -oneFile -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
         """
     else
         """
