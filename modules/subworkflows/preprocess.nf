@@ -25,19 +25,24 @@ workflow PREPROC {
         splitsrc(ch_source)
         src_lift = splitsrc.out.src_lift_ch
         if ( params.aligner == 'blat' || params.aligner == 'gsalign' || params.aligner == 'last' ){
-            ch_fragm_out = splitsrc.out.srcsplit_ch
+            ch_fragm_src_out = splitsrc.out.srcsplit_ch
         } else {
             groupsrc(splitsrc.out.srcsplit_ch)
-            ch_fragm_out = groupsrc.out.srcclst_ch
+            ch_fragm_src_out = groupsrc.out.srcclst_ch
         }
 
         // split and group target
         splittgt(ch_target)
         tgt_lift = splittgt.out.tgt_lift_ch
-        grouptgt(splittgt.out.tgtsplit_ch)
+        if ( params.aligner == 'blat' || params.aligner == 'gsalign' || params.aligner == 'last' ){
+            ch_fragm_tgt_out = splittgt.out.tgtsplit_ch
+        } else {
+            grouptgt(splittgt.out.tgtsplit_ch)
+            ch_fragm_tgt_out = grouptgt.out.tgtclst_ch
+        }
 
         // prepare pairs
-        pairs( ch_fragm_out, grouptgt.out.tgtclst_ch )
+        pairs( ch_fragm_src_out, ch_fragm_tgt_out )
         pairs.out.pairspath
             .splitCsv(header: ['srcname', 'srcfile', 'tgtname', 'tgtfile'])
             .map{ row-> tuple(row.srcname, row.srcfile, row.tgtname, row.tgtfile) }

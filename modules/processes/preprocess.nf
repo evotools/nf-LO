@@ -201,6 +201,15 @@ process splittgt {
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift -extra=500 ${target} 4500 SPLIT_tgt/tmp
         """
+    else if ( params.aligner == 'gsalign' )
+        """
+        myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
+        if [ -z \$myvalue ]; then
+            myvalue=`faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'`
+        fi
+        mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
+        faSplit size -oneFile -lift=source.lift ${target} \$myvalue SPLIT_tgt/tgt
+        """
     else
         """
         mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
