@@ -201,7 +201,7 @@ process splittgt {
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift -extra=500 ${target} 4500 SPLIT_tgt/tmp
         """
-    else if ( params.aligner == 'gsalign' )
+    else if ( params.aligner == "gsalign" )
         """
         myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
