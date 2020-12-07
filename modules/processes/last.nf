@@ -32,11 +32,13 @@ process last_near{
   
     script:
     """
-    lastal -m50 -E0.05 -C2 -p ${training} localDB ${tgtfile} | last-postmask - | 
+    lastal -m50 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
+        last-split -m 1 - |
+        last-postmask - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
-        axtChain $chainNear -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        axtChain $chainNear -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | 
         chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
         && rm localDB.*
     """
@@ -61,11 +63,13 @@ process last_medium{
   
     script:
     """
-    lastal -m75 -E0.05 -C2 -p ${training} localDB ${tgtfile} | last-postmask - | 
+    lastal -m75 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
+        last-split -m 1 - |
+        last-postmask - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
-        axtChain $chainMedium -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        axtChain $chainMedium -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | 
         chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
         && rm localDB.*
     """
@@ -90,11 +94,13 @@ process last_far{
   
     script:
     """
-    lastal -m100 -E0.05 -C2 -p ${training} localDB ${tgtfile} | last-postmask - | 
+    lastal -m100 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
+        last-split -m 1 - |
+        last-postmask - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
-        axtChain $chainFar -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        axtChain $chainFar -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | 
         chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
         && rm localDB.*
     """
@@ -119,11 +125,13 @@ process last_custom{
   
     script:
     """
-    lastal ${params.custom} -p ${training} localDB ${tgtfile} | last-postmask - |
+    lastal ${params.custom} -p ${training} localDB ${tgtfile} | 
+        last-split -m 1 - |
+        last-postmask - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
-        axtChain $params.chainCustom -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | \
+        axtChain $params.chainCustom -verbose=0 -psl stdin ${twoBitS} ${twoBitT} stdout | 
         chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain \
         && rm localDB.*
     """
