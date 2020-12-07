@@ -16,7 +16,7 @@ if ( params.distance == "near" ){
 
 process last_near{    
     tag "last_${params.distance}.${srcname}.${tgtname}"
-    label 'near'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
