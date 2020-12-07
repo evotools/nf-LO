@@ -151,8 +151,8 @@ process last_train {
     label "large"
 
     input: 
-    lastDB
-    tgt
+    path lastDB
+    path tgt
 
     output:
     path "training.mat"
