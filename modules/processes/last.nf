@@ -25,13 +25,14 @@ process last_near{
         path twoBitS
         path twoBitT
         path localDB
+        path training
 
     output: 
         path "${srcname}.${tgtname}.chain"
   
     script:
     """
-    lastal -m50 -E0.05 -C2 localDB ${tgtfile} | 
+    lastal -m50 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
@@ -53,13 +54,14 @@ process last_medium{
         path twoBitS
         path twoBitT
         path localDB
+        path training
 
     output: 
         path "${srcname}.${tgtname}.chain"
   
     script:
     """
-    lastal -m75 -E0.05 -C2 localDB ${tgtfile} | 
+    lastal -m75 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
@@ -81,13 +83,14 @@ process last_far{
         path twoBitS
         path twoBitT
         path localDB
+        path training
 
     output: 
         path "${srcname}.${tgtname}.chain"
   
     script:
     """
-    lastal -m100 -E0.05 -C2 localDB ${tgtfile} | 
+    lastal -m100 -E0.05 -C2 -p ${training} localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
@@ -109,13 +112,14 @@ process last_custom{
         path twoBitS
         path twoBitT
         path localDB
+        path training
 
     output: 
         path "${srcname}.${tgtname}.chain"
   
     script:
     """
-    lastal ${params.custom} localDB ${tgtfile} | 
+    lastal ${params.custom} -p ${training} localDB ${tgtfile} | 
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
         liftUp -type=.psl -pslQ stdout $tgtlift warn stdin | 
@@ -139,5 +143,22 @@ process make_db{
     script:
     """
     lastdb ${lastDB_param} localDB ${srcfile}
+    """
+}
+
+process last_train {
+    tag "last_train"
+    label "large"
+
+    input: 
+    lastDB
+    tgt
+
+    output:
+    path "training.mat"
+
+    output:
+    """
+    last-train -P0 --revsym --matsym --gapsym -E0.05 -C2 lastDB ${tgt} > training.mat
     """
 }
