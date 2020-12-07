@@ -2,7 +2,7 @@
 
 process gsalign_same{    
     tag "gsalign_${params.distance}.${srcname}.${tgtname}"
-    label 'small_multi'
+    label 'gsalign'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -32,7 +32,7 @@ process gsalign_same{
 
 process gsalign_near{    
     tag "gsalign_${params.distance}.${srcname}.${tgtname}"
-    label 'small_multi'
+    label 'gsalign'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -62,7 +62,7 @@ process gsalign_near{
 
 process gsalign_medium{    
     tag "gsalign_${params.distance}.${srcname}.${tgtname}"
-    label 'small_multi'
+    label 'gsalign'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -92,7 +92,7 @@ process gsalign_medium{
 
 process gsalign_far{    
     tag "gsalign_${params.distance}.${srcname}.${tgtname}"
-    label 'small_multi'
+    label 'gsalign'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -122,7 +122,7 @@ process gsalign_far{
 
 process gsalign_custom{    
     tag "gsalign_${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'gsalign'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
