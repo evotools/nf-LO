@@ -8,7 +8,7 @@ if (params.distance == 'near'){
 } else if (params.distance == 'custom') {
     include {gsalign_custom as gsalign} from '../processes/GSAlign'
 } else if (params.distance == 'same') {
-    include {gsalign_balanced as gsalign} from '../processes/GSAlign'
+    include {gsalign_same as gsalign} from '../processes/GSAlign'
 }
 include {bwt_index} from '../processes/GSAlign'
 include {axtchain; chainMerge; chainNet} from "../processes/postprocess"
