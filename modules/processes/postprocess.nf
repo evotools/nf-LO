@@ -18,7 +18,7 @@ process axtchain {
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
     script:
-    if( params.distance == 'near' || params.distance == "balanced" )
+    if( params.distance == 'near' || params.distance == "balanced" || params.distance == "same" )
         """
         axtChain $chainNear -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
         """
@@ -28,7 +28,7 @@ process axtchain {
         """
     else if (params.distance == 'far')
         """
-        axtChain $chainFar -verbose=0 -psl $psl ${twoBitS} ${twoBitT} | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+        axtChain $chainFar -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
         """
     else if (params.distance == 'custom')
         """
