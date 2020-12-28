@@ -45,6 +45,7 @@ This script will download a series of software and save them in the ./bin folder
     - netSyntenic
     - twoBitInfo
     - lavToPsl
+    
 Remember to add the ```bin``` folder to your path with the command:
 ```
 export PATH=$PATH:$PWD/bin
