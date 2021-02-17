@@ -15,7 +15,7 @@ process gsalign_same{
   
     script:
     """
-    GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -idy 90 -no_vcf -o ${srcname}.${tgtname}.tmp
+    GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -no_vcf -o ${srcname}.${tgtname}.tmp
     if [ -e ${srcname}.${tgtname}.tmp.maf ]; then
         sed 's/ref.//g' ${srcname}.${tgtname}.tmp.maf | 
             sed 's/qry.//g' |
