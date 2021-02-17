@@ -2,7 +2,7 @@
 ## Nextflow LiftOver pipeline
 
 ## Introduction
-*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign), therefore providing different-species (lastz and minimap2) and same-species (blat and GSAlign), both with standard and ultra-fast algorithms from a source to a target genome.  
+*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)), providing different-species (lastz and minimap2) and same-species (blat and GSAlign), both with standard and ultra-fast algorithms from a source to a target genome.  
 
 ## Dependencies
 ### Nextflow
