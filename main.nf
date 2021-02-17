@@ -61,8 +61,8 @@ if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source ge
 if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target genome not specified!' }
 if ( params.aligner == 'lastz' ){
         include {LASTZ as ALIGNER} from './modules/subworkflows/lastz' params(params)
-} else if ( params.aligner == 'last' ){
-        include {LAST as ALIGNER} from './modules/subworkflows/last' params(params)
+// } else if ( params.aligner == 'last' ){
+        // include {LAST as ALIGNER} from './modules/subworkflows/last' params(params)
 } else if ( params.aligner == 'blat' ){
         include {BLAT as ALIGNER} from './modules/subworkflows/blat' params(params)
 } else if ( params.aligner == 'minimap2' ){

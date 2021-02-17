@@ -32,7 +32,7 @@ def helpMessage() {
     --distance                        Distance between the two genomes to process. (Default: 'near')
                                       Available: near, medium, far, custom, balanced (blat) and same (GSAlign)
     --aligner                         Algorithm to use to perform the alignment (Default: 'lastz')
-                                      Available: lastz, blat, last, minimap2, gsalign
+                                      Available: lastz, blat, minimap2, gsalign
     --tgtSize                         Size in bp of each chunk to process for the target genome (Default: 10000000)
     --tgtOvlp                         Length of the overlap between consecutive chunks in bp for the target genome (Default: 100000)
     --srcSize                         Size in bp of each chunk to process for the source genome (Default: 20000000)
