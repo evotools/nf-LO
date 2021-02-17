@@ -2,7 +2,7 @@
 ## Nextflow LiftOver pipeline
 
 ## Introduction
-*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign) and [last](http://last.cbrc.jp/)), therefore providing different-species (lastz), same-species (blat and GSAlign) and ultra-fast liftovers from a source to a target genome.  
+*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign), therefore providing different-species (lastz and minimap2) and same-species (blat and GSAlign), both with standard and ultra-fast algorithms from a source to a target genome.  
 
 ## Dependencies
 ### Nextflow
@@ -29,22 +29,23 @@ This script will download a series of software and save them in the ./bin folder
  3. [minimap2](https://github.com/lh3/minimap2)
  4. [last](http://last.cbrc.jp/)
  5. [GSAlign](https://github.com/hsinnan75/GSAlign)
- 6. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
-    - axtChain
-    - chainAntiRepeat
-    - chainMergeSort
-    - chainNet
-    - chainPreNet
-    - chainStitchId
-    - chainSplit
-    - faSplit
-    - faToTwoBit
-    - liftOver
-    - liftUp
-    - netChainSubset
-    - netSyntenic
-    - twoBitInfo
-    - lavToPsl
+ 6. [CrossMap](http://crossmap.sourceforge.net/)
+ 7. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
+    1. axtChain
+    2. chainAntiRepeat
+    3. chainMergeSort
+    4. chainNet
+    5. chainPreNet
+    6. chainStitchId
+    7. chainSplit
+    8. faSplit
+    9. faToTwoBit
+    10. liftOver
+    11. liftUp
+    12. netChainSubset
+    13. netSyntenic
+    14. twoBitInfo
+    15. lavToPsl
     
 Remember to add the ```bin``` folder to your path with the command:
 ```
@@ -80,3 +81,7 @@ Harris, R.S. (2007) Improved pairwise alignment of genomic DNA. Ph.D. Thesis, Th
 Li, H. (2018). Minimap2: pairwise alignment for nucleotide sequences. Bioinformatics, 34:3094-3100. http://dx.doi.org/10.1093/bioinformatics/bty191
 
 Kent WJ. BLAT - the BLAST-like alignment tool. Genome Res. 2002 Apr;12(4):656-64
+
+Zhao, H., Sun, Z., Wang, J., Huang, H., Kocher, J.-P., & Wang, L. (2013). CrossMap: a versatile tool for coordinate conversion between genome assemblies. Bioinformatics (Oxford, England), btt730
+
+Lin, HN., Hsu, WL. GSAlign: an efficient sequence alignment tool for intra-species genomes. BMC Genomics 21, 182 (2020). https://doi.org/10.1186/s12864-020-6569-1
