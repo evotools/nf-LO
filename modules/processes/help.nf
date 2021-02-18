@@ -29,24 +29,24 @@ def helpMessage() {
                                       Available: standard, conda, docker, singularity, eddie, sge, uge
 
     Alignment arguments:
-    --distance                        Distance between the two genomes to process. (Default: 'near')
-                                      Available: near, medium, far, custom, balanced (blat) and same (GSAlign)
-    --aligner                         Algorithm to use to perform the alignment (Default: 'lastz')
-                                      Available: lastz, blat, minimap2, gsalign
-    --tgtSize                         Size in bp of each chunk to process for the target genome (Default: 10000000)
-    --tgtOvlp                         Length of the overlap between consecutive chunks in bp for the target genome (Default: 100000)
-    --srcSize                         Size in bp of each chunk to process for the source genome (Default: 20000000)
-    --custom                          Use custom parameters for the alignments instead of the pre-defined (Default: false)
-                                      Specify the string of custom parameters for the alignments. If want to run with base parameters,
-                                      just use ' '
-    --customChain                     Use custom parameters for the chaining instead of the pre-defined (Default: false)
-                                      Specify the string of custom parameters for the alignments. If want to run with base parameters,
-                                      just use ' '
+      --distance                        Distance between the two genomes to process. (Default: 'near')
+                                        Available: near, medium, far, custom, balanced (blat) and same (GSAlign)
+      --aligner                         Algorithm to use to perform the alignment (Default: 'lastz')
+                                        Available: lastz, blat, minimap2, gsalign
+      --tgtSize                         Size in bp of each chunk to process for the target genome (Default: 10000000)
+      --tgtOvlp                         Length of the overlap between consecutive chunks in bp for the target genome (Default: 100000)
+      --srcSize                         Size in bp of each chunk to process for the source genome (Default: 20000000)
+      --custom                          Use custom parameters for the alignments instead of the pre-defined (Default: false)
+                                        Specify the string of custom parameters for the alignments. If want to run with base parameters,
+                                        just use ' '
+      --customChain                     Use custom parameters for the chaining instead of the pre-defined (Default: false)
+                                        Specify the string of custom parameters for the alignments. If want to run with base parameters,
+                                        just use ' '
     
     Liftover
-    --liftover_algorithm              Define the algorith to use to liftover the positions
-                                      Supported software are liftOver and CrossMap.py
-    --maf_tgt_name                    Specify the name of the target genome in the maf alignments (for CrossMap only)
+      --liftover_algorithm              Define the algorith to use to liftover the positions
+                                        Supported software are liftOver and CrossMap.py
+      --maf_tgt_name                    Specify the name of the target genome in the maf alignments (for CrossMap only)
 
     Other
       --outdir [file]                 The output directory where the results will be saved (Default: './results')
