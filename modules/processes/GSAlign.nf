@@ -135,7 +135,7 @@ process gsalign_custom{
   
     script:
     """
-    GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} ${params.custom} -no_vcf -o ${srcname}.${tgtname}.tmp
+    GSAlign -i ${srcname} -q ${tgtfile} -t ${task.cpus} ${params.custom} -no_vcf -o ${srcname}.${tgtname}.tmp
     if [ -e ${srcname}.${tgtname}.tmp.maf ]; then
         sed 's/ref.//g' ${srcname}.${tgtname}.tmp.maf | 
             sed 's/qry.//g' |
