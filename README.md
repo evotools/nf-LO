@@ -2,7 +2,7 @@
 ## Nextflow LiftOver pipeline
 
 ## Introduction
-*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports three different aligner ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)), providing different-species (lastz and minimap2) and same-species (blat and GSAlign), both with standard and ultra-fast algorithms from a source to a target genome.  
+*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports four different aligners ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)), providing solutions for  both different-species (lastz and minimap2) as well as same-species alignments (blat and GSAlign), with both standard and ultra-fast algorithms from a source to a target genome.  
 
 ## Dependencies
 ### Nextflow
@@ -72,6 +72,48 @@ nextflow run RenzoTale88/nf-LO
 ```
 This will download and run the pipeline on the two toy genomes provided and generate liftover files. If you have all dependencies installed locally
 you can omit ```docker``` from the profile configuration.
+
+Alternatively, you can run it on your own genomes using a command like this:
+```
+nextflow run RenzoTale88/nf-LO \
+    --source genome1 \
+    --target genome2 \
+    --annotation myfile.gff \
+    --annotation_format gff \
+    --distance near \
+    --aligner lastz \
+    --tgtSize 10000000 \
+    --tgtOvlp 100000 \
+    --srcSize 20000000 \
+    --liftover_algorithm crossmap \
+    --outdir ./my_liftover \
+    --publish_dir_mode copy \
+    -profile docker
+```
+This analysis will run using genome1 and genome2 as source and target, respectively. The source genome will be fragmented in chunks of 20Mb, 
+whereas the target will be fragmented in 10Mb chunks overlapping 100Kb. It will use lastz as aligner using the preset for closely related genomes (near).
+The output files will be copied into the folder my_liftover.
+
+## Distance 
+The workflow will provide some custom configuration for the different software used. The preset available are the following:
+
+
+|   Aligner |       Preset      |   Aligner settings    |   axtChain    |
+|-----------|-------------------|-----------------------|---------------|
+| lastz     |       near        | B=0 C=0 E=150 H=0 K=4500 L=3000 M=254 O=600 T=2 Y=15000 | -minScore=5000 -linearGap=medium |
+|           |       medium      | B=0 C=0 E=30 H=0 K=3000 L=3000 M=50 O=400 T=1 Y=9400  | -minScore=3000 -linearGap=medium |
+|           |       far         | B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400  | -minScore=5000 -linearGap=loose |
+| blat      |       near        | -t=dna -q=dna -fastMap -noHead -tileSize=11 -minScore=100 -minIdentity=98 | -minScore=5000 -linearGap=medium |
+|           |       medium      | -t=dna -q=dna -fastMap -noHead -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000 | -minScore=3000 -linearGap=medium |
+|           |       far         | -t=dna -q=dna -fastMap -noHead -tileSize=12 -oneOff=1 -minMatch=1 -minScore=30 -minIdentity=80 -maxGap=3 -maxIntron=75000 | -minScore=5000 -linearGap=loose |
+|           |       balanced    | -fastMap -tileSize=12 -minIdentity=98 |   -minScore=5000 -linearGap=medium    |
+| minimap2  |       near        | -cx asm5 | -minScore=5000 -linearGap=medium |
+|           |       medium      | -cx asm10 | -minScore=3000 -linearGap=medium |
+|           |       far         | -cx asm20 | -minScore=5000 -linearGap=loose |
+| GSAlign   |       near        | -sen -idy 80 | -minScore=5000 -linearGap=medium |
+|           |       medium      | -sen -idy 75 | -minScore=3000 -linearGap=medium |
+|           |       far         | -sen -idy 70 | -minScore=5000 -linearGap=loose |
+|           |       same        | -sen | -minScore=5000 -linearGap=medium |
 
 # References
 Adaptive seeds tame genomic sequence comparison. Kiełbasa SM, Wan R, Sato K, Horton P, Frith MC. Genome Res. 2011 21(3):487-93; http://dx.doi.org/10.1101/gr.113985.110
