@@ -21,10 +21,6 @@ def helpMessage() {
     Mandatory arguments:
       --source [file]                 Path to fa(sta)[.gz] for source genome. (Default: './data/source.fa')
       --target [file]                 Path to fa(sta)[.gz] for target genome. (Default: './data/target.fa')
-      --annotation [file]             Path to BED/GFF file to lift. Not mandatory. (Default: false)
-      --annotation_format [str]       Path to BED/GFF file to lift. Not mandatory. (Default: false)
-                                      Available: bed, gff, wig, bigwig, maf, vcf, bam
-                                      Use bam works also with sam and cram, and gff with gtf
       -profile [str]                  Configuration profile to use. Can use multiple (comma separated)
                                       Available: standard, conda, docker, singularity, eddie, sge, uge
 
@@ -44,11 +40,17 @@ def helpMessage() {
                                         just use ' '
     
     Liftover
+      --annotation [file]               Path to BED/GFF file to lift. Not mandatory. (Default: false)
+      --annotation_format [str]         Path to BED/GFF file to lift. Not mandatory. (Default: false)
+                                        Available: bed, gff, wig, bigwig, maf, vcf, bam
+                                        Use bam works also with sam and cram, and gff with gtf
       --liftover_algorithm              Define the algorith to use to liftover the positions
                                         Supported software are liftOver and CrossMap.py
       --maf_tgt_name                    Specify the name of the target genome in the maf alignments (for CrossMap only)
 
     Other
+      --ncbi_source                     Download source genome using ncbi datasets (Default: false)
+      --ncbi_target                     Download target genome using ncbi datasets (Default: false)
       --outdir [file]                 The output directory where the results will be saved (Default: './results')
       --publish_dir_mode [str]        Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)"""
 }

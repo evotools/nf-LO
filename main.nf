@@ -52,13 +52,11 @@ liftover meth. : $params.liftover_algorithm
 """ 
 
 // Check parameters
-checkPathParamList = [
-    params.source, params.target ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+// checkPathParamList = [
+//     params.source, params.target ]
+// for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 /* Check mandatory params */
-if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
-if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target genome not specified!' }
 if ( params.aligner == 'lastz' ){
         include {LASTZ as ALIGNER} from './modules/subworkflows/lastz' params(params)
 } else if ( params.aligner == 'blat' ){
@@ -70,8 +68,12 @@ if ( params.aligner == 'lastz' ){
 }
 include {PREPROC} from './modules/subworkflows/preprocess' params(params)
 include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
+include {DATA} from './modules/subworkflows/data' params(params)
 
 workflow {
+        DATA()
+        ch_source = DATA.out[0]
+        ch_target = DATA.out[1]
         PREPROC( ch_source, ch_target )
         ALIGNER( PREPROC.out )
         if (params.annotation) {
