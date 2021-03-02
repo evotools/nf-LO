@@ -63,7 +63,7 @@ if ( params.aligner == 'lastz' ){
         include {BLAT as ALIGNER} from './modules/subworkflows/blat' params(params)
 } else if ( params.aligner == 'minimap2' ){
         include {MINIMAP2 as ALIGNER} from './modules/subworkflows/minimap2' params(params)
-} else if ( params.aligner == 'gsalign' ){
+} else if ( params.aligner == 'gsalign' | params.aligner == 'GSAlign' ){
         include {GSALIGN as ALIGNER} from './modules/subworkflows/GSAlign' params(params)
 }
 include {PREPROC} from './modules/subworkflows/preprocess' params(params)
