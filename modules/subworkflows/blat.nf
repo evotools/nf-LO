@@ -12,6 +12,7 @@ if (params.distance == 'near'){
     include {blat_balanced as blat} from '../processes/blat'
 }
 include {axtchain; chainMerge; chainNet} from "../processes/postprocess"
+include {chain2maf} from "../processes/postprocess"
 
 // Prepare input channels
 if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
@@ -40,6 +41,7 @@ workflow BLAT {
         // 
         chainMerge( axtchain.out.collect() )
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
+        chain2maf( chainNet.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN )
         
     emit:
         chainNet.out.liftover_ch

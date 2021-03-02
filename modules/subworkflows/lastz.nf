@@ -10,7 +10,7 @@ if (params.distance == 'near'){
 }
 
 //include {lastz_near; lastz_medium; lastz_far; lastz_custom} from "../processes/lastz"
-include {axtchain; chainMerge; chainNet; liftover} from "../processes/postprocess"
+include {axtchain; chainMerge; chainNet; liftover; chain2maf} from "../processes/postprocess"
 
 // Prepare input channels
 if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
@@ -37,6 +37,7 @@ workflow LASTZ {
         chainMerge( axtchain.out.collect() )
         // Create liftover file from chain
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
+        chain2maf( chainNet.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN )
 
     emit:
         chainNet.out.liftover_ch

@@ -8,7 +8,7 @@ if (params.distance == 'near'){
 } else if (params.distance == 'custom') {
     include {minimap2_custom as minimap2} from '../processes/minimap2'
 }
-include {axtchain; chainMerge; chainNet; liftover} from "../processes/postprocess"
+include {axtchain; chainMerge; chainNet; liftover; chain2maf} from "../processes/postprocess"
 
 // Prepare input channels
 if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
@@ -34,6 +34,7 @@ workflow MINIMAP2 {
         // 
         chainMerge( axtchain.out.collect() )
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
+        chain2maf( chainNet.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN )
 
     emit:
         chainNet.out.liftover_ch

@@ -87,6 +87,28 @@ process chainNet{
     """
 }
 
+process chain2maf {
+    tag "chainmaf"
+    publishDir "${params.outdir}/maf", mode: 'copy', overwrite: true
+    label 'medium'
+ 
+    input:
+        path chain  
+        path twoBitS
+        path twoBitT
+        path twoBitsizeS
+        path twoBitsizeT
+
+    output:
+        path "*.maf"
+
+    script:
+    """
+    bname=`basename ${chain} .chain`
+    chainToAxt ${chain} ${twoBitS} ${twoBitT} /dev/stdout | \
+        axtToMaf /dev/stdin ${twoBitsizeS} ${twoBitsizeT} \${bname}.maf
+    """
+}
 
 process liftover{
     tag "liftover"
