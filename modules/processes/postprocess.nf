@@ -72,7 +72,7 @@ process chainNet{
         path "netfile.net", emit: netfile_ch  
   
     script:
-    if ( params.aligner != "blat" & params.aligner != "nucmer" )
+    if ( params.aligner != "blat" & params.aligner != "nucmer" & params.aligner != "GSAlign")
     """
     chainPreNet ${rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
         chainNet -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null |
