@@ -14,6 +14,8 @@ dependencies:
   - ucsc-chainantirepeat
   - ucsc-chainmergesort
   - ucsc-chainnet
+  - ucsc-chaintoaxt
+  - ucsc-axttomaf
   - ucsc-chainprenet
   - ucsc-chainsplit
   - ucsc-chainstitchid
