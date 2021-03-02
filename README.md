@@ -63,6 +63,13 @@ Ready to go!
 Source and target genomes can be either a local or remote (un)compressed fasta file. Source genome is the genome of origin, from which lift the positions. Target genome is the genome *to* which lift the position. 
 We recommend to use soft-masked genomes to reduce computation time for aligners such as lastz. If the genome is unmasked, we provide [nf-RM](https://www.github.com/RenzoTale88/nf-RM.git), a pipeline to perform repetitive element masking of genomes. 
 
+### Download from NCBI
+*nf-LO* can download from ncbi directly using the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/command-line-start/) software. Users can provide a GCA/GCF codes instead of the input, and specify that is a ncbi download with the flags `--ncbi_source` and `--ncbi_target` as follow:
+```
+nextflow run RenzoTale88/nf-LO --source GCF_001549955.1 --target GCF_011751205.1 --ncbi_source --ncbi_target -profile local,test
+```
+The workflow will download the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/command-line-start/) utility locally and use it to retrieve the genomes.
+
 
 ## Running the pipeline
 To test the pipeline locally, simply run:
