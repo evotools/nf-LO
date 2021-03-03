@@ -12,7 +12,7 @@ process dataset_genome {
 
     script:
     """
-    if [ ! $(which datasets) ]; then 
+    if [ ! \$(which datasets) ]; then 
         if [[ "\$OSTYPE" == "linux-gnu"* ]]; then
             curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' 
         elif [[ "\$OSTYPE" == "darwin"* ]]; then
