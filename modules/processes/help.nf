@@ -1,13 +1,13 @@
 def helpMessage() {
   log.info '''
-------------------------------------
-        __           _      ____  
-       / _|         | |    / __ \\ 
- _ __ | |_   ______ | |   | |  | |
-| '_ \\|  _| |_____| | |   | |  | |
-| | | | |           | |___| |__| |
-|_| |_|_|           |______\\____/ 
-------------------------------------
+-------------------------------------
+         __           _      ____  
+        / _|         | |    / __ \\ 
+  _ __ | |_   ______ | |   | |  | |
+ | '_ \\|  _| |_____| | |   | |  | |
+ | | | | |           | |___| |__| |
+ |_| |_|_|           |______\\____/ 
+-------------------------------------
 
       '''
     log.info"""
@@ -48,10 +48,16 @@ def helpMessage() {
                                         Supported software are liftOver and CrossMap.py
       --maf_tgt_name                    Specify the name of the target genome in the maf alignments (for CrossMap only)
 
-    Other
+    Download genomes
       --ncbi_source                     Download source genome using ncbi datasets (Default: false)
       --ncbi_target                     Download target genome using ncbi datasets (Default: false)
-      --outdir [file]                 The output directory where the results will be saved (Default: './results')
-      --publish_dir_mode [str]        Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)"""
+      --igenome_source                  Download source genome from iGenome (Default: false)
+      --igenome_target                  Download target genome from iGenome (Default: false)
+      --igenomes_base                   Root address to iGenome (Default: 's3://ngi-igenomes/igenomes/')
+      --igenomes_ignore                 Ignore iGenome configuration (Default: false)  
+
+    Other
+      --outdir [file]                   The output directory where the results will be saved (Default: './results')
+      --publish_dir_mode [str]          Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)"""
 }
 
