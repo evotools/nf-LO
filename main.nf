@@ -34,7 +34,7 @@ log.info '''
 =====================================
       '''
 log.info """\
-Nextflow LiftOver v 1.5.0
+Nextflow LiftOver v 1.5.0a
 =====================================
 source         : $params.source
 target         : $params.target
