@@ -2,7 +2,6 @@
 
 process dataset_genome {
     label "small"
-    docker.enabled false
 
     input:
     val genome
