@@ -16,7 +16,7 @@ process get_dataset {
     elif [[ "\$OSTYPE" == "cygwin" ]]; then
         curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' 
     fi
-    chmod a+x datasets
+    chmod a+x ./datasets
     """
 
 }
