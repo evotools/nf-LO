@@ -30,7 +30,8 @@ This script will download a series of software and save them in the ./bin folder
  4. [last](http://last.cbrc.jp/)
  5. [GSAlign](https://github.com/hsinnan75/GSAlign)
  6. [CrossMap](http://crossmap.sourceforge.net/)
- 7. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
+ 7. [Graphviz](https://graphviz.org/)
+ 8. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
     1. axtChain
     2. chainAntiRepeat
     3. chainMergeSort
@@ -66,7 +67,7 @@ We recommend to use soft-masked genomes to reduce computation time for aligners 
 ### Download from NCBI
 *nf-LO* can download from ncbi directly using the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/command-line-start/) software. Users can provide a GCA/GCF codes instead of the input, and specify that is a ncbi download with the flags `--ncbi_source` and `--ncbi_target` as follow:
 ```
-nextflow run RenzoTale88/nf-LO --source GCF_001549955.1 --target GCF_011751205.1 --ncbi_source --ncbi_target -profile local,test -r 1.5.0
+nextflow run evotools/nf-LO --source GCF_001549955.1 --target GCF_011751205.1 --ncbi_source --ncbi_target -profile local,test -r 1.5.0
 ```
 The workflow will download the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/command-line-start/) utility locally and use it to retrieve the genomes.
 
@@ -74,14 +75,14 @@ The workflow will download the [datasets](https://www.ncbi.nlm.nih.gov/datasets/
 ## Running the pipeline
 To test the pipeline locally, simply run:
 ```
-nextflow run RenzoTale88/nf-LO -r 1.5.0 -profile test,docker
+nextflow run evotools/nf-LO -r 1.5.0 -profile test,docker
 ```
 This will download and run the pipeline on the two toy genomes provided and generate liftover files. If you have all dependencies installed locally
 you can omit ```docker``` from the profile configuration.
 
 Alternatively, you can run it on your own genomes using a command like this:
 ```
-nextflow run RenzoTale88/nf-LO \
+nextflow run evotools/nf-LO \
     --source genome1 \
     --target genome2 \
     --annotation myfile.gff \
