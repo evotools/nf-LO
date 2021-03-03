@@ -67,15 +67,22 @@ We recommend to use soft-masked genomes to reduce computation time for aligners 
 ### Download from NCBI
 *nf-LO* can download from ncbi directly using the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/command-line-start/) software. Users can provide a GCA/GCF codes instead of the input, and specify that is a ncbi download with the flags `--ncbi_source` and `--ncbi_target` as follow:
 ```
-nextflow run evotools/nf-LO --source GCF_001549955.1 --target GCF_011751205.1 --ncbi_source --ncbi_target -profile local,test -r 1.5.0
+nextflow run evotools/nf-LO --source GCF_001549955.1 --target GCF_011751205.1 --ncbi_source --ncbi_target -profile local,test
 ```
 The workflow will download the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/command-line-start/) utility locally and use it to retrieve the genomes.
+
+### Download from iGenomes
+*nf-LO* can download from iGenomes. Users can provide a genome identifier instead of the input path, and specify that is a iGenome download with the flags `--igenome_source` and `--igenome_target` as follow:
+```
+nextflow run evotools/nf-LO --source equCab2 --target dm6 --igenome_source --igenome_target -profile local,test
+```
+The workflow will retrieve the genomes if they are present in the iGenome database.
 
 
 ## Running the pipeline
 To test the pipeline locally, simply run:
 ```
-nextflow run evotools/nf-LO -r 1.5.0 -profile test,docker
+nextflow run evotools/nf-LO -profile test,docker
 ```
 This will download and run the pipeline on the two toy genomes provided and generate liftover files. If you have all dependencies installed locally
 you can omit ```docker``` from the profile configuration.
@@ -95,7 +102,7 @@ nextflow run evotools/nf-LO \
     --liftover_algorithm crossmap \
     --outdir ./my_liftover \
     --publish_dir_mode copy \
-    -profile docker -r 1.5.0 
+    -profile docker 
 ```
 This analysis will run using genome1 and genome2 as source and target, respectively. The source genome will be fragmented in chunks of 20Mb, 
 whereas the target will be fragmented in 10Mb chunks overlapping 100Kb. It will use lastz as aligner using the preset for closely related genomes (near).
