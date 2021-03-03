@@ -30,3 +30,4 @@ dependencies:
   - ucsc-netsyntenic
   - ucsc-twobitinfo
   - zlib 
+  - p7zip 
