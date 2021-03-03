@@ -30,4 +30,3 @@ dependencies:
   - ucsc-netsyntenic
   - ucsc-twobitinfo
   - zlib 
-  - unzip
