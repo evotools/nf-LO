@@ -26,6 +26,9 @@ RUN /venv/bin/conda-unpack
 # for us.
 FROM debian:buster AS runtime
 
+# Install procps in debian to make it compatible with reporting
+RUN apt-get update && apt install -y procps g++ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # Copy /venv from the previous stage:
 COPY --from=build /venv /venv
 
