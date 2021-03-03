@@ -25,7 +25,7 @@ process dataset_genome {
     else
         datasets download genome accession ${genome}
     fi && \
-    unzip ncbi_dataset.zip && \
+    7za x ncbi_dataset.zip && \
     cat ncbi_dataset/data/${genome}/*.fna > ${genome}.fasta && rm -rf ncbi_dataset*
     """
 }
