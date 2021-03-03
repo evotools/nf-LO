@@ -22,14 +22,13 @@ process dataset_genome {
         fi
         chmod a+x ./datasets
         ./datasets download genome accession ${genome}
-        unzip ncbi_dataset.zip && \
-            cat ncbi_dataset/data/${genome}/*.fna > ${genome}.fasta && \
+        unzip ncbi_dataset.zip
+        cat ncbi_dataset/data/${genome}/*.fna > ${genome}.fasta && \
             rm -rf ncbi_dataset*
     else
         datasets download genome accession ${genome}
-        unzip ncbi_dataset.zip && \
-            cat ncbi_dataset/data/${genome}/*.fna > ${genome}.fasta && \
-            rm -rf ncbi_dataset* ./datasets
+        unzip ncbi_dataset.zip
+        cat ncbi_dataset/data/${genome}/*.fna > ${genome}.fasta && rm -rf ncbi_dataset*
     fi
     """
 }
