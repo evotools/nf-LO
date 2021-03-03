@@ -1,9 +1,8 @@
-include {dataset_genome as dataset_source; dataset_genome as dataset_target; get_dataset} from "../processes/datasets" 
+include {dataset_genome as dataset_source; dataset_genome as dataset_target} from "../processes/datasets" 
 
 workflow DATA {
     main:
         if (params.ncbi_source || params.ncbi_target){
-                get_dataset()
                 if (params.ncbi_source){ ch_source = dataset_source(params.source, get_dataset.out) }
                 if (params.ncbi_target){ ch_target = dataset_target(params.target, get_dataset.out) }
         } else {

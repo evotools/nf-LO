@@ -28,6 +28,9 @@ FROM debian:buster AS runtime
 
 # Install procps in debian to make it compatible with reporting
 RUN apt-get update && apt install -y procps g++ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' && \
+  mv datasets /usr/local/bin && \
+  chmod a+x /usr/local/bin/datasets
 
 # Copy /venv from the previous stage:
 COPY --from=build /venv /venv
