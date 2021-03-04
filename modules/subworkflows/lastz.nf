@@ -5,7 +5,11 @@ if (params.distance == 'near'){
     include {lastz_medium as lastz} from '../processes/lastz'
 } else if (params.distance == 'far') {
     include {lastz_far as lastz} from '../processes/lastz'
-} else if (params.distance == 'custom') {
+} else if (params.distance == 'primate' || params.distance == 'primates') {
+    include {lastz_primates as lastz} from '../processes/lastz'
+}else if (params.distance == 'general') {
+    include {lastz_general as lastz} from '../processes/lastz'
+}else if (params.distance == 'custom') {
     include {lastz_custom as lastz} from '../processes/lastz'
 }
 

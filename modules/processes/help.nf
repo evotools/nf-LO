@@ -34,7 +34,8 @@ def helpMessage() {
 
     Alignment arguments:
       --distance                        Distance between the two genomes to process. (Default: 'near')
-                                        Available: near, medium, far, custom, balanced (blat) and same (GSAlign)
+                                        Available: near, medium, far, custom, balanced (blat only), same (GSAlign only),
+                                        primate and general (lastz only)
       --aligner                         Algorithm to use to perform the alignment (Default: 'lastz')
                                         Available: lastz, blat, minimap2, gsalign
       --tgtSize                         Size in bp of each chunk to process for the target genome (Default: 10000000)
