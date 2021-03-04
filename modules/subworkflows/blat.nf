@@ -11,7 +11,7 @@ if (params.distance == 'near'){
 } else if (params.distance == 'balanced') {
     include {blat_balanced as blat} from '../processes/blat'
 }
-include {axtchain; chainMerge; chainNet} from "../processes/postprocess"
+include {axtchain; chainMerge; chainNet; netSynt; chainsubset} from "../processes/postprocess"
 include {chain2maf} from "../processes/postprocess"
 
 // Create blat alignments workflow
@@ -38,9 +38,16 @@ workflow BLAT {
         // 
         chainMerge( axtchain.out.collect() )
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
-        if(!params.no_maf){ chain2maf( chainNet.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) }
+        if (params.no_netsynt){
+            net_ch = chainNet.out
+        } else {
+            netSynt(chainNet.out)
+            net_ch = netSynt.out
+        }
+        chainsubset(net_ch, chainMerge.out)
+        if(!params.no_maf){ chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) }
         
     emit:
-        chainNet.out.liftover_ch
-        chainNet.out.netfile_ch
+        chainsubset.out
+        net_ch
 }
