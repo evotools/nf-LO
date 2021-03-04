@@ -47,6 +47,7 @@ def helpMessage() {
       --customChain                     Use custom parameters for the chaining instead of the pre-defined (Default: false)
                                         Specify the string of custom parameters for the alignments. If want to run with base parameters,
                                         just use ' '
+      --netsynt                         Use netSyntenic when chaining different species (Default: true)
     
     Liftover
       --annotation [file]               Path to BED/GFF file to lift. Not mandatory. (Default: false)

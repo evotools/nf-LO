@@ -75,9 +75,14 @@ process chainNet{
     if ( params.aligner != "blat" & params.aligner != "nucmer" & params.aligner != "GSAlign")
     """
     chainPreNet ${rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
-        chainNet -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null |
-        netSyntenic stdin netfile.net
+        chainNet -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null | netSyntenic stdin netfile.net
     netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
+    """
+    else if ( !params.netsynt )
+    """
+    chainPreNet ${rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
+        chainNet -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} netfile.net /dev/null 
+    netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain    
     """
     else
     """
