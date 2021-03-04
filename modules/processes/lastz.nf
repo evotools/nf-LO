@@ -96,7 +96,7 @@ process lastz_general{
     lastz ${srcfile} ${tgtfile} ${lastzGeneral} ‑‑allocate:traceback=2048.0M --ambiguous=iupac Q=./general.q --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
-                liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm ./human_chimp.v2.q
+                liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm ./general.q
     """
 }
 
