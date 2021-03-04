@@ -100,13 +100,12 @@ process chain2maf {
         path twoBitsizeT
 
     output:
-        path "*.maf"
+        path "${params.chain_name}.maf"
 
     script:
     """
-    bname=`basename ${chain} .chain`
     chainToAxt ${chain} ${twoBitS} ${twoBitT} /dev/stdout | \
-        axtToMaf /dev/stdin ${twoBitsizeS} ${twoBitsizeT} \${bname}.maf
+        axtToMaf /dev/stdin ${twoBitsizeS} ${twoBitsizeT} ${params.chain_name}.maf
     """
 }
 
@@ -120,12 +119,12 @@ process liftover{
         path annotation
 
     output:
-        path "lifted.bed", emit: lifted_ch
-        path "unmapped.bed", emit: unmapped_ch
+        path "${params.chain_name}.bed", emit: lifted_ch
+        path "${params.chain_name}.unmapped.bed", emit: unmapped_ch
 
     script:
     """
-    liftOver ${annotation} ${chain} lifted.bed unmapped.bed
+    liftOver ${annotation} ${chain} ${params.chain_name}.bed ${params.chain_name}.unmapped.bed
     """
 }
 
@@ -142,24 +141,24 @@ process crossmap{
         path tgt_ch
 
     output:
-        path "lifted.${params.annotation_format}", emit: lifted_ch
+        path "${params.chain_name}.${params.annotation_format}", emit: lifted_ch
         path "*unmap*",  optional: true, emit: unmapped_ch
 
     script:
     if ( params.annotation_format == 'bam' )
         """
-        CrossMap.py bam -a ${chain} ${annotation} lifted.${params.annotation_format} 
+        CrossMap.py bam -a ${chain} ${annotation} ${params.chain_name}.${params.annotation_format} 
         """
     else if ( params.annotation_format == 'vcf' )
         """
-        CrossMap.py vcf -a ${chain} ${annotation} ${tgt_ch} lifted.${params.annotation_format} 
+        CrossMap.py vcf -a ${chain} ${annotation} ${tgt_ch} ${params.chain_name}.${params.annotation_format} 
         """
     else if ( params.annotation_format == 'maf' )
         """
-        CrossMap.py maf -a ${chain} ${annotation} ${tgt_ch} ${params.maf_tgt_name} lifted.${params.annotation_format} 
+        CrossMap.py maf -a ${chain} ${annotation} ${tgt_ch} ${params.maf_tgt_name} ${params.chain_name}.${params.annotation_format} 
         """
     else 
         """
-        CrossMap.py ${params.annotation_format} ${chain} ${annotation} lifted.${params.annotation_format}     
+        CrossMap.py ${params.annotation_format} ${chain} ${annotation} ${params.chain_name}.${params.annotation_format}     
         """
 }

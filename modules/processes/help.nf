@@ -61,6 +61,7 @@ def helpMessage() {
       --igenomes_ignore                 Ignore iGenome configuration (Default: false)  
 
     Other
+      --chain_name [prefix]             Prefix of the output chain file (Default: liftover)
       --outdir [file]                   The output directory where the results will be saved (Default: './results')
       --publish_dir_mode [str]          Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)"""
 }
