@@ -13,11 +13,6 @@ if (params.distance == 'near'){
 include {bwt_index} from '../processes/GSAlign'
 include {axtchain; chainMerge; chainNet; chain2maf} from "../processes/postprocess"
 
-// Prepare input channels
-if (params.source) { ch_source = file(params.source) } else { exit 1, 'Source genome not specified!' }
-if (params.target) { ch_target = file(params.target) } else { exit 1, 'Target genome not specified!' }
-if (params.annotation) { ch_annot = file(params.annotation) } else { log.info 'No annotation given' }
-
 // Create gsalign alignments workflow
 workflow GSALIGN {
     take:

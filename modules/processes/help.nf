@@ -18,11 +18,19 @@ def helpMessage() {
 
       nextflow run renzo_tale/nf-LO --source ./data/source.fa --target ./data/target.fa -profile standard
 
-    Mandatory arguments:
+    Source genome (use one of the three options):
       --source [file]                 Path to fa(sta)[.gz] for source genome. (Default: './data/source.fa')
+      --ncbi_source [file]            Download source genome using NCBI ID 
+      --igenome_source [file]         Download source genome from iGenome
+
+    Target genome (use one of the three options): 
       --target [file]                 Path to fa(sta)[.gz] for target genome. (Default: './data/target.fa')
+      --ncbi_target [file]            Download target genome using NCBI ID 
+      --igenome_target [file]         Download target genome from iGenome 
+
+    Workflow profile
       -profile [str]                  Configuration profile to use. Can use multiple (comma separated)
-                                      Available: standard, conda, docker, singularity, eddie, sge, uge
+                                      Available: standard, conda, docker, singularity, podman, eddie, eddie_conda, sge, uge
 
     Alignment arguments:
       --distance                        Distance between the two genomes to process. (Default: 'near')
@@ -49,10 +57,6 @@ def helpMessage() {
       --maf_tgt_name                    Specify the name of the target genome in the maf alignments (for CrossMap only)
 
     Download genomes
-      --ncbi_source                     Download source genome using ncbi datasets (Default: false)
-      --ncbi_target                     Download target genome using ncbi datasets (Default: false)
-      --igenome_source                  Download source genome from iGenome (Default: false)
-      --igenome_target                  Download target genome from iGenome (Default: false)
       --igenomes_base                   Root address to iGenome (Default: 's3://ngi-igenomes/igenomes/')
       --igenomes_ignore                 Ignore iGenome configuration (Default: false)  
 

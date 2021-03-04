@@ -35,20 +35,34 @@ log.info '''
       '''
 log.info """\
 Nextflow LiftOver v 1.5.0a
-=====================================
-source         : $params.source
-target         : $params.target
-aligner        : $params.aligner
-distance       : $params.distance
-custom align   : $params.custom
-custom chain   : $params.chainCustom
-source chunk   : $params.srcSize
-target chunk   : $params.tgtSize
-target overlap : $params.tgtOvlp
-output folder  : $params.outdir
-annot          : $params.annotation
-annot type     : $params.annotation_format
-liftover meth. : $params.liftover_algorithm
+====================================="""
+if (params.ncbi_source){
+        log.info"""source          : $params.ncbi_source (NCBI)"""
+} else if (params.igenome_source) {
+        log.info"""source          : $params.igenome_source (iGenome)"""
+} else {
+        log.info"""source          : $params.source"""
+}
+if (params.ncbi_target){
+        log.info"""target          : $params.ncbi_target (NCBI)"""
+} else if (params.igenome_target) {
+        log.info"""target          : $params.igenome_target (iGenome)"""
+} else {
+        log.info"""target          : $params.target"""
+}
+log.info"""aligner         : $params.aligner
+distance        : $params.distance
+custom align    : $params.custom
+custom chain    : $params.chainCustom
+source chunk    : $params.srcSize
+target chunk    : $params.tgtSize
+target overlap  : $params.tgtOvlp
+output folder   : $params.outdir
+annot           : $params.annotation
+annot type      : $params.annotation_format
+liftover meth.  : $params.liftover_algorithm
+igenomes_base   : $params.igenomes_base
+igenomes_ignore : $params.igenomes_ignore
 """ 
 
 // Check parameters
