@@ -18,11 +18,11 @@ process axtchain {
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
     script:
-    if( params.distance == 'near' || params.distance == "balanced" || params.distance == "same" )
+    if( params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate" )
         """
         axtChain $chainNear -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
         """
-    else if (params.distance == 'medium')
+    else if (params.distance == 'medium' || params.distance == 'general')
         """
         axtChain $chainMedium -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
         """
