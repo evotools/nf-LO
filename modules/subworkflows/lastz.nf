@@ -36,7 +36,7 @@ workflow LASTZ {
         chainMerge( axtchain.out.collect() )
         // Create liftover file from chain
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
-        chain2maf( chainNet.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN )
+        if(!params.no_maf){ chain2maf( chainNet.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) }
 
     emit:
         chainNet.out.liftover_ch
