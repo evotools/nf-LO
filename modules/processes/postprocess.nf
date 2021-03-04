@@ -78,7 +78,7 @@ process chainNet{
         chainNet -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null | netSyntenic stdin netfile.net
     netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
     """
-    else if ( !params.netsynt )
+    else if ( params.no_netsynt )
     """
     chainPreNet ${rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
         chainNet -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} netfile.net /dev/null 
