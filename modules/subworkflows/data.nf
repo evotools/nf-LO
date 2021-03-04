@@ -30,8 +30,8 @@ workflow DATA {
                         exit 1, "The provided genome '${params.igenome_target}' is not available in the iGenomes file. Currently the available genomes are ${params.genomes.keySet().join(", ")}"
                 }
                 if (params.igenome_target){ 
-                        params.fasta_src = params.igenome_target ? params.genomes[ params.igenome_target ].fasta ?: false : false
-                        if (params.fasta_src) { ch_target = file(params.fasta_src, checkIfExists: true) }
+                        params.fasta_tgt = params.igenome_target ? params.genomes[ params.igenome_target ].fasta ?: false : false
+                        if (params.fasta_tgt) { ch_target = file(params.fasta_tgt, checkIfExists: true) }
                 }
         } else if (!params.ncbi_target && !params.igenome_target) {
                 ch_target = file(params.target)
