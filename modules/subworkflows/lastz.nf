@@ -14,7 +14,7 @@ if (params.distance == 'near'){
 }
 
 //include {lastz_near; lastz_medium; lastz_far; lastz_custom} from "../processes/lastz"
-include {axtchain; chainMerge; chainNet; liftover; chain2maf} from "../processes/postprocess"
+include {axtchain; chainMerge; chainNet; liftover; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
 
 // Create lastz alignments workflow
 workflow LASTZ {

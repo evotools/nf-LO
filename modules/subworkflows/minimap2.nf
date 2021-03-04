@@ -8,7 +8,7 @@ if (params.distance == 'near'){
 } else if (params.distance == 'custom') {
     include {minimap2_custom as minimap2} from '../processes/minimap2'
 }
-include {axtchain; chainMerge; chainNet; liftover; chain2maf} from "../processes/postprocess"
+include {axtchain; chainMerge; chainNet; liftover; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
 
 // Create minimap2 alignments workflow
 workflow MINIMAP2 {
