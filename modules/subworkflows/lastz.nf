@@ -19,6 +19,8 @@ include {axtchain; chainMerge; chainNet; liftover; chain2maf} from "../processes
 // Create lastz alignments workflow
 workflow LASTZ {
     take:
+        ch_source 
+        ch_target
         pairspath_ch
         tgt_lift
         src_lift

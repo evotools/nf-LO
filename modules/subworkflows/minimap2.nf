@@ -13,6 +13,8 @@ include {axtchain; chainMerge; chainNet; liftover; chain2maf} from "../processes
 // Create minimap2 alignments workflow
 workflow MINIMAP2 {
     take:
+        ch_source 
+        ch_target
         pairspath_ch
         tgt_lift
         src_lift

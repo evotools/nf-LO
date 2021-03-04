@@ -16,7 +16,8 @@ workflow DATA {
                 }
         } else if (!params.igenome_source && !params.ncbi_source) {
                 ch_source = file(params.source)
-        } else {
+        } else {                
+                log.info"Too many source options provided"
                 exit 1, 'Too many source options provided'
         }
 
@@ -36,6 +37,7 @@ workflow DATA {
         } else if (!params.ncbi_target && !params.igenome_target) {
                 ch_target = file(params.target)
         } else {
+                log.info"Too many target options provided"
                 exit 1, 'Too many target options provided'
         }
 

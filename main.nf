@@ -92,7 +92,7 @@ workflow {
         ch_source = DATA.out[0]
         ch_target = DATA.out[1]
         PREPROC( ch_source, ch_target )
-        ALIGNER( PREPROC.out )
+        ALIGNER( ch_source, ch_target, PREPROC.out )
         if (params.annotation) {
                 if (!file(params.annotation).exists()) exit 0, "Genome annotation file ${params.annotation} not found. Closing."
                 ch_annot = Channel.fromPath(params.annotation)

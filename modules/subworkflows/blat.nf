@@ -17,6 +17,8 @@ include {chain2maf} from "../processes/postprocess"
 // Create blat alignments workflow
 workflow BLAT {
     take:
+        ch_source 
+        ch_target
         pairspath_ch
         tgt_lift
         src_lift
