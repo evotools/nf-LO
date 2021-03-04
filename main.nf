@@ -58,11 +58,13 @@ source chunk    : $params.srcSize
 target chunk    : $params.tgtSize
 target overlap  : $params.tgtOvlp
 output folder   : $params.outdir
+liftover name   : $params.chain_name
 annot           : $params.annotation
 annot type      : $params.annotation_format
 liftover meth.  : $params.liftover_algorithm
 igenomes_base   : $params.igenomes_base
 igenomes_ignore : $params.igenomes_ignore
+no_maf          : $params.no_maf
 """ 
 
 // Check parameters
