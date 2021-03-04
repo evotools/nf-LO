@@ -66,7 +66,7 @@ process lastz_primates{
     echo "-330 100 -318 -236" >> human_chimp.v2.q
     echo "-236 -318 100 -330" >> human_chimp.v2.q
     echo "-356 -236 -330 90" >> human_chimp.v2.q
-    lastz ${srcfile} ${tgtfile} ${lastzPrimate} Q=./human_chimp.v2.q --format=lav |
+    lastz ${srcfile} ${tgtfile} ${lastzPrimate} --ambiguous=iupac Q=./human_chimp.v2.q --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm ./human_chimp.v2.q
@@ -93,7 +93,7 @@ process lastz_general{
     echo "-114 100 -125 -31" >> general.q
     echo "-31 -125 100 -114" >> general.q
     echo "-123 -31 -114 91" >> general.q
-    lastz ${srcfile} ${tgtfile} ${lastzGeneral} Q=./general.q --format=lav |
+    lastz ${srcfile} ${tgtfile} ${lastzGeneral} --ambiguous=iupac Q=./general.q --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm ./human_chimp.v2.q
@@ -120,7 +120,7 @@ process lastz_near{
     echo "-330 100 -318 -236" >> human_chimp.v2.q
     echo "-236 -318 100 -330" >> human_chimp.v2.q
     echo "-356 -236 -330 90" >> human_chimp.v2.q
-    lastz ${srcfile} ${tgtfile} ${lastzNear} Q=./human_chimp.v2.q --format=lav |
+    lastz ${srcfile} ${tgtfile} ${lastzNear} --ambiguous=iupac Q=./human_chimp.v2.q --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm ./human_chimp.v2.q
@@ -142,7 +142,7 @@ process lastz_medium{
     script:
     """
     echo $lastzMedium
-    lastz ${srcfile} ${tgtfile} ${lastzMedium} --format=lav |
+    lastz ${srcfile} ${tgtfile} ${lastzMedium} --ambiguous=iupac --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
@@ -169,7 +169,7 @@ process lastz_far{
     echo "-90 100 -100 -25" >> HoxD55.q
     echo "-25 -100 100 -90" >> HoxD55.q
     echo "-100 -25 -90 91" >> HoxD55.q
-    lastz ${srcfile} ${tgtfile} Q=./HoxD55.q ${lastzFar} --format=lav |
+    lastz ${srcfile} ${tgtfile} --ambiguous=iupac Q=./HoxD55.q ${lastzFar} --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin && rm ./HoxD55.q
@@ -192,7 +192,7 @@ process lastz_custom{
 
     """
     echo ${params.custom}
-    lastz ${srcfile} ${tgtfile} ${params.custom} --format=lav |
+    lastz ${srcfile} ${tgtfile} ${params.custom} --ambiguous=iupac --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
