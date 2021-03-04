@@ -129,6 +129,9 @@ The workflow will provide some custom configuration for the different software u
 |           |       far         | -sen -idy 70 | -minScore=5000 -linearGap=loose |
 |           |       same        | -sen | -minScore=5000 -linearGap=medium |
 
+Presets for lastz aligner can be found [here](https://github.com/ENCODE-DCC/kentUtils/blob/master/src/hg/utils/automation/runLastzChain.sh). 
+Blat preset for aligning same/near genomes are [here](https://github.com/ENCODE-DCC/kentUtils/blob/master/src/hg/utils/automation/doSameSpeciesLiftOver.pl). 
+
 # References
 Adaptive seeds tame genomic sequence comparison. Kiełbasa SM, Wan R, Sato K, Horton P, Frith MC. Genome Res. 2011 21(3):487-93; http://dx.doi.org/10.1101/gr.113985.110
 
