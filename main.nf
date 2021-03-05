@@ -34,7 +34,7 @@ log.info '''
 =====================================
       '''
 log.info """\
-Nextflow LiftOver v 1.5.0a
+Nextflow LiftOver v 1.5.1
 ====================================="""
 if (params.ncbi_source){
         log.info"""source          : $params.ncbi_source (NCBI)"""

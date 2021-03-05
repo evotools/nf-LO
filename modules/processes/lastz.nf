@@ -48,7 +48,7 @@ Seed and Transition value (T)	1
 
 process lastz_primates{    
     tag "lastz_primates.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -75,7 +75,7 @@ process lastz_primates{
 
 process lastz_general{    
     tag "lastz_general.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
