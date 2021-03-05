@@ -2,12 +2,22 @@
 ## Nextflow LiftOver pipeline
 
 ## Introduction
-*nf-LO* is a nextflow implementation of the UCSC liftover pipeline. It comes with a series of presets, allowing alignments of genomes depending on their distance (near, medium and far). It also supports four different aligners ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)), providing solutions for  both different-species (lastz and minimap2) as well as same-species alignments (blat and GSAlign), with both standard and ultra-fast algorithms from a source to a target genome.  
+*nf-LO* is a [nextflow](https://www.nextflow.io/) workflow for generating genome alignment files compatible with the UCSC [liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver) utility for converting genomic coordinates between assemblies. It can automatically pull genomes directly from NCBI or iGenomes (or the user can provide fasta files) and supports four different aligners ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)). Together these provide solutions for both different-species (lastz and minimap2) as well as same-species alignments (blat and GSAlign), with both standard and ultra-fast algorithms from a source to a target genome. It comes with a series of presets, allowing alignments of genomes depending on their genomic distance (near, medium and far). 
 
-## Dependencies
-### Nextflow
-Nextflow needs to be installed and in your path to be able to run the pipeline. 
+## Quick start
+
+Nextflow first needs to be installed. 
 To do so, follow the instructions [here](https://www.nextflow.io/)
+```
+curl -s https://get.nextflow.io | bash
+```
+Note Nextflow requires Java 8 or later.
+
+To then run the nf-LO workflow to align the S. cerevisiae and S. pombe genomes pulled directly from [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html):
+```
+./nextflow run evotools/nf-LO --igenome_target sacCer3 --igenome_source EF2 --distance far --aligner minimap2 -profile singularity -latest --outdir ./my_liftover_minimap2
+```
+This command will use singularity to obtain the required dependencies and output a chain file compatible with the liftOver utility to the my_liftover_minmap2 folder. See below for more information on how to alternatively use docker, or to manually install the required tools.
 
 ### Profiles
 *nf-LO* comes with a series of pre-defined profiles:
@@ -31,7 +41,7 @@ This script will download a series of software and save them in the ./bin folder
  5. [GSAlign](https://github.com/hsinnan75/GSAlign)
  6. [CrossMap](http://crossmap.sourceforge.net/)
  7. [Graphviz](https://graphviz.org/)
- 8. Many exe from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
+ 8. Many .exe files from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
     1. axtChain
     2. chainAntiRepeat
     3. chainMergeSort
@@ -57,29 +67,29 @@ Or link te folder to the working directory:
 ln -s /PATH/TO/bin
 ```
 
-Ready to go!
-
 
 ## Input genomes
-Source and target genomes can be either a local or remote (un)compressed fasta file. Source genome is the genome of origin, from which lift the positions. Target genome is the genome *to* which lift the position. 
-We recommend to use soft-masked genomes to reduce computation time for aligners such as lastz. 
 
-### Download from NCBI
-*nf-LO* can download from ncbi directly using the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/command-line-start/) software. Users can provide a GCA/GCF codes instead of the input, and specify that is a ncbi download with the flags `--ncbi_source` and `--ncbi_target` as follow:
-```
-nextflow run evotools/nf-LO --source GCF_001549955.1 --target GCF_011751205.1 --ncbi_source --ncbi_target -profile local,test
-```
-The workflow will download the [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/command-line-start/) utility locally and use it to retrieve the genomes.
+There are three different ways a user can specify genomes to align. Note in each case the source genome is the genome of origin, from which you which to lift the positions. The target genome is the genome *to* which you wish to lift the positions to. 
+We recommend to use soft-masked genomes to reduce the computation time for aligners such as lastz. 
 
-### Download from iGenomes
-*nf-LO* can download from iGenomes. Users can provide a genome identifier instead of the input path, and specify that is a iGenome download with the flags `--igenome_source` and `--igenome_target` as follow:
+### 1. User provided fasta
+The source and target genomes can be specified as local or remote (un)compressed fasta files using the `--source` and `--target` flags. 
+### 2. Automatically download from NCBI
+*nf-LO* can download fasta files from ncbi directly. Users provide a GCA/GCF code using the `--ncbi_source` and `--ncbi_target` flags as follow:
 ```
-nextflow run evotools/nf-LO --source equCab2 --target dm6 --igenome_source --igenome_target -profile local,test
+nextflow run evotools/nf-LO --ncbi_source GCF_001549955.1 --ncbi_target GCF_011751205.1 -profile local,test
 ```
-The workflow will retrieve the genomes if they are present in the iGenome database.
+### 3. Automatically download from iGenomes
+*nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. To do this users provide a genome identifier with the `--igenome_source` and `--igenome_target` flags as follow:
+```
+nextflow run evotools/nf-LO --igenome_source equCab2 --target igenome_dm6 -profile local,test
+```
+
+Note it is possible to mix source and target flags. For example using `--igenome_source` with `--ncbi_target`.
 
 
-## Running the pipeline
+## Further examples for running the pipeline
 To test the pipeline locally, simply run:
 ```
 nextflow run evotools/nf-LO -profile test,docker
@@ -105,7 +115,7 @@ nextflow run evotools/nf-LO \
     -profile docker 
 ```
 This analysis will run using genome1 and genome2 as source and target, respectively. The source genome will be fragmented in chunks of 20Mb, 
-whereas the target will be fragmented in 10Mb chunks overlapping 100Kb. It will use lastz as aligner using the preset for closely related genomes (near).
+whereas the target will be fragmented in 10Mb chunks overlapping 100Kb. It will use lastz as the aligner using the preset for closely related genomes (near).
 The output files will be copied into the folder my_liftover.
 
 ## Distance 
