@@ -63,6 +63,9 @@ def helpMessage() {
       --igenomes_ignore                 Ignore iGenome configuration (Default: false)  
 
     Other
+      --max_memory                      Max memory available on the machine (Default: '128.GB')
+      --max_cpus                        Max cpu available on the machine (Default: 16)
+      --max_time                        Max runtime available on the machine (Default: '240.h')
       --chain_name [prefix]             Prefix of the output chain file (Default: liftover)
       --no_maf                          Do not save an output maf file (Default: false)
       --outdir [file]                   The output directory where the results will be saved (Default: './results')

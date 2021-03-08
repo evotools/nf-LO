@@ -66,6 +66,9 @@ igenomes_base   : $params.igenomes_base
 igenomes_ignore : $params.igenomes_ignore
 no_maf          : $params.no_maf
 skip netsynt    : $params.no_netsynt
+max cpu         : $params.max_cpus
+max mem         : $params.max_memory
+max rt          : $params.max_time
 """ 
 
 // Check parameters
