@@ -112,6 +112,8 @@ nextflow run evotools/nf-LO \
     --liftover_algorithm crossmap \
     --outdir ./my_liftover \
     --publish_dir_mode copy \
+    --max_cpus 8 \
+    --max_memory 32.GB \
     -profile docker 
 ```
 This analysis will run using genome1 and genome2 as source and target, respectively. The source genome will be fragmented in chunks of 20Mb, 
@@ -123,6 +125,10 @@ The workflow will provide some custom configuration for the different algorithms
 **NOTE**: the alignment stage heavily affects the results of the chaining process, so we strongly recommend to perform different tests with different configurations, including custom ones.
 To see the presets available and how to fine-tune the pipeline go to our [Alignments](https://github.com/evotools/nf-LO/wiki/Alignments) wiki page.
 The chain/net generation can also be fine-tuned to achieve better results (see [Chain/Netting](https://github.com/evotools/nf-LO/wiki/Chain-Netting)).
+
+# Resource management
+If you're running the workflow in a local workstation, single node or a local server we recommend to define the maximum amount of cores and memory for each job.
+You can set that using the `--max_memory NCPU` and `--max_cpus 'MEM.GB'`, where NCPU is the maximum number of cpus per task and MEM is maximum amount of memory for a single task.
 
 # References
 Adaptive seeds tame genomic sequence comparison. Kiełbasa SM, Wan R, Sato K, Horton P, Frith MC. Genome Res. 2011 21(3):487-93; http://dx.doi.org/10.1101/gr.113985.110
