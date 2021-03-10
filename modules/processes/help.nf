@@ -44,7 +44,7 @@ def helpMessage() {
       --custom                          Use custom parameters for the alignments instead of the pre-defined (Default: false)
                                         Specify the string of custom parameters for the alignments. If want to run with base parameters,
                                         just use ' '
-      --customChain                     Use custom parameters for the chaining instead of the pre-defined (Default: false)
+      --chainCustom                     Use custom parameters for the chaining instead of the pre-defined (Default: false)
                                         Specify the string of custom parameters for the alignments. If want to run with base parameters,
                                         just use ' '
       --no_netsynt                      Use disble netSyntenic (Default: false)
