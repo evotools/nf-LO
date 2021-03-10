@@ -178,7 +178,7 @@ process lastz_far{
 
 process lastz_custom{    
     tag "lastz_cust.${srcname}.${tgtname}"
-    label 'small'
+    label 'large'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
