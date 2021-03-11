@@ -4,8 +4,8 @@ chainNear="-minScore=5000 -linearGap=medium"
 chainMedium="-minScore=3000 -linearGap=medium"
 chainFar="-minScore=5000 -linearGap=loose"
 
-process axtchain {
-    tag "axtchain"
+process axtchain_near {
+    tag "axtchain_n"
     publishDir "${params.outdir}/singlechains", mode: params.publish_dir_mode, overwrite: true
     label 'small'
 
@@ -18,24 +18,67 @@ process axtchain {
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
     script:
-    if (params.distance == 'custom')
-        """
-        axtChain ${params.chainCustom} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
-        """
-    else if ( params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate" )
-        """
-        axtChain $chainNear -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
-        """
-    else if (params.distance == 'medium' || params.distance == 'general')
-        """
-        axtChain $chainMedium -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
-        """
-    else if (params.distance == 'far')
-        """
-        axtChain $chainFar -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
-        """        
+    """
+    axtChain $chainNear -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """
 }
 
+process axtchain_medium {
+    tag "axtchain_m"
+    publishDir "${params.outdir}/singlechains", mode: params.publish_dir_mode, overwrite: true
+    label 'small'
+
+    input:
+        tuple val(srcname), val(tgtname), file(psl) 
+        file twoBitS
+        file twoBitT
+
+    output:
+        path "${srcname}.${tgtname}.chain", emit: chain_files_ch
+
+    script:
+    """
+    axtChain $chainMedium -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+}
+
+process axtchain_far {
+    tag "axtchain_f"
+    publishDir "${params.outdir}/singlechains", mode: params.publish_dir_mode, overwrite: true
+    label 'small'
+
+    input:
+        tuple val(srcname), val(tgtname), file(psl) 
+        file twoBitS
+        file twoBitT
+
+    output:
+        path "${srcname}.${tgtname}.chain", emit: chain_files_ch
+
+    script:
+    """
+    axtChain $chainFar -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """        
+}
+
+process axtchain_custom {
+    tag "axtchain_c"
+    publishDir "${params.outdir}/singlechains", mode: params.publish_dir_mode, overwrite: true
+    label 'small'
+
+    input:
+        tuple val(srcname), val(tgtname), file(psl) 
+        file twoBitS
+        file twoBitT
+
+    output:
+        path "${srcname}.${tgtname}.chain", emit: chain_files_ch
+
+    script:
+    """
+    axtChain ${params.chainCustom} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+}
 
 process chainMerge {
     tag "chainmerge"

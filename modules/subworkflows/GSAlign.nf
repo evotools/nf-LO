@@ -1,17 +1,29 @@
 // Include dependencies
-if (params.distance == 'near'){
+ if (params.custom) {
+    include {gsalign_custom as gsalign} from '../processes/GSAlign'
+} else if (params.distance == 'near'){
     include {gsalign_near as gsalign} from '../processes/GSAlign'
 } else if (params.distance == 'medium'){
     include {gsalign_medium as gsalign} from '../processes/GSAlign'
 } else if (params.distance == 'far') {
     include {gsalign_far as gsalign} from '../processes/GSAlign'
-} else if (params.distance == 'custom') {
-    include {gsalign_custom as gsalign} from '../processes/GSAlign'
 } else if (params.distance == 'same') {
     include {gsalign_same as gsalign} from '../processes/GSAlign'
 }
+
+
+if (params.chainCustom) {
+    include {axtchain_custom as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate"){
+    include {axtchain_near as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'medium' || params.distance == 'general') {
+    include {axtchain_medium as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'far') {
+    include {axtchain_far as axtChain} from "../processes/postprocess"
+}
+
 include {bwt_index} from '../processes/GSAlign'
-include {axtchain; chainMerge; chainNet; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
+include {chainMerge; chainNet; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
 
 // Create gsalign alignments workflow
 workflow GSALIGN {
@@ -32,10 +44,10 @@ workflow GSALIGN {
 
         // Run gsalign
         gsalign( pairspath_ch, tgt_lift, src_lift, bwt_index.out.collect() )  
-        axtchain( gsalign.out.al_files_ch, twoBitS, twoBitT)   
+        axtChain( gsalign.out.al_files_ch, twoBitS, twoBitT)   
 
         // 
-        chainMerge( axtchain.out.collect() )
+        chainMerge( axtChain.out.collect() )
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
         if (params.no_netsynt){
             net_ch = chainNet.out

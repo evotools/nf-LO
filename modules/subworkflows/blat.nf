@@ -1,17 +1,29 @@
 // Include dependencies
 include {makeooc} from "../processes/preprocess" params(params)
-if (params.distance == 'near'){
+
+if (params.custom) {
+    include {blat_custom as blat} from '../processes/blat'
+} else if (params.distance == 'near'){
     include {blat_near as blat} from '../processes/blat'
 } else if (params.distance == 'medium'){
     include {blat_medium as blat} from '../processes/blat'
 } else if (params.distance == 'far') {
     include {blat_far as blat} from '../processes/blat'
-} else if (params.distance == 'custom') {
-    include {blat_custom as blat} from '../processes/blat'
 } else if (params.distance == 'balanced') {
     include {blat_balanced as blat} from '../processes/blat'
 }
-include {axtchain; chainMerge; chainNet; netSynt; chainsubset} from "../processes/postprocess"
+
+if (params.chainCustom) {
+    include {axtchain_custom as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate"){
+    include {axtchain_near as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'medium' || params.distance == 'general') {
+    include {axtchain_medium as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'far') {
+    include {axtchain_far as axtChain} from "../processes/postprocess"
+}
+
+include {chainMerge; chainNet; netSynt; chainsubset} from "../processes/postprocess"
 include {chain2maf} from "../processes/postprocess"
 
 // Create blat alignments workflow
@@ -33,10 +45,10 @@ workflow BLAT {
 
         // Run blat
         blat(pairspath_ch, tgt_lift, src_lift, makeooc.out.ooc11, makeooc.out.ooc12)  
-        axtchain( blat.out.al_files_ch, twoBitS, twoBitT)   
+        axtChain( blat.out.al_files_ch, twoBitS, twoBitT)   
 
         // 
-        chainMerge( axtchain.out.collect() )
+        chainMerge( axtChain.out.collect() )
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
         if (params.no_netsynt){
             net_ch = chainNet.out

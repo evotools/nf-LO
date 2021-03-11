@@ -1,14 +1,26 @@
 // Include dependencies
-if (params.distance == 'near'){
+if (params.custom) {
+    include {minimap2_custom as minimap2} from '../processes/minimap2'
+} else if (params.distance == 'near'){
     include {minimap2_near as minimap2} from '../processes/minimap2'
 } else if (params.distance == 'medium'){
     include {minimap2_medium as minimap2} from '../processes/minimap2'
 } else if (params.distance == 'far') {
     include {minimap2_far as minimap2} from '../processes/minimap2'
-} else if (params.distance == 'custom') {
-    include {minimap2_custom as minimap2} from '../processes/minimap2'
 }
-include {axtchain; chainMerge; chainNet; liftover; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
+
+
+if (params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate"){
+    include {axtchain_near as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'medium' || params.distance == 'general') {
+    include {axtchain_medium as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'far') {
+    include {axtchain_far as axtChain} from "../processes/postprocess"
+} else if (params.chainCustom) {
+    include {axtchain_custom as axtChain} from "../processes/postprocess"
+}
+
+include {chainMerge; chainNet; liftover; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
 
 // Create minimap2 alignments workflow
 workflow MINIMAP2 {
@@ -26,10 +38,10 @@ workflow MINIMAP2 {
     main:
         // Run minimap2
         minimap2(pairspath_ch, tgt_lift, src_lift)  
-        axtchain( minimap2.out.al_files_ch, twoBitS, twoBitT)   
+        axtChain( minimap2.out.al_files_ch, twoBitS, twoBitT)   
 
         // 
-        chainMerge( axtchain.out.collect() )
+        chainMerge( axtChain.out.collect() )
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
         if (params.no_netsynt){
             net_ch = chainNet.out

@@ -1,5 +1,7 @@
 // Include dependencies
-if (params.distance == 'near'){
+if (params.custom) {
+    include {lastz_custom as lastz} from '../processes/lastz'
+} else if (params.distance == 'near'){
     include {lastz_near as lastz} from '../processes/lastz'
 } else if (params.distance == 'medium'){
     include {lastz_medium as lastz} from '../processes/lastz'
@@ -9,12 +11,22 @@ if (params.distance == 'near'){
     include {lastz_primates as lastz} from '../processes/lastz'
 } else if (params.distance == 'general') {
     include {lastz_general as lastz} from '../processes/lastz'
-} else if (params.distance == 'custom') {
+} else if (params.custom){
     include {lastz_custom as lastz} from '../processes/lastz'
 }
 
+if (params.chainCustom) {
+    include {axtchain_custom as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate"){
+    include {axtchain_near as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'medium' || params.distance == 'general') {
+    include {axtchain_medium as axtChain} from "../processes/postprocess"
+} else if (params.distance == 'far') {
+    include {axtchain_far as axtChain} from "../processes/postprocess"
+}
+
 //include {lastz_near; lastz_medium; lastz_far; lastz_custom} from "../processes/lastz"
-include {axtchain; chainMerge; chainNet; liftover; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
+include {chainMerge; chainNet; liftover; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
 
 // Create lastz alignments workflow
 workflow LASTZ {
@@ -32,10 +44,10 @@ workflow LASTZ {
     main:
         // Run lastz
         lastz(pairspath_ch, tgt_lift, src_lift)  
-        axtchain( lastz.out.al_files_ch, twoBitS, twoBitT)   
+        axtChain( lastz.out.al_files_ch, twoBitS, twoBitT)   
 
         // Combine the chain files
-        chainMerge( axtchain.out.collect() )
+        chainMerge( axtChain.out.collect() )
         // Create liftover file from chain
         chainNet( chainMerge.out, twoBitS, twoBitT, twoBitSN, twoBitTN )
         if (params.no_netsynt){
