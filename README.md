@@ -25,6 +25,7 @@ This command will use singularity to obtain the required dependencies and output
  - local: runs using local exe instead of containerized/conda dependencies (see manual installation for further details)
  - docker: force the use of docker 
  - singularity: runs the dependencies within singularity
+ - podman: runs the dependencies within podman
  - conda: runs the dependencies within conda
  - uge: runs using UGE scheduling system
  - sge: runs using SGE scheduling system
