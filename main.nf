@@ -57,6 +57,7 @@ custom chain    : $params.chainCustom
 source chunk    : $params.srcSize
 target chunk    : $params.tgtSize
 target overlap  : $params.tgtOvlp
+source overlap  : $params.srcOvlp
 output folder   : $params.outdir
 liftover name   : $params.chain_name
 annot           : $params.annotation
