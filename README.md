@@ -4,8 +4,10 @@
 ## Introduction
 *nf-LO* is a [nextflow](https://www.nextflow.io/) workflow for generating genome alignment files compatible with the UCSC [liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver) utility for converting genomic coordinates between assemblies. It can automatically pull genomes directly from NCBI or iGenomes (or the user can provide fasta files) and supports four different aligners ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)). Together these provide solutions for both different-species (lastz and minimap2) as well as same-species alignments (blat and GSAlign), with both standard and ultra-fast algorithms from a source to a target genome. It comes with a series of presets, allowing alignments of genomes depending on their genomic distance (near, medium and far). 
 
-## Quick start
+## Step-by-step tutorial
+You can find more details on the usage of *nf-LO* in the [wiki page](https://github.com/evotools/nf-LO/wiki), including a simple step-by-step tutorial to run the analyses on your own genomes.
 
+## Quick start
 Nextflow first needs to be installed. 
 To do so, follow the instructions [here](https://www.nextflow.io/)
 ```
