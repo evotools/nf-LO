@@ -5,83 +5,68 @@
 # Step-by-step tutorial
 You can find more details on the usage of *nf-LO* in the [wiki page](https://github.com/evotools/nf-LO/wiki), including a simple step-by-step tutorial to run the analyses on your own genomes.
 
-## Quick start
+## Table of Contents
+
+- [Installation](#Installation)
+- [Quick start](#Quick-start)
+- [Profiles](#Profiles)
+- [Inputs](#Inputs)
+  - [Custom fasta](#Custom-fasta)
+  - [Download from NCBI](#Download-from-NCBI)
+  - [Download from iGenomes](#Download-from-iGenomes)
+- [Customize the run](#Customize-the-run)
+- [Resources](#Resources) 
+- [Example](#Example)
+- [References](#References)
+
+# Installation
 Nextflow first needs to be installed. 
 To do so, follow the instructions [here](https://www.nextflow.io/)
 ```
 curl -s https://get.nextflow.io | bash
 ```
 Note Nextflow requires Java 8 or later.
+We suggest to install, depending on your preferences:
+ - [anaconda](https://www.anaconda.com/products/individual)
+ - [docker](https://www.docker.com/)
+ - [singularity](https://sylabs.io/)
 
-To then run the nf-LO workflow to align the S. cerevisiae and S. pombe genomes pulled directly from [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html):
+The workflow natively support four different ways to provide dependencies:
+1. Anaconda: this is the recommended and easiest way.
+2. Docker: you can create a docker image locally by using the `Dockerfile` and `environment.yml` files in the folder
+3. Singularity: you can create a singularity sif image locally by using the `singularity.def` and `environment.yml` files in the folder
+4. Local installation: we provide an `install.sh` script that will take care of installing all the dependencies.
+If you need further information on the installation of the dependencies, you can have a look at the specific [wiki page](https://github.com/evotools/nf-LO/wiki/Installation)
+
+# Quick start
+Then, run the nf-LO workflow to align the S. cerevisiae and S. pombe genomes pulled directly from [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html):
 ```
-./nextflow run evotools/nf-LO --igenome_target sacCer3 --igenome_source EF2 --distance far --aligner minimap2 -profile singularity -latest --outdir ./my_liftover_minimap2
+./nextflow run evotools/nf-LO --igenome_target sacCer3 --igenome_source EF2 --distance far --aligner minimap2 -profile conda -latest --outdir ./my_liftover_minimap2
 ```
 This command will use singularity to obtain the required dependencies and output a chain file compatible with the liftOver utility to the my_liftover_minmap2 folder. See below for more information on how to alternatively use docker, or to manually install the required tools.
 
-### Profiles
+# Profiles
 *nf-LO* comes with a series of pre-defined profiles:
  - standard: this profile runs all dependencies in docker and other basic presets to facilitate the use
  - local: runs using local exe instead of containerized/conda dependencies (see manual installation for further details)
- - docker: force the use of docker 
- - singularity: runs the dependencies within singularity
- - podman: runs the dependencies within podman
  - conda: runs the dependencies within conda
  - uge: runs using UGE scheduling system
  - sge: runs using SGE scheduling system
-A docker image is available with all the dependencies at tale88/nf-lo. This docker ships all necessary dependencies to run nf-LO. 
-This is the recommended mode of usage of the software, since all the dependencies come shipped in the container.
+ - Additional profiles: see additional profiles supported [here](http://www.github.com/nf-core/configs)
 
-### Manual installation
-In the case the system doesn't support docker/singularity, it is possible to download them all through the script install.sh.
-This script will download a series of software and save them in the ./bin folder, including:
- 1. [lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz)
- 2. [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/)
- 3. [minimap2](https://github.com/lh3/minimap2)
- 4. [last](http://last.cbrc.jp/)
- 5. [GSAlign](https://github.com/hsinnan75/GSAlign)
- 6. [CrossMap](http://crossmap.sourceforge.net/)
- 7. [Graphviz](https://graphviz.org/)
- 8. Many .exe files from the [kent toolkit](https://github.com/ucscGenomeBrowser/kent): 
-    1. axtChain
-    2. chainAntiRepeat
-    3. chainMergeSort
-    4. chainNet
-    5. chainPreNet
-    6. chainStitchId
-    7. chainSplit
-    8. faSplit
-    9. faToTwoBit
-    10. liftOver
-    11. liftUp
-    12. netChainSubset
-    13. netSyntenic
-    14. twoBitInfo
-    15. lavToPsl
-    
-Remember to add the ```bin``` folder to your path with the command:
-```
-export PATH=$PATH:$PWD/bin
-```
-Or link te folder to the working directory:
-```
-ln -s /PATH/TO/bin
-```
-
-
-## Input genomes
+# Inputs
 
 There are three different ways a user can specify genomes to align. Note in each case the source genome is the genome of origin, from which you which to lift the positions. The target genome is the genome *to* which you wish to lift the positions to. 
 We recommend to use soft-masked genomes to reduce the computation time for aligners such as lastz. 
 
-### 1. User provided fasta
+## 1. Custom fasta
 The source and target genomes can be specified as local or remote (un)compressed fasta files using the `--source` and `--target` flags. 
-### 2. Automatically download from NCBI
+## 2. Download from NCBI
 *nf-LO* can download fasta files from ncbi directly. Users provide a GCA/GCF code using the `--ncbi_source` and `--ncbi_target` flags as follow:
 ```
 nextflow run evotools/nf-LO --ncbi_source GCF_001549955.1 --ncbi_target GCF_011751205.1 -profile local,test
 ```
-### 3. Automatically download from iGenomes
+## 3. Download from iGenomes
 *nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. To do this users provide a genome identifier with the `--igenome_source` and `--igenome_target` flags as follow:
 ```
 nextflow run evotools/nf-LO --igenome_source equCab2 --target igenome_dm6 -profile local,test
@@ -89,14 +74,23 @@ nextflow run evotools/nf-LO --igenome_source equCab2 --target igenome_dm6 -profi
 
 Note it is possible to mix source and target flags. For example using `--igenome_source` with `--ncbi_target`.
 
+# Customize the run 
+The workflow will provide some custom configuration for the different algorithms and distances. 
+**NOTE**: the alignment stage heavily affects the results of the chaining process, so we strongly recommend to perform different tests with different configurations, including custom ones.
+To see the presets available and how to fine-tune the pipeline go to our [Alignments](https://github.com/evotools/nf-LO/wiki/Alignments) wiki page.
+The chain/net generation can also be fine-tuned to achieve better results (see [Chain/Netting](https://github.com/evotools/nf-LO/wiki/Chain-Netting)).
 
-## Further examples for running the pipeline
+# Resources
+If you're running the workflow in a local workstation, single node or a local server we recommend to define the maximum amount of cores and memory for each job.
+You can set that using the `--max_memory NCPU` and `--max_cpus 'MEM.GB'`, where NCPU is the maximum number of cpus per task and MEM is maximum amount of memory for a single task.
+
+# Example
 To test the pipeline locally, simply run:
 ```
-nextflow run evotools/nf-LO -profile test,docker
+nextflow run evotools/nf-LO -profile test,conda
 ```
 This will download and run the pipeline on the two toy genomes provided and generate liftover files. If you have all dependencies installed locally
-you can omit ```docker``` from the profile configuration.
+you can omit ```conda``` from the profile configuration.
 
 Alternatively, you can run it on your own genomes using a command like this:
 ```
@@ -115,21 +109,11 @@ nextflow run evotools/nf-LO \
     --publish_dir_mode copy \
     --max_cpus 8 \
     --max_memory 32.GB \
-    -profile docker 
+    -profile conda 
 ```
 This analysis will run using genome1 and genome2 as source and target, respectively. The source genome will be fragmented in chunks of 20Mb, 
 whereas the target will be fragmented in 10Mb chunks overlapping 100Kb. It will use lastz as the aligner using the preset for closely related genomes (near).
 The output files will be copied into the folder my_liftover.
-
-## Distance 
-The workflow will provide some custom configuration for the different algorithms and distances. 
-**NOTE**: the alignment stage heavily affects the results of the chaining process, so we strongly recommend to perform different tests with different configurations, including custom ones.
-To see the presets available and how to fine-tune the pipeline go to our [Alignments](https://github.com/evotools/nf-LO/wiki/Alignments) wiki page.
-The chain/net generation can also be fine-tuned to achieve better results (see [Chain/Netting](https://github.com/evotools/nf-LO/wiki/Chain-Netting)).
-
-# Resource management
-If you're running the workflow in a local workstation, single node or a local server we recommend to define the maximum amount of cores and memory for each job.
-You can set that using the `--max_memory NCPU` and `--max_cpus 'MEM.GB'`, where NCPU is the maximum number of cpus per task and MEM is maximum amount of memory for a single task.
 
 # References
 Adaptive seeds tame genomic sequence comparison. Kiełbasa SM, Wan R, Sato K, Horton P, Frith MC. Genome Res. 2011 21(3):487-93; http://dx.doi.org/10.1101/gr.113985.110
