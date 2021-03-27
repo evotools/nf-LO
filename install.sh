@@ -92,10 +92,10 @@ git clone https://github.com/hsinnan75/GSAlign.git && \
     make all && \
     cp bin/* ../ && \
     cd ../ && \
-    rm -r GSAlign_src
+    rm -rf GSAlign_src
 
 # Install crossmap
-pip install CrossMap
+pip2 install CrossMap
 
 # Install minimap2
 if [ ${machine} == "Linux" ]; then
