@@ -59,14 +59,14 @@ This command will use singularity to obtain the required dependencies and output
 There are three different ways a user can specify genomes to align. Note in each case the source genome is the genome of origin, from which you which to lift the positions. The target genome is the genome *to* which you wish to lift the positions to. 
 We recommend to use soft-masked genomes to reduce the computation time for aligners such as lastz. 
 
-### 1. Custom fasta
+### Custom fasta
 The source and target genomes can be specified as local or remote (un)compressed fasta files using the `--source` and `--target` flags. 
-### 2. Download from NCBI
+### Download from NCBI
 *nf-LO* can download fasta files from ncbi directly. Users provide a GCA/GCF code using the `--ncbi_source` and `--ncbi_target` flags as follow:
 ```
 nextflow run evotools/nf-LO --ncbi_source GCF_001549955.1 --ncbi_target GCF_011751205.1 -profile local,test
 ```
-### 3. Download from iGenomes
+### Download from iGenomes
 *nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. To do this users provide a genome identifier with the `--igenome_source` and `--igenome_target` flags as follow:
 ```
 nextflow run evotools/nf-LO --igenome_source equCab2 --target igenome_dm6 -profile local,test
