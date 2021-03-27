@@ -27,6 +27,7 @@ if [ ${machine} == "Linux" ]; then
     if [ -e chainStitchId ]; then rm chainStitchId; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainStitchId
     if [ -e chainSplit ]; then rm chainSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainSplit
     if [ -e faSplit ]; then rm faSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faSplit
+    if [ -e faSize ]; then rm faSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faSize
     if [ -e faToTwoBit ]; then rm faToTwoBit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit
     if [ -e liftOver ]; then rm liftOver; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver
     if [ -e liftUp ]; then rm liftUp; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftUp
@@ -34,6 +35,8 @@ if [ ${machine} == "Linux" ]; then
     if [ -e netSyntenic ]; then rm netSyntenic; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netSyntenic
     if [ -e twoBitInfo ]; then rm twoBitInfo; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitInfo
     if [ -e lavToPsl ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToPsl
+    if [ -e chainToAxt ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainToAxt
+    if [ -e axtToMaf ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtToMaf
 elif [ ${machine} == "Mac" ]; then
     if [ -e axtChain ]; then rm axtChain; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/axtChain
     if [ -e blat ]; then rm blat; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat
@@ -46,6 +49,7 @@ elif [ ${machine} == "Mac" ]; then
     if [ -e chainStitchId ]; then rm chainStitchId; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/chainStitchId
     if [ -e chainSplit ]; then rm chainSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/chainSplit
     if [ -e faSplit ]; then rm faSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/faSplit
+    if [ -e faSize ]; then rm faSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/faSize
     if [ -e faToTwoBit ]; then rm faToTwoBit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/faToTwoBit
     if [ -e liftOver ]; then rm liftOver; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/liftOver
     if [ -e liftUp ]; then rm liftUp; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/liftUp
@@ -53,7 +57,10 @@ elif [ ${machine} == "Mac" ]; then
     if [ -e netSyntenic ]; then rm netSyntenic; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/netSyntenic
     if [ -e twoBitInfo ]; then rm twoBitInfo; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/twoBitInfo
     if [ -e lavToPsl ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/lavToPsl
+    if [ -e chainToAxt ]; then rm chainToAxt; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/chainToAxt
+    if [ -e axtToMaf ]; then rm chainToAxt; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/axtToMaf
 fi
+
 # Install lastz
 if [ -e lastz ]; then rm lastz; fi 
 git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
@@ -66,6 +73,7 @@ git clone https://github.com/UCSantaCruzComputationalGenomicsLab/lastz.git && \
     cp tools/hassock_hash.py ../ && \
     cd .. && \
     rm -rf ./lastz-src
+
 # Install maf-converter from last
 if [ -e maf-convert ]; then rm maf-convert; fi; 
 wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
@@ -82,6 +90,7 @@ git clone https://github.com/hsinnan75/GSAlign.git && \
     cd GSAlign && \
     make all && \
     cp bin/* ../ && \
+    cd ../ && \
     rm -r GSAlign
 
 # Install crossmap
@@ -93,6 +102,16 @@ if [ ${machine} == "Linux" ]; then
     wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2 && \
         tar -xvf minimap2-2.17_x64-linux.tar.bz2 && \
         mv minimap2-2.17_x64-linux/minimap2 ./ && mv minimap2-2.17_x64-linux/paftools.js ./ && mv minimap2-2.17_x64-linux/k8 ./ && \
+        rm -rf ./minimap2-*
+else;
+    wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17.tar.bz2 && \
+        tar -xvf minimap2-2.17.tar.bz2 && \
+        cd minimap2-2.17 && \
+        make && \
+        mv minimap2 ../ && mv misc/paftools.js ../ && \
+        curl -L https://github.com/attractivechaos/k8/releases/download/v0.2.4/k8-0.2.4.tar.bz2 | tar -jxf - && \
+        cp k8-0.2.4/k8-`uname -s` ../k8 && \
+        cd ../ && \
         rm -rf ./minimap2-*
 fi
 
