@@ -16,7 +16,8 @@ esac
 echo ${machine}
 
 if [ ${machine} == "Linux" ]; then
-    if [ -e axtChain ]; then rm axtChain; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtChain
+    if [ -e axtChain ]; then rm axtChain; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtChain 
+    if [ -e axtToMaf ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtToMaf
     if [ -e blat ]; then rm blat; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/blat
     if [ -e gfClient ]; then rm gfClient; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/gfClient
     if [ -e gfServer ]; then rm gfServer; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/gfServer
@@ -26,19 +27,19 @@ if [ ${machine} == "Linux" ]; then
     if [ -e chainPreNet ]; then rm chainPreNet; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainPreNet
     if [ -e chainStitchId ]; then rm chainStitchId; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainStitchId
     if [ -e chainSplit ]; then rm chainSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainSplit
+    if [ -e chainToAxt ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainToAxt 
     if [ -e faSplit ]; then rm faSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faSplit
     if [ -e faSize ]; then rm faSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faSize
     if [ -e faToTwoBit ]; then rm faToTwoBit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit
+    if [ -e lavToPsl ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToPsl
     if [ -e liftOver ]; then rm liftOver; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver
     if [ -e liftUp ]; then rm liftUp; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftUp
     if [ -e netChainSubset ]; then rm netChainSubset; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netChainSubset
     if [ -e netSyntenic ]; then rm netSyntenic; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/netSyntenic
     if [ -e twoBitInfo ]; then rm twoBitInfo; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitInfo
-    if [ -e lavToPsl ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/lavToPsl
-    if [ -e chainToAxt ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/chainToAxt
-    if [ -e axtToMaf ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtToMaf
 elif [ ${machine} == "Mac" ]; then
     if [ -e axtChain ]; then rm axtChain; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/axtChain
+    if [ -e axtToMaf ]; then rm chainToAxt; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/axtToMaf
     if [ -e blat ]; then rm blat; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat
     if [ -e gfClient ]; then rm gfClient; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/blat/gfClient
     if [ -e gfServer ]; then rm gfServer; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/blat/gfServer
@@ -48,17 +49,16 @@ elif [ ${machine} == "Mac" ]; then
     if [ -e chainPreNet ]; then rm chainPreNet; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/chainPreNet
     if [ -e chainStitchId ]; then rm chainStitchId; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/chainStitchId
     if [ -e chainSplit ]; then rm chainSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/chainSplit
+    if [ -e chainToAxt ]; then rm chainToAxt; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/chainToAxt
     if [ -e faSplit ]; then rm faSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/faSplit
     if [ -e faSize ]; then rm faSplit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/faSize
     if [ -e faToTwoBit ]; then rm faToTwoBit; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/faToTwoBit
+    if [ -e lavToPsl ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/lavToPsl
     if [ -e liftOver ]; then rm liftOver; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/liftOver
     if [ -e liftUp ]; then rm liftUp; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/liftUp
     if [ -e netChainSubset ]; then rm netChainSubset; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/netChainSubset
     if [ -e netSyntenic ]; then rm netSyntenic; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/netSyntenic
     if [ -e twoBitInfo ]; then rm twoBitInfo; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/twoBitInfo
-    if [ -e lavToPsl ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/lavToPsl
-    if [ -e chainToAxt ]; then rm chainToAxt; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/chainToAxt
-    if [ -e axtToMaf ]; then rm chainToAxt; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/axtToMaf
 fi
 
 # Install lastz
@@ -87,14 +87,15 @@ wget http://last.cbrc.jp/last-1061.zip && unzip last-1061.zip && \
 
 # Install GSAlign
 git clone https://github.com/hsinnan75/GSAlign.git && \
-    cd GSAlign && \
+    mv GSAlign GSAlign_src && \
+    cd GSAlign_src && \
     make all && \
     cp bin/* ../ && \
     cd ../ && \
-    rm -r GSAlign
+    rm -r GSAlign_src
 
 # Install crossmap
-pip install scipy CrossMap
+pip install CrossMap
 
 # Install minimap2
 if [ ${machine} == "Linux" ]; then
@@ -103,7 +104,7 @@ if [ ${machine} == "Linux" ]; then
         tar -xvf minimap2-2.17_x64-linux.tar.bz2 && \
         mv minimap2-2.17_x64-linux/minimap2 ./ && mv minimap2-2.17_x64-linux/paftools.js ./ && mv minimap2-2.17_x64-linux/k8 ./ && \
         rm -rf ./minimap2-*
-else;
+elif [ ${machine} == "Mac" ]; then
     wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17.tar.bz2 && \
         tar -xvf minimap2-2.17.tar.bz2 && \
         cd minimap2-2.17 && \
