@@ -16,7 +16,7 @@ def helpMessage() {
 
     The typical command for running the pipeline is as follows:
 
-      nextflow run renzo_tale/nf-LO --source ./data/source.fa --target ./data/target.fa -profile standard
+      nextflow run evotools/nf-LO --source ./data/source.fa --target ./data/target.fa -profile standard
 
     Source genome (use one of the three options):
       --source [file]                 Path to fa(sta)[.gz] for source genome. (Default: './data/source.fa')
