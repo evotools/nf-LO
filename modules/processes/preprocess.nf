@@ -24,6 +24,14 @@ process make2bit {
     path "source.sizes", emit: twoBsrcNFO
     path "target.sizes", emit: twoBtgtNFO
 
+    stub:
+    """
+    touch source.2bit
+    touch source.sizes
+    touch target.2bit
+    touch target.sizes
+    """
+
     script:
     """
     faToTwoBit ${source} source.2bit
@@ -45,6 +53,12 @@ process src2bit {
     output:
     path "source.2bit", emit: twoBsrc
     path "source.sizes", emit: twoBsrcNFO
+
+    stub:
+    """
+    touch source.2bit
+    touch source.sizes
+    """
 
     script:
     """
@@ -70,6 +84,12 @@ process tgt2bit {
     path "target.2bit", emit: twoBtgt
     path "target.sizes", emit: twoBtgtNFO
 
+    stub:
+    """
+    touch target.2bit
+    touch target.sizes
+    """
+
     script:
     """
     if [ `faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'` -lt 4000000000 ]; then
@@ -94,6 +114,12 @@ process makeooc {
     path "11.ooc", emit: ooc11
     path "12.ooc", emit: ooc12
 
+    stub:
+    """
+    touch 11.ooc
+    touch 12.ooc
+    """
+
     script:
     """
     blat ${source} /dev/null /dev/null -makeOoc=11.ooc -repMatch=1024
@@ -112,6 +138,15 @@ process splitsrc {
     output:
     path "SPLIT_src", emit: srcsplit_ch
     path "source.lift", emit: src_lift_ch
+
+    stub:
+    """
+    touch mkdir SPLIT_src/
+    touch SPLIT_src/src0.fa
+    touch SPLIT_src/src1.fa
+    touch SPLIT_src/src2.fa
+    touch source.lift
+    """
 
     script:
     if ( params.aligner == "blat" || params.aligner == 'gsalign' || params.aligner == 'last' || params.aligner == "minimap2" || params.aligner == 'GSAlign' )
@@ -195,6 +230,15 @@ process splittgt {
     output:
     path "SPLIT_tgt", emit: tgtsplit_ch
     path "target.lift", emit: tgt_lift_ch
+
+    stub:
+    """
+    touch mkdir SPLIT_tgt/
+    touch SPLIT_tgt/tgt0.fa
+    touch SPLIT_tgt/tgt1.fa
+    touch SPLIT_tgt/tgt2.fa
+    touch target.lift
+    """
 
     script:
     if( params.aligner == "blat" )
@@ -315,6 +359,24 @@ process pairs {
     output:
     path "pairs.csv", emit: pairspath
 
+    stub:
+    $/
+    #!/usr/bin/env python
+    import os
+    infld1 = os.path.realpath( "${sources}" )
+    infld2 = os.path.realpath( "${targets}" )
+    files1 = os.listdir(infld1)
+    files2 = os.listdir(infld2)
+    of = open("pairs.csv", "w")
+    for f in files1:
+        fname1 = os.path.join( infld1, f)
+        bname1= '.'.join( f.split('.')[0:-1] )
+        for f2 in files2:
+            fname2 = os.path.join(infld2, f2)
+            bname2 = '.'.join( f2.split('.')[0:-1] )
+            of.write( "{},{},{},{}\n".format(bname1, fname1, bname2, fname2) )
+    /$
+
     script:
     $/
     #!/usr/bin/env python
@@ -347,6 +409,11 @@ process make2bitS {
     output:
     path "source.2bit", emit: twoBsrc
 
+    stub:
+    """
+    touch source.2bit
+    """
+
     script:
     """
     faToTwoBit ${source} source.2bit
@@ -365,6 +432,11 @@ process makeSizeS {
     output:
     path "source.sizes", emit: sizesSrc
 
+    stub:
+    """
+    touch source.sizes
+    """
+
     script:
     """
     twoBitInfo ${src} source.sizes
@@ -382,6 +454,11 @@ process make2bitT {
     output:
     path "target.2bit", emit: twoBtgt
 
+    stub:
+    """
+    touch target.2bit
+    """
+
     script:
     """
     faToTwoBit ${target} target.2bit
@@ -398,6 +475,11 @@ process makeSizeT {
 
     output:
     path "target.sizes", emit: sizesTgt
+
+    stub:
+    """
+    touch target.sizes
+    """
 
     script:
     """

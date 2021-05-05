@@ -58,6 +58,11 @@ process lastz_primates{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     echo $lastzPrimate
@@ -85,6 +90,11 @@ process lastz_general{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     echo $lastzGeneral
@@ -112,6 +122,11 @@ process lastz_near{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     echo $lastzNear
@@ -139,6 +154,11 @@ process lastz_medium{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     echo $lastzMedium
@@ -161,6 +181,11 @@ process lastz_far{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     echo $lastzFar
@@ -188,6 +213,11 @@ process lastz_custom{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
 
     """

@@ -17,6 +17,11 @@ process axtchain_near {
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
+    stub:
+    """
+    touch ${srcname}.${tgtname}.chain
+    """
+
     script:
     """
     axtChain $chainNear -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
@@ -35,6 +40,11 @@ process axtchain_medium {
 
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
+
+    stub:
+    """
+    touch ${srcname}.${tgtname}.chain
+    """
 
     script:
     """
@@ -55,6 +65,11 @@ process axtchain_far {
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
+    stub:
+    """
+    touch ${srcname}.${tgtname}.chain
+    """
+
     script:
     """
     axtChain $chainFar -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
@@ -74,6 +89,11 @@ process axtchain_custom {
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
+    stub:
+    """
+    touch ${srcname}.${tgtname}.chain
+    """
+
     script:
     """
     axtChain ${params.chainCustom} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
@@ -91,6 +111,11 @@ process chainMerge {
     output: 
         path "rawchain.chain", emit: rawchain_ch  
   
+    stub:
+    """
+    touch rawchain.chain
+    """
+
     script:
         """
         chainMergeSort $chains | chainSplit run stdin -lump=1 
@@ -114,6 +139,12 @@ process chainNet_old{
         path "liftover.chain", emit: liftover_ch  
         path "netfile.net", emit: netfile_ch  
   
+    stub:
+    """
+    touch liftover.chain
+    touch netfile.net
+    """
+
     script:
     if ( params.aligner != "blat" & params.aligner != "nucmer" & params.aligner != "GSAlign")
     """
@@ -138,6 +169,11 @@ process chainNet{
     output: 
         path "netfile.net"
   
+    stub:
+    """
+    touch netfile.net
+    """
+
     script:
     """
     chainPreNet ${rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
@@ -156,6 +192,11 @@ process netSynt {
     output: 
         path "netfile.synt.net", emit: netfile_ch  
   
+    stub:
+    """
+    touch netfile.synt.net
+    """
+
     script:
     """
     netSyntenic ${netfile} netfile.synt.net
@@ -174,6 +215,11 @@ process chainsubset{
     output: 
         path "liftover.chain", emit: liftover_ch  
   
+    stub:
+    """
+    touch liftover.chain
+    """
+
     script:
     """
     netChainSubset -verbose=0 ${netfile} ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
@@ -195,6 +241,11 @@ process chain2maf {
     output:
         path "${params.chain_name}.maf"
 
+    stub:
+    """
+    touch ${params.chain_name}.maf
+    """
+
     script:
     """
     chainToAxt ${chain} ${twoBitS} ${twoBitT} /dev/stdout | \
@@ -214,6 +265,12 @@ process liftover{
     output:
         path "${params.chain_name}.bed", emit: lifted_ch
         path "${params.chain_name}.unmapped.bed", emit: unmapped_ch
+
+    stub:
+    """
+    touch ${params.chain_name}.bed
+    touch ${params.chain_name}.unmapped.bed
+    """
 
     script:
     """
@@ -236,6 +293,11 @@ process crossmap{
     output:
         path "${params.chain_name}.${params.annotation_format}", emit: lifted_ch
         path "*unmap*",  optional: true, emit: unmapped_ch
+
+    stub:
+    """
+    touch ${params.chain_name}.${params.annotation_format}
+    """
 
     script:
     if ( params.annotation_format == 'bam' )

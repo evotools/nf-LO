@@ -13,6 +13,11 @@ process gsalign_same{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -no_vcf -o ${srcname}.${tgtname}.tmp
@@ -43,6 +48,11 @@ process gsalign_near{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -idy 80 -no_vcf -o ${srcname}.${tgtname}.tmp
@@ -73,6 +83,11 @@ process gsalign_medium{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -idy 75 -no_vcf -o ${srcname}.${tgtname}.tmp
@@ -103,6 +118,11 @@ process gsalign_far{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -idy 70 -no_vcf -o ${srcname}.${tgtname}.tmp
@@ -133,6 +153,11 @@ process gsalign_custom{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     GSAlign -i ${srcname} -q ${tgtfile} -t ${task.cpus} ${params.custom} -no_vcf -o ${srcname}.${tgtname}.tmp
@@ -161,6 +186,15 @@ process bwt_index{
     output: 
         path "${srcname}.*"
   
+    stub:
+    """
+    touch ${srcname}.pac
+    touch ${srcname}.sa
+    touch ${srcname}.amb
+    touch ${srcname}.ann
+    touch ${srcname}.bwt
+    """
+
     script:
     """
     bwt_index ${srcfile} ${srcname} && chmod a+rw ${srcname}.*

@@ -9,6 +9,11 @@ process dataset_genome {
     output:
     path "${genome}.fasta"
 
+    stub:
+    """
+    touch ${genome}.fasta
+    """
+
     script:
     """
     if [ ! \$(which datasets) ]; then 

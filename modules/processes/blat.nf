@@ -20,6 +20,11 @@ process blat_near{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     blat ${srcfile} ${tgtfile} ${blatNear} -ooc=${ooc11} -out=psl tmp.psl 
@@ -43,6 +48,11 @@ process blat_medium{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     blat ${srcfile} ${tgtfile} ${blatMedium} -ooc=${ooc11} -out=psl tmp.psl 
@@ -66,6 +76,11 @@ process blat_far{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     blat ${srcfile} ${tgtfile} ${blatFar} -ooc=${ooc12} -out=psl tmp.psl 
@@ -89,6 +104,11 @@ process blat_balanced{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     blat ${srcfile} ${tgtfile} ${blatBalanced} -ooc=${ooc12} -out=psl tmp.psl 
@@ -112,6 +132,11 @@ process blat{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     blat ${srcfile} ${tgtfile} ${params.custom} -ooc=${ooc12} -out=psl tmp.psl 

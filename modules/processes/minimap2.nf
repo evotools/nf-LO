@@ -15,6 +15,11 @@ process minimap2_near{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     minimap2 -t ${task.cpus} ${minimap2Near} --cs=long ${srcfile} ${tgtfile} | 
@@ -36,6 +41,11 @@ process minimap2_medium{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     minimap2 -t ${task.cpus} --cs=long ${minimap2Medium} ${srcfile} ${tgtfile} | 
@@ -58,6 +68,11 @@ process minimap2_far{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     minimap2 -t ${task.cpus} --cs=long ${minimap2Far} ${srcfile} ${tgtfile} | 
@@ -80,6 +95,11 @@ process minimap2_custom{
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
   
+    stub:
+    """
+    touch ${srcname}.${tgtname}.psl
+    """
+
     script:
     """
     minimap2 -t ${task.cpus} --cs=long ${params.custom} ${srcfile} ${tgtfile} | 
