@@ -17,6 +17,7 @@ You can find more details on the usage of *nf-LO* in the [wiki page](https://git
 - [Customize the run](#Customize-the-run)
 - [Resources](#Resources) 
 - [Example](#Example)
+- [Citing](#Citing-nf-LO)
 - [References](#References)
 
 ## Installation
@@ -114,6 +115,14 @@ nextflow run evotools/nf-LO \
 This analysis will run using genome1 and genome2 as source and target, respectively. The source genome will be fragmented in chunks of 20Mb, 
 whereas the target will be fragmented in 10Mb chunks overlapping 100Kb. It will use lastz as the aligner using the preset for closely related genomes (near).
 The output files will be copied into the folder my_liftover.
+
+## Citing nf-LO
+To cite nf-LO, refer to:
+```
+nf-LO: A scalable, containerised workflow for genome-to-genome lift over
+Andrea Talenti, James Prendergast
+bioRxiv 2021.05.25.445595; doi: https://doi.org/10.1101/2021.05.25.445595
+```
 
 ## References
 Adaptive seeds tame genomic sequence comparison. Kiełbasa SM, Wan R, Sato K, Horton P, Frith MC. Genome Res. 2011 21(3):487-93; http://dx.doi.org/10.1101/gr.113985.110
