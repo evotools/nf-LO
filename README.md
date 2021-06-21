@@ -44,11 +44,11 @@ Then, run the nf-LO workflow to align the S. cerevisiae and S. pombe genomes pul
 ```
 ./nextflow run evotools/nf-LO --igenome_target sacCer3 --igenome_source EF2 --distance far --aligner minimap2 -profile conda -latest --outdir ./my_liftover_minimap2
 ```
-This command will use singularity to obtain the required dependencies and output a chain file compatible with the liftOver utility to the my_liftover_minmap2 folder. See below for more information on how to alternatively use docker, or to manually install the required tools.
+This command will use anaconda to obtain the required dependencies and output a chain file compatible with the liftOver utility to the my_liftover_minmap2 folder. See below for more information on how to alternatively use docker, or to manually install the required tools.
 
 ## Profiles
 *nf-LO* comes with a series of pre-defined profiles:
- - standard: this profile runs all dependencies in docker and other basic presets to facilitate the use
+ - standard: this profile runs all dependencies in anaconda and other basic presets to facilitate the use
  - local: runs using local exe instead of containerized/conda dependencies (see manual installation for further details)
  - conda: runs the dependencies within conda
  - uge: runs using UGE scheduling system
@@ -65,12 +65,12 @@ The source and target genomes can be specified as local or remote (un)compressed
 ### Download from NCBI
 *nf-LO* can download fasta files from ncbi directly. Users provide a GCA/GCF code using the `--ncbi_source` and `--ncbi_target` flags as follow:
 ```
-nextflow run evotools/nf-LO --ncbi_source GCF_001549955.1 --ncbi_target GCF_011751205.1 -profile local,test
+nextflow run evotools/nf-LO --ncbi_source GCF_001549955.1 --ncbi_target GCF_011751205.1 -profile conda 
 ```
 ### Download from iGenomes
 *nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. To do this users provide a genome identifier with the `--igenome_source` and `--igenome_target` flags as follow:
 ```
-nextflow run evotools/nf-LO --igenome_source equCab2 --target igenome_dm6 -profile local,test
+nextflow run evotools/nf-LO --igenome_source equCab2 --target_igenome dm6 -profile conda 
 ```
 
 Note it is possible to mix source and target flags. For example using `--igenome_source` with `--ncbi_target`.
