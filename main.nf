@@ -93,8 +93,8 @@ include {DATA} from './modules/subworkflows/data' params(params)
 
 workflow {
         DATA()
-        ch_source = DATA.out[0]
-        ch_target = DATA.out[1]
+        ch_source = DATA.out.ch_source
+        ch_target = DATA.out.ch_target
         PREPROC( ch_source, ch_target )
         ALIGNER( ch_source, ch_target, PREPROC.out )
         if (params.annotation) {
