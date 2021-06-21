@@ -37,6 +37,5 @@ jobs:
           sudo mv nextflow /usr/local/bin/
 
       - name: Run pipeline with test data
-        uses: fdiblen/anaconda-action@0.1.7
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,conda
