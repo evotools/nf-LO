@@ -42,7 +42,7 @@ If you need further information on the installation of the dependencies, you can
 ## Quick start
 Then, run the nf-LO workflow to align the S. cerevisiae and S. pombe genomes pulled directly from [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html):
 ```
-./nextflow run evotools/nf-LO --igenome_target sacCer3 --igenome_source EF2 --distance far --aligner minimap2 -profile conda -latest --outdir ./my_liftover_minimap2
+./nextflow run evotools/nf-LO --igenomes_target sacCer3 --igenomes_source EF2 --distance far --aligner minimap2 -profile conda -latest --outdir ./my_liftover_minimap2
 ```
 This command will use anaconda to obtain the required dependencies and output a chain file compatible with the liftOver utility to the my_liftover_minmap2 folder. See below for more information on how to alternatively use docker, or to manually install the required tools.
 
@@ -68,12 +68,12 @@ The source and target genomes can be specified as local or remote (un)compressed
 nextflow run evotools/nf-LO --ncbi_source GCF_001549955.1 --ncbi_target GCF_011751205.1 -profile conda 
 ```
 ### Download from iGenomes
-*nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. To do this users provide a genome identifier with the `--igenome_source` and `--igenome_target` flags as follow:
+*nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. To do this users provide a genome identifier with the `--igenomes_source` and `--igenomes_target` flags as follow:
 ```
-nextflow run evotools/nf-LO --igenome_source equCab2 --target_igenome dm6 -profile conda 
+nextflow run evotools/nf-LO --igenomes_source equCab2 --target_igenome dm6 -profile conda 
 ```
 
-Note it is possible to mix source and target flags. For example using `--igenome_source` with `--ncbi_target`.
+Note it is possible to mix source and target flags. For example using `--igenomes_source` with `--ncbi_target`.
 
 ## Customize the run 
 The workflow will provide some custom configuration for the different algorithms and distances. 
