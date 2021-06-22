@@ -21,12 +21,12 @@ def helpMessage() {
     Source genome (use one of the three options):
       --source [file]                 Path to fa(sta)[.gz] for source genome. (Default: './data/source.fa')
       --ncbi_source [file]            Download source genome using NCBI ID 
-      --igenome_source [file]         Download source genome from iGenome
+      --igenomes_source [file]         Download source genome from iGenome
 
     Target genome (use one of the three options): 
       --target [file]                 Path to fa(sta)[.gz] for target genome. (Default: './data/target.fa')
       --ncbi_target [file]            Download target genome using NCBI ID 
-      --igenome_target [file]         Download target genome from iGenome 
+      --igenomes_target [file]         Download target genome from iGenome 
 
     Workflow profile
       -profile [str]                  Configuration profile to use. Can use multiple (comma separated)

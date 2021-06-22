@@ -38,15 +38,15 @@ Nextflow LiftOver v 1.5.1
 ====================================="""
 if (params.ncbi_source){
         log.info"""source          : $params.ncbi_source (NCBI)"""
-} else if (params.igenome_source) {
-        log.info"""source          : $params.igenome_source (iGenome)"""
+} else if (params.igenomes_source) {
+        log.info"""source          : $params.igenomes_source (iGenome)"""
 } else {
         log.info"""source          : $params.source"""
 }
 if (params.ncbi_target){
         log.info"""target          : $params.ncbi_target (NCBI)"""
-} else if (params.igenome_target) {
-        log.info"""target          : $params.igenome_target (iGenome)"""
+} else if (params.igenomes_target) {
+        log.info"""target          : $params.igenomes_target (iGenome)"""
 } else {
         log.info"""target          : $params.target"""
 }
