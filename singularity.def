@@ -45,8 +45,7 @@ Stage: runtime
 # Install procps in debian to make it compatible with reporting
 apt-get update && \
 apt install -y procps gcc g++ curl make pkg-config zlib1g-dev git python2.7 && \
-apt-get clean && \
-rm -rf --no-preserve-root /var/lib/apt/lists/* /tmp/* /var/tmp/*
+apt-get clean 
 
 # Install NCBI datasets
 curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' && \
