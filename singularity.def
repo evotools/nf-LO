@@ -7,8 +7,10 @@ environment.yml .
 %labels
 authors="andrea.talenti@ed.ac.uk" 
 description="Docker image containing base requirements for nf-LO pipelines"
-%post
 
+%post
+# Add anaconda to path, if not already present
+export PATH=/opt/conda/bin:${PATH}
 
 # Install the package as normal:
 conda env create -f environment.yml
@@ -41,10 +43,53 @@ Stage: runtime
 %post
 
 # Install procps in debian to make it compatible with reporting
-apt-get update && apt install -y procps g++ curl && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+apt-get update && \
+apt install -y procps gcc g++ curl make pkg-config zlib1g-dev git python2.7 && \
+apt-get clean && \
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install NCBI datasets
 curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' && \
 mv datasets /usr/local/bin && \
 chmod a+x /usr/local/bin/datasets
+
+# Define working directory
+cd /app
+
+# Add minimal dependencies
+apt-get update -y -qq && \
+apt-get upgrade -y -qq && \
+apt-get install -y -qq make pkg-config zlib1g-dev git python2.7 && \
+apt-get clean && \
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Link python2.7 to python
+ln /usr/bin/python2.7 /usr/bin/python
+
+# Install mafTools
+git clone https://github.com/ComparativeGenomicsToolkit/sonLib.git && \
+cd sonLib && \
+make
+
+git clone https://github.com/ComparativeGenomicsToolkit/pinchesAndCacti.git && \
+cd pinchesAndCacti && \
+make
+
+git clone https://github.com/dentearl/mafTools.git && \
+cd mafTools && \
+sed -i 's/\${cxx}/\${cxx}\ \-lm/g' */Makefile && \
+sed -i 's/char\ fmtName\[10\]/char\ fmtName\[30\]/g' lib/sharedMaf.c && \
+sed -i 's/char\ fmtName\[10\]/char\ fmtName\[30\]/g' mafToFastaStitcher/src/mafToFastaStitcherAPI.c && \
+make && \
+cp ./bin/* /usr/local/bin && \
+chmod a+x /usr/local/bin/*
+
+# Clean-up post installation
+rm -rf /app/*
+apt-get remove -y -qq python2.7 make pkg-config git && \
+apt-get clean -y -qq && \
+apt-get autoremove -y -qq && \
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Copy /venv from the previous stage:
 
@@ -55,6 +100,8 @@ SHELL ["/bin/bash", "-c"]
 %environment
 export PATH=/venv/bin/:$PATH
 %runscript
+cd /app
 exec /bin/bash "$@"
 %startscript
+cd /app
 exec /bin/bash "$@"
