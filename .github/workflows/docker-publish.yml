@@ -1,55 +1,36 @@
 name: Docker
-
-# Controls when the action will run. 
+# This builds the docker image and pushes it to DockerHub
+# Runs on nf-core repo releases and push event to 'dev' branch (PR merges)
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches:
+      - main
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  push_dockerhub:
+    name: Push new Docker image to Docker Hub
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # Only run for the nf-core repo, for releases and merged PRs
+    if: ${{ github.repository == 'evotools/nf-LO' }}
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKERHUB_PASS: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
     steps:
-    
-      - name: Check Out Repo 
+      - name: Check out pipeline code
         uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Build new docker image
+        run: docker build --no-cache . -t ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:latest
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-            
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          push: true
-          tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/nf-lo:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Push Docker image to DockerHub
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:latest
+      - name: Push Docker image to DockerHub 
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:latest
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:latest nfcore/rnaseq:${{ github.event.release.tag_name }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:${{ github.event.release.tag_name }}
