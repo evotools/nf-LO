@@ -67,11 +67,13 @@ ln /usr/bin/python2.7 /usr/bin/python
 # Install mafTools
 git clone https://github.com/ComparativeGenomicsToolkit/sonLib.git && \
 cd sonLib && \
-make
+make && \
+cd ../
 
 git clone https://github.com/ComparativeGenomicsToolkit/pinchesAndCacti.git && \
 cd pinchesAndCacti && \
-make
+make && \
+cd ../
 
 git clone https://github.com/dentearl/mafTools.git && \
 cd mafTools && \
@@ -83,7 +85,7 @@ cp ./bin/* /usr/local/bin && \
 chmod a+x /usr/local/bin/*
 
 # Clean-up post installation
-rm -rf /app/*
+cd / && rm -rf /app/*
 apt-get remove -y -qq python2.7 make pkg-config git && \
 apt-get clean -y -qq && \
 apt-get autoremove -y -qq 
