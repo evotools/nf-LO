@@ -69,6 +69,7 @@ def helpMessage() {
       --max_time                        Max runtime available on the machine (Default: '240.h')
       --chain_name [prefix]             Prefix of the output chain file (Default: liftover)
       --no_maf                          Do not save an output maf file (Default: false)
+      --mafTools                        Path to mafTools installation to generate reporting on the chain file (Optional; not needed if using docker or singularity)
       --outdir [file]                   The output directory where the results will be saved (Default: './results')
       --publish_dir_mode [str]          Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)"""
 }
