@@ -10,7 +10,7 @@ if (params.annotation != 'bed'){
         include {liftover as lifter} from '../processes/postprocess'
     }
 }
-
+include { features_stats } from '../processes/postprocess'
 workflow LIFTOVER {
     take:
         chain
@@ -18,4 +18,5 @@ workflow LIFTOVER {
         ch_tgt
     main:   
         lifter(chain, ch_annot, ch_tgt)
+        features_stats( ch_annot, lifter.out.lifted_ch )
 }

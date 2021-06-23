@@ -1,8 +1,11 @@
 
-
+// Pre-defined chaining parameters 
 chainNear="-minScore=5000 -linearGap=medium"
 chainMedium="-minScore=3000 -linearGap=medium"
 chainFar="-minScore=5000 -linearGap=loose"
+
+// Import mafTools, if specified
+if (params.mafTools){ mafTools_ch=file(params.mafTools) }
 
 process axtchain_near {
     tag "axtchain_n"
@@ -253,6 +256,88 @@ process chain2maf {
     """
 }
 
+
+process name_maf_seq {
+    tag "namemaf"
+    publishDir "${params.outdir}/maf", mode: 'copy', overwrite: true
+    label 'medium'
+ 
+    input:
+        path maf
+
+    output:
+        path "${maf.simpleName}.fixed.maf"
+
+    stub:
+    """
+    touch ${maf.simpleName}.fixed.maf
+    """
+
+    script:
+    $/
+    #!/usr/bin/env python
+    import sys
+    
+    n=0
+    of = open("${maf.simpleName}.fixed.maf", "w")
+    for line in open("$maf"):
+        line = line.split()
+        if len(line) == 0:
+            of.write('\t'.join(line) + "\n")
+            continue
+        if "s" == line[0] and n == 1:
+            line[1] = 'target.' + line[1]
+            n = 0
+            of.write('\t'.join(line) + "\n")
+            continue
+        if "s" == line[0] and n == 0:
+            line[1] = 'source.' + line[1]
+            n = 1
+            of.write('\t'.join(line) + "\n")
+            continue
+        of.write('\t'.join(line) + "\n")
+    /$
+}
+
+
+process mafstats {
+    tag "mafstats"
+    publishDir "${params.outdir}/stats", mode: 'copy', overwrite: true
+    label 'medium'
+ 
+    input:
+        path final_maf
+        val sourceName
+        val targetName
+
+    output:
+        path "mafCoverage.out"
+        path "mafIdentity.out"
+        path "mafStats.out"
+
+    stub:
+    """
+    touch mafCoverage.out
+    touch mafIdentity.out
+    touch mafStats.out
+    """
+
+    script:
+    if (workflow.containerEngine == 'singularity' || workflow.containerEngine == 'docker')
+    """
+    mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
+    mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
+    mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out    
+    """
+    else if (params.mafTools)
+    """
+    ${mafTools_ch}/bin/mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
+    ${mafTools_ch}/bin/mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
+    ${mafTools_ch}/bin/mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out
+    """ 
+}
+
+// Liftover functions
 process liftover{
     tag "liftover"
     publishDir "${params.outdir}/lifted", mode: params.publish_dir_mode, overwrite: true
@@ -315,5 +400,81 @@ process crossmap{
     else 
         """
         CrossMap.py ${params.annotation_format} ${chain} ${annotation} ${params.chain_name}.${params.annotation_format}     
+        """
+}
+
+process features_stats {
+    tag "feat_stats"
+    publishDir "${params.outdir}/stats", mode: params.publish_dir_mode, overwrite: true
+    label 'medium'
+
+    input:
+        path all_feature
+        path lifted_features
+
+    output:
+        path "features.txt"
+
+    stub:
+    """
+    touch features.txt
+    """
+
+    script:
+    if ( params.annotation_format == 'gff' || params.annotation_format == "gtf" || params.annotation_format == "bed" )
+        """
+        if file --mime-type "$lifted_features" | grep -q gzip\$; then
+            liftedfeat=`gunzip -c ${lifted_features} | awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}'`
+            liftedgenes=`gunzip -c ${lifted_features} | awk 'BEGIN{n=0};\$1!~"#" && \$0~"gene" {n+=1}; END{print n}'`
+        else 
+            liftedfeat=`awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}' ${lifted_features}`
+            liftedgenes=`awk 'BEGIN{n=0};\$1!~"#" && \$0~"gene" {n+=1}; END{print n}' ${lifted_features}`
+        fi
+        if file --mime-type "$all_feature" | grep -q gzip\$; then
+            allfeat=`gunzip -c ${all_feature} | awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}'`
+            allgenes=`gunzip -c ${all_feature} | awk 'BEGIN{n=0};\$1!~"#" && \$0~"gene" {n+=1}; END{print n}'`
+        else 
+            allfeat=`awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}' ${all_feature}`
+            allgenes=`awk 'BEGIN{n=0};\$1!~"#" && \$0~"gene" {n+=1}; END{print n}' ${all_feature}`
+        fi
+        echo nFEATURES nFEATURES_lifted nGENES nGENES_lifted > features.txt
+        echo \$allfeat \$liftedfeat \$allgenes \$liftedgenes >> features.txt
+        """
+    else if ( params.annotation_format == 'vcf' )
+        """
+        if file --mime-type "$lifted_features" | grep -q gzip\$; then
+            liftedvars=`gunzip -c ${lifted_features} | awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}'`
+        else 
+            liftedvars=`awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}' ${lifted_features}`
+        fi
+        if file --mime-type "$all_feature" | grep -q gzip\$; then
+            allvars=`gunzip -c ${all_feature} | awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}'`
+        else 
+            allvars=`awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}' ${all_feature}`
+        fi
+        echo nFEATURES nFEATURES_lifted nGENES nGENES_lifted > features.txt
+        echo \$allvars \$liftedvars NA NA>> features.txt
+        """
+    else if ( params.annotation_format == 'maf' )
+        """
+        if file --mime-type "$lifted_features" | grep -q gzip\$; then
+            liftedfeat=`gunzip -c ${lifted_features} | awk 'BEGIN{n=0};\$1~"a" && \$1!~"#" {n+=1}; END{print n}'`
+        else 
+            liftedfeat=`awk 'BEGIN{n=0};\$1~"a" && \$1!~"#" {n+=1}; END{print n}' ${lifted_features}`
+        fi
+        if file --mime-type "$all_feature" | grep -q gzip\$; then
+            allfeat=`gunzip -c ${all_feature} | awk 'BEGIN{n=0};\$1~"a" && \$1!~"#" {n+=1}; END{print n}'`
+        else 
+            allfeat=`awk 'BEGIN{n=0};\$1~"a" && \$1!~"#" {n+=1}; END{print n}' ${all_feature}`
+        fi
+        echo nFEATURES nFEATURES_lifted nGENES nGENES_lifted > features.txt
+        echo \$allfeat \$liftedfeat NA NA>> features.txt
+        """
+    else if ( params.annotation_format == 'bam' )
+        """
+        liftedfeat=`bedtools bamtobed -i ${lifted_features} | awk 'END{print NR}'`
+        allfeat=`bedtools bamtobed -i ${all_feature} | awk 'END{print NR}'`
+        echo nFEATURES nFEATURES_lifted nGENES nGENES_lifted > features.txt
+        echo \$allfeat \$liftedfeat NA NA>> features.txt
         """
 }

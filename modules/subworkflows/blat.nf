@@ -24,7 +24,7 @@ if (params.chainCustom) {
 }
 
 include {chainMerge; chainNet; netSynt; chainsubset} from "../processes/postprocess"
-include {chain2maf} from "../processes/postprocess"
+include {chain2maf; name_maf_seq; mafstats} from "../processes/postprocess"
 
 // Create blat alignments workflow
 workflow BLAT {
@@ -57,7 +57,13 @@ workflow BLAT {
             net_ch = netSynt.out
         }
         chainsubset(net_ch, chainMerge.out)
-        if(!params.no_maf){ chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) }
+        if(!params.no_maf){ 
+            chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) 
+            name_maf_seq( chain2maf.out )
+            if (params.mafTools || workflow.containerEngine ){
+                mafstats( name_maf_seq.out, ch_source.simpleName, ch_target.simpleName ) 
+            }
+        }
         
     emit:
         chainsubset.out

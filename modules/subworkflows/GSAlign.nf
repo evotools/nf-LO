@@ -23,8 +23,8 @@ if (params.chainCustom) {
 }
 
 include {bwt_index} from '../processes/GSAlign'
-include {chainMerge; chainNet; chain2maf; netSynt; chainsubset} from "../processes/postprocess"
-
+include {chainMerge; chainNet; netSynt; chainsubset} from "../processes/postprocess"
+include {chain2maf; name_maf_seq; mafstats} from "../processes/postprocess"
 // Create gsalign alignments workflow
 workflow GSALIGN {
     take:
@@ -56,7 +56,13 @@ workflow GSALIGN {
             net_ch = netSynt.out
         }
         chainsubset(net_ch, chainMerge.out)
-        if(!params.no_maf){ chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) }
+        if(!params.no_maf){ 
+            chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) 
+            name_maf_seq( chain2maf.out )
+            if (params.mafTools || workflow.containerEngine ){
+                mafstats( name_maf_seq.out, ch_source.simpleName, ch_target.simpleName ) 
+            }
+        }
         
     emit:
         chainsubset.out
