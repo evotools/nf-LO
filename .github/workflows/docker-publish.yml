@@ -20,17 +20,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build new docker image
-        run: docker build --no-cache . -t ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:latest
+        run: docker build --no-cache . -t ${{ secrets.DOCKER_HUB_USERNAME }}/nf-lo:latest
 
       - name: Push Docker image to DockerHub
         if: ${{ github.event_name == 'push' }}
         run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-lo:latest
       - name: Push Docker image to DockerHub 
         if: ${{ github.event_name == 'release' }}
         run: |
           echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:latest
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:latest nfcore/rnaseq:${{ github.event.release.tag_name }}
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-LO:${{ github.event.release.tag_name }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-lo:latest
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/nf-lo:latest nfcore/rnaseq:${{ github.event.release.tag_name }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nf-lo:${{ github.event.release.tag_name }}
