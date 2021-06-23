@@ -98,9 +98,3 @@ PATH=/venv/bin/:$PATH
 SHELL ["/bin/bash", "-c"]
 %environment
 export PATH=/venv/bin/:$PATH
-%runscript
-cd /app
-exec /bin/bash "$@"
-%startscript
-cd /app
-exec /bin/bash "$@"
