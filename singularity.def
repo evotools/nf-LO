@@ -53,7 +53,7 @@ mv datasets /usr/local/bin && \
 chmod a+x /usr/local/bin/datasets
 
 # Define working directory
-cd /app
+mkdir /app && cd /app
 
 # Add minimal dependencies
 apt-get update -y -qq && \
