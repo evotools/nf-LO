@@ -1,0 +1,36 @@
+name: nf-LO
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - bedtools=2.30.0
+  - crossmap=0.5.2
+  - graphviz=2.47.3
+  - GSAlign=1.0.22
+  - last=1060
+  - lastz=1.0.4
+  - xorg-libxau=1.0.9
+  - minimap2=2.17
+  - p7zip=16.02
+  - ucsc-axtchain=377
+  - ucsc-axttomaf=377
+  - ucsc-blat=377
+  - ucsc-chainantirepeat=377
+  - ucsc-chainmergesort=377
+  - ucsc-chainnet=377
+  - ucsc-chainprenet=377
+  - ucsc-chainsplit=377
+  - ucsc-chainstitchid=377
+  - ucsc-chaintoaxt=377
+  - ucsc-fasize=377
+  - ucsc-fasplit=377
+  - ucsc-fatotwobit=377
+  - ucsc-lavtopsl=377
+  - ucsc-liftover=377
+  - ucsc-liftup=377
+  - ucsc-netchainsubset=377
+  - ucsc-netsyntenic=377
+  - ucsc-twobitinfo=377
+  - ucsc-wigtobigwig=377
+  - zlib=1.2.11
