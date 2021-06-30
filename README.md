@@ -1,4 +1,6 @@
 # nf-LO
+[![CI](https://github.com/evotools/nf-LO/actions/workflows/CI.yml/badge.svg)](https://github.com/evotools/nf-LO/actions/workflows/CI.yml) [![Docker](https://github.com/evotools/nf-LO/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/evotools/nf-LO/actions/workflows/docker-publish.yml) [![Singularity Build (docker)](https://github.com/evotools/nf-LO/actions/workflows/singularity.yml/badge.svg)](https://github.com/evotools/nf-LO/actions/workflows/singularity.yml)
+
 ## Nextflow LiftOver pipeline
 *nf-LO* is a [nextflow](https://www.nextflow.io/) workflow for generating genome alignment files compatible with the UCSC [liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver) utility for converting genomic coordinates between assemblies. It can automatically pull genomes directly from NCBI or iGenomes (or the user can provide fasta files) and supports four different aligners ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)). Together these provide solutions for both different-species (lastz and minimap2) as well as same-species alignments (blat and GSAlign), with both standard and ultra-fast algorithms from a source to a target genome. It comes with a series of presets, allowing alignments of genomes depending on their genomic distance (near, medium and far). 
 
@@ -36,7 +38,10 @@ The workflow natively support four different ways to provide dependencies:
 1. Anaconda: this is the recommended and easiest way.
 2. Docker: you can create a docker image locally by using the `Dockerfile` and `environment.yml` files in the folder
 3. Singularity: you can create a singularity sif image locally by using the `singularity.def` and `environment.yml` files in the folder
-4. Local installation: we provide an `install.sh` script that will take care of installing all the dependencies.
+4. Local installation: we provide an `assets/install.sh` script that will take care of installing all the dependencies.
+The anaconda way is the easiest to run almost all components of the workflow, with the only exception of [mafTools](https://github.com/dentearl/mafTools).
+This can be installed locally using the `assets/install_maftools.sh` script, that will take care of the installation in your linux or macOS machine.
+Both Singularity and Docker containers deliver mafTools within themselves.
 If you need further information on the installation of the dependencies, you can have a look at the specific [wiki page](https://github.com/evotools/nf-LO/wiki/Installation)
 
 ## Quick start
@@ -63,7 +68,7 @@ We recommend to use soft-masked genomes to reduce the computation time for align
 ### Custom fasta
 The source and target genomes can be specified as local or remote (un)compressed fasta files using the `--source` and `--target` flags. 
 ### Download from NCBI
-*nf-LO* can download fasta files from ncbi directly. Users provide a GCA/GCF code using the `--ncbi_source` and `--ncbi_target` flags as follow:
+*nf-LO* can download fasta files from ncbi directly using the [datasets API](https://www.ncbi.nlm.nih.gov/datasets/). Users provide a GCA/GCF code using the `--ncbi_source` and `--ncbi_target` flags as follow:
 ```
 nextflow run evotools/nf-LO --ncbi_source GCF_001549955.1 --ncbi_target GCF_011751205.1 -profile conda 
 ```
