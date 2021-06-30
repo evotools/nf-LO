@@ -73,7 +73,7 @@ mamba env create -f environment.yml
 
 This will create a new environment in your anaconda installation folder, that you can then pass to nextflow using the `-with-conda` option:
 ```
-nextflow run evotools/nf-LO -profile test -with-conda /PATH/TO/ENVIRONMENT/nf-LO
+nextflow run evotools/nf-LO -profile test -with-conda `conda info --envs | 'awk $1=="nf-LO" {print $2}'`
 ```
 
 ## Run with docker
