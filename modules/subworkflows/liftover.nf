@@ -19,4 +19,6 @@ workflow LIFTOVER {
     main:   
         lifter(chain, ch_annot, ch_tgt)
         features_stats( ch_annot, lifter.out.lifted_ch )
+    emit:
+        features_stats.out
 }

@@ -311,9 +311,9 @@ process mafstats {
         val targetName
 
     output:
-        path "mafCoverage.out"
-        path "mafIdentity.out"
-        path "mafStats.out"
+        path "mafCoverage.*"
+        path "mafIdentity.*"
+        path "mafStats.*"
 
     stub:
     """
@@ -323,18 +323,33 @@ process mafstats {
     """
 
     script:
-    if (workflow.containerEngine == 'singularity' || workflow.containerEngine == 'docker')
+    if (workflow.containerEngine)
     """
     mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
     mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
     mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out    
     """
-    else if (params.mafTools)
+    else if (params.mafTools && !workflow.containerEngine)
     """
     ${mafTools_ch}/bin/mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
     ${mafTools_ch}/bin/mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
     ${mafTools_ch}/bin/mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out
     """ 
+    else 
+    """
+    if [ `which mafCoverage` ]; then
+        mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
+        mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
+    else
+        touch mafCoverage.dum
+        touch mafIdentity.dum
+    fi
+    if [ `which mafStats` ]; then
+        mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out    
+    else
+        touch mafStats.dum
+    fi
+    """
 }
 
 // Liftover functions
@@ -423,14 +438,14 @@ process features_stats {
     script:
     if ( params.annotation_format == 'gff' || params.annotation_format == "gtf" || params.annotation_format == "bed" )
         """
-        if file --mime-type "$lifted_features" | grep -q gzip\$; then
+        if file --dereference --mime-type "$lifted_features" | grep -q gzip\$; then
             liftedfeat=`gunzip -c ${lifted_features} | awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}'`
             liftedgenes=`gunzip -c ${lifted_features} | awk 'BEGIN{n=0};\$1!~"#" && \$0~"gene" {n+=1}; END{print n}'`
         else 
             liftedfeat=`awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}' ${lifted_features}`
             liftedgenes=`awk 'BEGIN{n=0};\$1!~"#" && \$0~"gene" {n+=1}; END{print n}' ${lifted_features}`
         fi
-        if file --mime-type "$all_feature" | grep -q gzip\$; then
+        if file --dereference --mime-type "$all_feature" | grep -q gzip\$; then
             allfeat=`gunzip -c ${all_feature} | awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}'`
             allgenes=`gunzip -c ${all_feature} | awk 'BEGIN{n=0};\$1!~"#" && \$0~"gene" {n+=1}; END{print n}'`
         else 
@@ -442,12 +457,12 @@ process features_stats {
         """
     else if ( params.annotation_format == 'vcf' )
         """
-        if file --mime-type "$lifted_features" | grep -q gzip\$; then
+        if file --dereference --mime-type "$lifted_features" | grep -q gzip\$; then
             liftedvars=`gunzip -c ${lifted_features} | awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}'`
         else 
             liftedvars=`awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}' ${lifted_features}`
         fi
-        if file --mime-type "$all_feature" | grep -q gzip\$; then
+        if file --dereference --mime-type "$all_feature" | grep -q gzip\$; then
             allvars=`gunzip -c ${all_feature} | awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}'`
         else 
             allvars=`awk 'BEGIN{n=0};\$1!~"#"{n+=1}; END{print n}' ${all_feature}`
@@ -457,12 +472,12 @@ process features_stats {
         """
     else if ( params.annotation_format == 'maf' )
         """
-        if file --mime-type "$lifted_features" | grep -q gzip\$; then
+        if file --dereference --mime-type "$lifted_features" | grep -q gzip\$; then
             liftedfeat=`gunzip -c ${lifted_features} | awk 'BEGIN{n=0};\$1~"a" && \$1!~"#" {n+=1}; END{print n}'`
         else 
             liftedfeat=`awk 'BEGIN{n=0};\$1~"a" && \$1!~"#" {n+=1}; END{print n}' ${lifted_features}`
         fi
-        if file --mime-type "$all_feature" | grep -q gzip\$; then
+        if file --dereference --mime-type "$all_feature" | grep -q gzip\$; then
             allfeat=`gunzip -c ${all_feature} | awk 'BEGIN{n=0};\$1~"a" && \$1!~"#" {n+=1}; END{print n}'`
         else 
             allfeat=`awk 'BEGIN{n=0};\$1~"a" && \$1!~"#" {n+=1}; END{print n}' ${all_feature}`
@@ -477,4 +492,30 @@ process features_stats {
         echo nFEATURES nFEATURES_lifted nGENES nGENES_lifted > features.txt
         echo \$allfeat \$liftedfeat NA NA>> features.txt
         """
+}
+
+process make_report {
+    tag "report"
+    publishDir "${params.outdir}/reports", mode: params.publish_dir_mode, overwrite: true
+    label 'small'
+
+    input:
+    path mafstats
+    path mafcov
+    path mafidn
+    path feat
+
+    output:
+    path "chainMetrics.html"
+
+    stub:
+    """
+    touch chainMetrics.html
+    """
+
+    script:
+    """
+    cp ${baseDir}/assets/gatherMetrics.Rmd ./
+    R -e "rmarkdown::render('gatherMetrics.Rmd',output_file='chainMetrics.html')"
+    """
 }

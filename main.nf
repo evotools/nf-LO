@@ -72,8 +72,10 @@ if (params.mafTools){
 log.info"""skip netsynt    : $params.no_netsynt
 max cpu         : $params.max_cpus
 max mem         : $params.max_memory
-max rt          : $params.max_time
-""" 
+max rt          : $params.max_time""" 
+if (workflow.containerEngine){
+        log.info """container       : $workflow.containerEngine"""
+} 
 
 // Check parameters
 // checkPathParamList = [
@@ -93,7 +95,7 @@ if ( params.aligner == 'lastz' ){
 include {PREPROC} from './modules/subworkflows/preprocess' params(params)
 include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
 include {DATA} from './modules/subworkflows/data' params(params)
-
+include {make_report} from './modules/processes/postprocess' params(params)
 workflow {
         DATA()
         ch_source = DATA.out.ch_source
@@ -104,5 +106,11 @@ workflow {
                 if (!file(params.annotation).exists()) exit 0, "Genome annotation file ${params.annotation} not found. Closing."
                 ch_annot = Channel.fromPath(params.annotation)
                 LIFTOVER(ALIGNER.out[0], ch_annot, ch_target) 
-        }                
+                liftstats = LIFTOVER.out
+        } else {
+                liftstats = file("${params.outdir}/stats/placeholder4")
+        }
+        if (params.mafTools || params.annotation){
+                make_report(ALIGNER.out.mafs, ALIGNER.out.mafc, ALIGNER.out.mafi, liftstats)
+        }
 }

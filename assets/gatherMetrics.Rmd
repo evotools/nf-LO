@@ -1,0 +1,96 @@
+---
+title: "nf-LO metrics"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+
+#define cleveland theme
+theme_dotplot <- theme_bw(14) +
+    theme(axis.text.y = element_text(size = rel(.75)),
+        axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = rel(.75)),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size = 0.5),
+        panel.grid.minor.x = element_blank())
+
+```
+
+## Genome alignment metrics
+
+Overall metrics describing the alignments extracted from the chain file.
+
+```{r general, echo=FALSE, fig.height=1.5, fig.align="center", message = FALSE}
+if (file.exists('mafStats.out')){
+    mafStats<-read_delim("mafStats.out", ":", skip=2, col_names = c("Metric", "Value"), trim_ws = TRUE) %>% drop_na()
+    kable(mafStats, caption = "MAF statistics")
+} else {
+    print("No chain statistics collected")
+}
+
+```
+
+## Genomes coverage and identical bases
+
+Coverage and percentage of identical bases in the two genomes covered by the chain file.
+
+```{r coverage, echo=FALSE, fig.height=1.5, fig.align="center", message = FALSE}
+if (file.exists("mafCoverage.out") & file.exists("mafIdentity.out")){
+    #annoyingly the mafCoverage.out header is a bit of a mess with a trailing tab etc
+    mafCov<-read_tsv("mafCoverage.out", col_names = c("referenceSpecies/Chr", "querySpecies/Chr", "lengthOfReferenceGenome", "coverage"), skip=1)
+
+    #in file final column is titled "coverage" but changed to "identity" so doesnt clash with coverage column from above
+    mafId<-read_tsv("mafIdentity.out", col_names = c("referenceSpecies/Chr", "querySpecies/Chr", "lengthOfReferenceGenome", "identity"), skip=1)
+
+    #assume want to drop where reference and query are the same
+    mafCI<-inner_join(mafCov, mafId) %>% filter(`referenceSpecies/Chr` != `querySpecies/Chr`)
+} else {
+    print("No chain statistics collected")
+}
+```
+```{r covtable, echo=FALSE, fig.height=1.5, fig.align="center", message = FALSE}
+if (exists("mafCI")){
+    #Create table 
+    kable(mafCI, caption = "Coverage and identity metrics")
+}
+```
+```{r covplot, echo=FALSE, fig.align="center", message = FALSE}
+if (exists("mafCI")){
+    # Create plot
+    mafPlotDat<-mafCI %>% pivot_longer(names_to = "metric", values_to = "value", cols=coverage:identity)
+    ggplot(mafPlotDat, aes(value, `referenceSpecies/Chr`, colour=metric))+geom_point(size=2)+xlim(0,1) +
+        ylab("Reference\nsequence")+ 
+        theme_dotplot 
+}
+```
+
+## Lifted features
+
+Number of features provided and lifted. If the files is a GFF, and is annotated with gene information,
+also specifies the number of genes present and lifted by the workflow. 
+
+```{r features, echo=FALSE, fig.height=1.5, fig.align="center", message = FALSE}
+if (file.exists("features.txt")){
+    feat<-read_delim("features.txt", " ") 
+    colnames(feat) = c("Features (all)", "Features (lifted)", "Genes (all)", "Genes (lifted)")
+    kable(feat, caption = "Features statistics")
+    kable(feat, caption = "Features statistics")
+} else {
+    print("No features statistics collected")
+}
+```
+```{r features plot, echo=FALSE, fig.align="center", message = FALSE}
+if (exists("feat")){
+    feat %>% 
+        pivot_longer(names_to = "group", values_to = "value", cols=seq(1,4) ) %>%
+        ggplot(aes(value, group, fill=group)) + 
+        geom_col(size=2) + 
+        ylab("Number of features") + 
+        theme_dotplot + 
+        theme(legend.title = element_blank())
+}
+```

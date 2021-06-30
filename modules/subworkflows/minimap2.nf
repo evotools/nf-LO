@@ -54,12 +54,20 @@ workflow MINIMAP2 {
         if(!params.no_maf){ 
             chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) 
             name_maf_seq( chain2maf.out )
-            if (params.mafTools || workflow.containerEngine ){
-                mafstats( name_maf_seq.out, ch_source.simpleName, ch_target.simpleName ) 
-            }
+            mafstats( name_maf_seq.out, ch_source.simpleName, ch_target.simpleName ) 
+            mafs = mafstats.out[0]
+            mafc = mafstats.out[1]
+            mafi = mafstats.out[2]
+        } else {
+            mafs = file("${params.outdir}/stats/placeholder1")
+            mafc = file("${params.outdir}/stats/placeholder2")
+            mafi = file("${params.outdir}/stats/placeholder3")
         }
         
     emit:
         chainsubset.out
         net_ch
+        mafs
+        mafc
+        mafi
 }
