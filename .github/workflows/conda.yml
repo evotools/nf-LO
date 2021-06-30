@@ -1,0 +1,33 @@
+name: Python Package using Conda
+
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
+    - name: Install mamba
+      run: |
+        conda install -c conda-forge -y mamba
+    - name: Create generic environment
+      run: |
+        mamba env create -f environment.yml
+    - name: Create R environment
+      run: |
+        mamba env create -f assets/r-environment.yml
+    - name: Create conda environment
+      run: |
+        mamba remove -y -n nf-LO --all
+        mamba env create -f assets/environment.yml
