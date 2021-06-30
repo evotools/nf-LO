@@ -4,10 +4,8 @@
 ## Nextflow LiftOver pipeline
 *nf-LO* is a [nextflow](https://www.nextflow.io/) workflow for generating genome alignment files compatible with the UCSC [liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver) utility for converting genomic coordinates between assemblies. It can automatically pull genomes directly from NCBI or iGenomes (or the user can provide fasta files) and supports four different aligners ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)). Together these provide solutions for both different-species (lastz and minimap2) as well as same-species alignments (blat and GSAlign), with both standard and ultra-fast algorithms from a source to a target genome. It comes with a series of presets, allowing alignments of genomes depending on their genomic distance (near, medium and far). 
 
-## Read-the-docs
-For the latest documentation, see our [readthedocs](https://nf-lo.readthedocs.io/en/latest/) page. 
-## Step-by-step tutorial
-You can find more details on the usage of *nf-LO* in the [wiki page](https://github.com/evotools/nf-LO/wiki), including a simple step-by-step tutorial to run the analyses on your own genomes.
+## Documentation
+You can find more details on the usage of *nf-LO* in the [readthedocs](https://nf-lo.readthedocs.io/en/latest/) or in the [wiki](https://github.com/evotools/nf-LO/wiki) pages. These include also a simple [step-by-step](https://nf-lo.readthedocs.io/en/latest/step.html) tutorial to run the analyses on your own genomes.
 
 ## Table of Contents
 
@@ -44,7 +42,7 @@ The workflow natively support four different ways to provide dependencies:
 The anaconda way is the easiest to run almost all components of the workflow, with the only exception of [mafTools](https://github.com/dentearl/mafTools).
 This can be installed locally using the `assets/install_maftools.sh` script, that will take care of the installation in your linux or macOS machine.
 Both Singularity and Docker containers deliver mafTools within themselves.
-If you need further information on the installation of the dependencies, you can have a look at the specific [wiki page](https://github.com/evotools/nf-LO/wiki/Installation)
+If you need further information on the installation of the dependencies, you can have a look at the specific [wiki page](https://nf-lo.readthedocs.io/en/latest/install.html)
 
 ## Quick start
 Then, run the nf-LO workflow to align the S. cerevisiae and S. pombe genomes pulled directly from [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html):
@@ -85,8 +83,8 @@ Note it is possible to mix source and target flags. For example using `--igenome
 ## Customize the run 
 The workflow will provide some custom configuration for the different algorithms and distances. 
 **NOTE**: the alignment stage heavily affects the results of the chaining process, so we strongly recommend to perform different tests with different configurations, including custom ones.
-To see the presets available and how to fine-tune the pipeline go to our [Alignments](https://github.com/evotools/nf-LO/wiki/Alignments) wiki page.
-The chain/net generation can also be fine-tuned to achieve better results (see [Chain/Netting](https://github.com/evotools/nf-LO/wiki/Chain-Netting)).
+To see the presets available and how to fine-tune the pipeline go to our [Alignments](https://nf-lo.readthedocs.io/en/latest/align.html) wiki page.
+The chain/net generation can also be fine-tuned to achieve better results (see [Chain/Netting](https://nf-lo.readthedocs.io/en/latest/chain.html)).
 
 ## Resources
 If you're running the workflow in a local workstation, single node or a local server we recommend to define the maximum amount of cores and memory for each job.
