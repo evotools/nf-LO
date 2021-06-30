@@ -5,10 +5,15 @@ LABEL authors="andrea.talenti@ed.ac.uk" \
 
 # Install the package as normal:
 COPY environment.yml .
-RUN conda env create -f environment.yml
+
+# Install mamba to speed up the process
+RUN conda install -c conda-forge -y mamba
+
+# Create the environment
+RUN mamba env create -f environment.yml
 
 # Install conda-pack:
-RUN conda install -c conda-forge conda-pack
+RUN mamba install -c conda-forge conda-pack
 
 # Use conda-pack to create a standalone enviornment
 # in /venv:
@@ -28,7 +33,7 @@ FROM debian:buster AS runtime
 
 # Install procps in debian to make it compatible with reporting
 RUN apt-get update && \
-  apt install -y procps gcc g++ curl make pkg-config zlib1g-dev git python2.7 && \
+  apt install -y procps gcc g++ curl make pkg-config zlib1g-dev git python2.7 file && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

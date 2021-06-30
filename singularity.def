@@ -12,11 +12,14 @@ description="Docker image containing base requirements for nf-LO pipelines"
 # Add anaconda to path, if not already present
 export PATH=/opt/conda/bin:${PATH}
 
+# Install mamba
+conda install -c conda-forge -y mamba
+
 # Install the package as normal:
-conda env create -f environment.yml
+mamba env create -f environment.yml
 
 # Install conda-pack:
-conda install -c conda-forge conda-pack
+mamba install -c conda-forge conda-pack
 
 # Use conda-pack to create a standalone enviornment
 # in /venv:
@@ -44,7 +47,7 @@ Stage: runtime
 
 # Install procps in debian to make it compatible with reporting
 apt-get update && \
-apt install -y procps gcc g++ curl make pkg-config zlib1g-dev git python2.7 && \
+apt install -y procps gcc g++ curl make pkg-config zlib1g-dev git python2.7 file && \
 apt-get clean 
 
 # Install NCBI datasets
