@@ -8,8 +8,8 @@ curl -s https://get.nextflow.io | bash
 ```
 
 ## Install the dependencies
-*nf-LO* uses a series of software to automatize and uniform the liftOver generation process.
-We provide four different ways to install and run all these dependencies:
+*nf-LO* uses a series of software to automate and streamline the liftOver generation process.
+We provide four different ways to install and run all of these dependencies:
 1. [Anaconda](https://www.anaconda.com/products/individual): this is the recommended and easiest way.
 2. [Docker](https://www.docker.com/): you can create a docker image locally by using the `Dockerfile` and `environment.yml` files in the folder
 3. [Singularity](https://sylabs.io/): you can create a singularity sif image locally by using the `singularity.def` and `environment.yml` files in the folder
@@ -49,10 +49,10 @@ Plus the optional dependencies:
    1. tidyverse
    2. Rmarkdown
 
-All dependecies used by *nf-LO* are free for academic, nonprofit and personal use. For commercial use, check the licencing coditions for the different tools separately.
+All dependecies used by *nf-LO* are free for academic, nonprofit and personal use. For commercial use, check the licencing conditions for the different tools separately.
 
 ## Anaconda
-Almost all dependencies can be installed through anaconda. Follow the instruction [here](https://www.anaconda.com/products/individual) to install anaconda on your machine.
+Almost all dependencies can be installed through anaconda. Follow the instructions [here](https://www.anaconda.com/products/individual) to install anaconda on your machine.
 This is the easiest route, since it can be run directly from the github repository:
 ```
 nextflow run evotools/nf-LO -profile test,conda
@@ -60,7 +60,7 @@ nextflow run evotools/nf-LO -profile test,conda
 The only dependencies that at this stage cannot be installed with anaconda is [mafTools](https://github.com/dentearl/mafTools). This component is required to generate some of the final metrics of the alignments, and can be installed manually on your macOS or linux machine using the `install_maftools.sh` script. 
 
 ## Mamba
-To speed up the process, you can install all the dependencies using [mamba](https://github.com/mamba-org/mamba) instead.
+To speed up the process, you can install all of the dependencies using [mamba](https://github.com/mamba-org/mamba) instead.
 First install mamba in your anaconda environment:
 ```
 conda install -c conda-forge -y mamba
@@ -77,8 +77,8 @@ nextflow run evotools/nf-LO -profile test -with-conda `conda info --envs | 'awk 
 ```
 
 ## Run with docker
-The dependencies can be run using docker. Follow the instruction [here](https://docs.docker.com/engine/install/) to install docker on your system. 
-The docker image needs to be build locally using the Dockerfile in the folder as follows:
+The dependencies can be run using docker. Follow the instructions [here](https://docs.docker.com/engine/install/) to install docker on your system. 
+The docker image needs to be built locally using the Dockerfile in the folder as follows:
 ```
 curl -O https://raw.githubusercontent.com/evotools/nf-LO/main/Dockerfile
 curl -O https://raw.githubusercontent.com/evotools/nf-LO/main/environment.yml
@@ -91,7 +91,7 @@ nextflow run evotools/nf-LO -profile test -with-docker nflo:latest
 ```
 
 ### Run with singularity
-You can run the workflow using a singularity container. Follow the instructions here to install [singularity](https://sylabs.io/guides/3.7/admin-guide/installation.html)
+You can run the workflow using a singularity container. Follow the instructions here to install [singularity](https://sylabs.io/guides/3.7/admin-guide/installation.html).
 Then, you need to build it first using the command:
 ```
 curl -O https://raw.githubusercontent.com/evotools/nf-LO/main/singularity.def
