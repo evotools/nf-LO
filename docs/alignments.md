@@ -58,7 +58,7 @@ Even though we **strongly** advise to test different parameters and configuratio
 | H. sapiens (build 38) |      M. musculus      |       90        |   0.210189   | medium/general |
 | H. sapiens (build 38) |       G. gallus       |       312       |   1.000000   |       far      |
 
-Again, remember that these are just suggested presets. Each analyses should he considered differently, even by testing user-defined set of parameters.
+Again, remember that these are just suggested presets. Each analyses should be considered differently, by testing user-defined sets of parameters.
 
 ## Custom parameters
 You can apply your own custom parameters to an alignment simply with the `--custom` flag:
