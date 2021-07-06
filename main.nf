@@ -31,8 +31,7 @@ log.info '''
  | '_ \\|  _| |_____| | |   | |  | |
  | | | | |           | |___| |__| |
  |_| |_|_|           |______\\____/ 
-=====================================
-      '''
+====================================='''
 log.info """\
 Nextflow LiftOver v 1.6.0
 ====================================="""
@@ -110,7 +109,7 @@ workflow {
         } else {
                 liftstats = file("${params.outdir}/stats/placeholder4")
         }
-        if (params.mafTools || params.annotation){
+        if (params.mafTools || params.annotation || workflow.containerEngine){
                 make_report(ALIGNER.out.mafs, ALIGNER.out.mafc, ALIGNER.out.mafi, liftstats)
         }
 }
