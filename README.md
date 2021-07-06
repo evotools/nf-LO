@@ -5,7 +5,7 @@
 *nf-LO* is a [nextflow](https://www.nextflow.io/) workflow for generating genome alignment files compatible with the UCSC [liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver) utility for converting genomic coordinates between assemblies. It can automatically pull genomes directly from NCBI or iGenomes (or the user can provide fasta files) and supports four different aligners ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)). Together these provide solutions for both different-species (lastz and minimap2) as well as same-species alignments (blat and GSAlign), with both standard and ultra-fast algorithms from a source to a target genome. It comes with a series of presets, allowing alignments of genomes depending on their genomic distance (near, medium and far). 
 
 ## Documentation
-You can find more details on the usage of *nf-LO* in the [readthedocs](https://nf-lo.readthedocs.io/en/latest/) or in the [wiki](https://github.com/evotools/nf-LO/wiki) pages. These include also a simple [step-by-step](https://nf-lo.readthedocs.io/en/latest/step.html) tutorial to run the analyses on your own genomes.
+You can find more details on the usage of *nf-LO* in the [readthedocs](https://nf-lo.readthedocs.io/en/latest/) or in the [wiki](https://github.com/evotools/nf-LO/wiki) pages. These also include a simple [step-by-step](https://nf-lo.readthedocs.io/en/latest/step.html) tutorial to run the analyses on your own genomes.
 
 ## Table of Contents
 
@@ -39,13 +39,14 @@ The workflow natively support four different ways to provide dependencies:
 2. Docker: you can create a docker image locally by using the `Dockerfile` and `environment.yml` files in the folder
 3. Singularity: you can create a singularity sif image locally by using the `singularity.def` and `environment.yml` files in the folder
 4. Local installation: we provide an `assets/install.sh` script that will take care of installing all the dependencies.
-The anaconda way is the easiest to run almost all components of the workflow, with the only exception of [mafTools](https://github.com/dentearl/mafTools).
+
+Using anaconda is the easiest to run almost all components of the workflow, the only exception being [mafTools](https://github.com/dentearl/mafTools).
 This can be installed locally using the `assets/install_maftools.sh` script, that will take care of the installation in your linux or macOS machine.
-Both Singularity and Docker containers deliver mafTools within themselves.
+The Singularity and Docker containers contain mafTools.
 If you need further information on the installation of the dependencies, you can have a look at the specific [wiki page](https://nf-lo.readthedocs.io/en/latest/install.html)
 
 ## Quick start
-Then, run the nf-LO workflow to align the S. cerevisiae and S. pombe genomes pulled directly from [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html):
+After obtaining nextflow, to run the nf-LO workflow to align the S. cerevisiae and S. pombe genomes pulled directly from [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) simply type:
 ```
 ./nextflow run evotools/nf-LO --igenomes_target sacCer3 --igenomes_source EF2 --distance far --aligner minimap2 -profile conda -latest --outdir ./my_liftover_minimap2
 ```
@@ -53,7 +54,7 @@ This command will use anaconda to obtain the required dependencies and output a 
 
 ## Profiles
 *nf-LO* comes with a series of pre-defined profiles:
- - standard: this profile runs all dependencies in anaconda and other basic presets to facilitate the use
+ - standard: this profile runs all dependencies using anaconda
  - local: runs using local exe instead of containerized/conda dependencies (see manual installation for further details)
  - conda: runs the dependencies within conda
  - uge: runs using UGE scheduling system
@@ -62,7 +63,7 @@ This command will use anaconda to obtain the required dependencies and output a 
 
 ## Inputs
 
-There are three different ways a user can specify genomes to align. Note in each case the source genome is the genome of origin, from which you which to lift the positions. The target genome is the genome *to* which you wish to lift the positions to. 
+There are three different ways a user can specify genomes to align. Note in each case the source genome is the genome of origin, from which you which to lift the positions. The target genome is the genome *to* which you wish to lift the positions. 
 We recommend to use soft-masked genomes to reduce the computation time for aligners such as lastz. 
 
 ### Custom fasta
@@ -87,8 +88,8 @@ To see the presets available and how to fine-tune the pipeline go to our [Alignm
 The chain/net generation can also be fine-tuned to achieve better results (see [Chain/Netting](https://nf-lo.readthedocs.io/en/latest/chain.html)).
 
 ## Resources
-If you're running the workflow in a local workstation, single node or a local server we recommend to define the maximum amount of cores and memory for each job.
-You can set that using the `--max_memory NCPU` and `--max_cpus 'MEM.GB'`, where NCPU is the maximum number of cpus per task and MEM is maximum amount of memory for a single task.
+If you're running the workflow on a local workstation, single node or a local server we recommend to define the maximum amount of cores and memory for each job.
+You can set that using the `--max_memory NCPU` and `--max_cpus 'MEM.GB'`, where NCPU is the maximum number of cpus per task and MEM is the maximum amount of memory for a single task.
 
 ## Example
 To test the pipeline locally, simply run:
@@ -122,7 +123,7 @@ whereas the target will be fragmented in 10Mb chunks overlapping 100Kb. It will 
 The output files will be copied into the folder my_liftover.
 
 ## Citing nf-LO
-To cite nf-LO, refer to:
+To cite nf-LO, please refer to:
 ```
 nf-LO: A scalable, containerised workflow for genome-to-genome lift over
 Andrea Talenti, James Prendergast
