@@ -40,6 +40,7 @@ User guide
   :caption: Components
 
   inputs
+  resources
   alignments
   chain
   liftover
