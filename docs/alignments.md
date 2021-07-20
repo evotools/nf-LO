@@ -5,8 +5,8 @@ This section documents the parameters for the alignments performed in nf-LO
 nf-LO currently supports 4 different aligners:
 1. [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/)
 2. [lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz)
-3. [minimap2](https://github.com/hsinnan75/GSAlign)
-4. [GSAlign](https://github.com/lh3/minimap2)
+3. [minimap2](https://github.com/lh3/minimap2)
+4. [GSAlign](https://github.com/hsinnan75/GSAlign)
 
 The first two are the "classic" ones used to generate lift overs, whereas the other two are ultra-fast aligners.
 Each has separate characteristics that makes them suitable for different use-cases. 
