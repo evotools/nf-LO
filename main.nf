@@ -33,7 +33,7 @@ log.info '''
  |_| |_|_|           |______\\____/ 
 ====================================='''
 log.info """\
-Nextflow LiftOver v 1.6.0
+Nextflow LiftOver v ${workflow.manifest.version}
 ====================================="""
 if (params.ncbi_source){
         log.info"""source          : $params.ncbi_source (NCBI)"""
