@@ -48,7 +48,7 @@ Seed and Transition value (T)	1
 
 process lastz_primates{    
     tag "lastz_primates.${srcname}.${tgtname}"
-    label 'large'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -80,7 +80,7 @@ process lastz_primates{
 
 process lastz_general{    
     tag "lastz_general.${srcname}.${tgtname}"
-    label 'large'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -112,7 +112,7 @@ process lastz_general{
 
 process lastz_near{    
     tag "lastz_near.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -144,7 +144,7 @@ process lastz_near{
 
 process lastz_medium{    
     tag "lastz_med.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -171,7 +171,7 @@ process lastz_medium{
 
 process lastz_far{    
     tag "lastz_far.${srcname}.${tgtname}"
-    label 'small'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -203,7 +203,7 @@ process lastz_far{
 
 process lastz_custom{    
     tag "lastz_cust.${srcname}.${tgtname}"
-    label 'large'
+    label 'medium'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
