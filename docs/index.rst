@@ -46,3 +46,4 @@ User guide
   liftover
   output
   reports
+  citations

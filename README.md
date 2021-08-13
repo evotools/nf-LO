@@ -135,7 +135,7 @@ To cite nf-LO, please refer to:
 ```
 nf-LO: A scalable, containerised workflow for genome-to-genome lift over
 Andrea Talenti, James Prendergast
-bioRxiv 2021.05.25.445595; doi: https://doi.org/10.1101/2021.05.25.445595
+Genome Biology and Evolution, 2021;, evab183, https://doi.org/10.1093/gbe/evab183
 ```
 
 ## References
