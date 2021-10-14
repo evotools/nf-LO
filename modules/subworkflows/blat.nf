@@ -11,6 +11,15 @@ if (params.custom) {
     include {blat_far as blat} from '../processes/blat'
 } else if (params.distance == 'balanced') {
     include {blat_balanced as blat} from '../processes/blat'
+} else {
+    include {blat_balanced as blat} from '../processes/blat'
+    log.info"""Preset ${params.distance} not available for blat"""   
+    log.info"""The software will use the balanced instead."""   
+    log.info"""If it is not ok for you, re-run selecting among the following options:"""   
+    log.info""" 1 - near"""   
+    log.info""" 2 - medium"""   
+    log.info""" 3 - far"""   
+    log.info""" 4 - balanced"""   
 }
 
 if (params.chainCustom) {
@@ -40,6 +49,9 @@ workflow BLAT {
         twoBitTN  
 
     main:
+        // Check that preset is among the available ones
+
+
         // Prepare Ooc files
         makeooc(ch_source)
 

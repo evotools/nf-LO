@@ -13,6 +13,16 @@ if (params.custom) {
     include {lastz_general as lastz} from '../processes/lastz'
 } else if (params.custom){
     include {lastz_custom as lastz} from '../processes/lastz'
+} else {
+    include {lastz_general as lastz} from '../processes/lastz'
+    log.info"""Preset ${params.distance} not available for lastz"""   
+    log.info"""The software will use general instead."""   
+    log.info"""If it is not ok for you, re-run selecting among the following options:"""   
+    log.info""" 1 - near"""   
+    log.info""" 2 - medium"""   
+    log.info""" 3 - far"""   
+    log.info""" 4 - primate"""   
+    log.info""" 5 - general"""   
 }
 
 if (params.chainCustom) {
