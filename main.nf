@@ -24,17 +24,17 @@ if ( params.custom != '' && params.distance == 'custom' ) { params.distance = 'c
 
 // Print run informations
 log.info '''
-=====================================
-         __           _      ____  
-        / _|         | |    / __ \\ 
-  _ __ | |_   ______ | |   | |  | |
- | '_ \\|  _| |_____| | |   | |  | |
- | | | | |           | |___| |__| |
- |_| |_|_|           |______\\____/ 
-====================================='''
+======================================
+          __           _      ____  
+         / _|         | |    / __ \\ 
+   _ __ | |_   ______ | |   | |  | |
+  | '_ \\|  _| |_____| | |   | |  | |
+  | | | | |           | |___| |__| |
+  |_| |_|_|           |______\\____/ 
+======================================'''
 log.info """\
-Nextflow LiftOver v ${workflow.manifest.version}
-====================================="""
+      Nextflow LiftOver v ${workflow.manifest.version}
+======================================"""
 if (params.ncbi_source){
         log.info"""source          : $params.ncbi_source (NCBI)"""
 } else if (params.igenomes_source) {
