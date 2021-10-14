@@ -8,7 +8,7 @@ blatFar="-t=dna -q=dna -fastMap -noHead -tileSize=12 -oneOff=1 -minMatch=1 -minS
 
 process blat_near{    
     tag "blat.${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'large'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -36,7 +36,7 @@ process blat_near{
 
 process blat_medium{    
     tag "blat.${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'large'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -64,7 +64,7 @@ process blat_medium{
 
 process blat_far{    
     tag "blat.${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'large'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -92,7 +92,7 @@ process blat_far{
 
 process blat_balanced{    
     tag "blat.${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'large'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -120,7 +120,7 @@ process blat_balanced{
 
 process blat{    
     tag "blat.${params.distance}.${srcname}.${tgtname}"
-    label 'small'
+    label 'large'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
