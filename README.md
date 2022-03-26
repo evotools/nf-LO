@@ -1,6 +1,3 @@
-This repository is now archived. You can find the latest update to nf-LO here:
-https://github.com/evotools/nf-LO/
-
 # nf-LO
 [![CI](https://github.com/evotools/nf-LO/actions/workflows/CI.yml/badge.svg)](https://github.com/evotools/nf-LO/actions/workflows/CI.yml) [![Docker](https://github.com/evotools/nf-LO/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/evotools/nf-LO/actions/workflows/docker-publish.yml) [![Singularity Build (docker)](https://github.com/evotools/nf-LO/actions/workflows/singularity.yml/badge.svg)](https://github.com/evotools/nf-LO/actions/workflows/singularity.yml) [![Python Package using Conda](https://github.com/evotools/nf-LO/actions/workflows/conda.yml/badge.svg)](https://github.com/evotools/nf-LO/actions/workflows/conda.yml)
 
