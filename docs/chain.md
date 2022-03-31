@@ -4,7 +4,7 @@ The process of chain/netting takes the alignments generated in the previous stag
 2. Generate chain: use axtChain to generate the chain file; the configuration changes depending on the distance of the genomes 
 2. Filter out repetitive blocks (ChainAntiRepeat)
 3. Remove chains that can't be netted, and creates the net file (chainPreNet/chainNet)
-4. Add synteny info to the net file using netSyntenic (optional, can be turned off by `--no_netsynt`; **recommended for medium and distantly related genomes**)
+4. Add synteny info to the net file using netSyntenic (optional, can be turned off by `--no_netsynt`)
 5. Subset the chain using the net file (chainNetSubset)
 
 ## Pre-sets and custom configuration
@@ -25,7 +25,8 @@ Another important factor is the generation of the chain file through axtChain. T
 |       balanced    | -minScore=5000 -linearGap=medium    |
 |       same        | -minScore=5000 -linearGap=medium |
 
-It is possible to switch off netSyntenic by using the `--no_netsynt` flag.
+It is possible to switch off netSyntenic by using the `--no_netsynt` flag. 
+Net-syntenic should be used in case of medium-to-distantly related genomes.
 It is also possible to specify custom axtChain parameters using the flag `--chainCustom`.
 The example below runs the workflow using the GRCh37 and GRCh38 genomes using lastz, with the `near` configuration for the alignments, and a custom
 `axtChain` configuration   
