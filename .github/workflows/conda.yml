@@ -26,11 +26,11 @@ jobs:
         source ./mambaforge/etc/profile.d/conda.sh 
     - name: Create generic environment
       run: |
-        mamba env create -f environment.yml
+        source ./mambaforge/etc/profile.d/conda.sh && mamba env create -f environment.yml
     - name: Create R environment
       run: |
-        mamba env create -f assets/r-environment.yml
+        source ./mambaforge/etc/profile.d/conda.sh && mamba env create -f assets/r-environment.yml
     - name: Create conda environment
       run: |
-        mamba remove -y -n nf-LO --all
-        mamba env create -f assets/environment.yml
+        source ./mambaforge/etc/profile.d/conda.sh && mamba remove -y -n nf-LO --all
+        source ./mambaforge/etc/profile.d/conda.sh && mamba env create -f assets/environment.yml
