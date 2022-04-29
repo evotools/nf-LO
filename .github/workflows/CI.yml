@@ -36,6 +36,11 @@ jobs:
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
 
+      - name: Install Dependencies
+        run: |
+          chmod a+x ./assets/install.sh
+          assets/install.sh
+
       - name: Run pipeline with test data
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,conda
+          nextflow run ${GITHUB_WORKSPACE} -profile test
