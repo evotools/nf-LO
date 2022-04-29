@@ -21,9 +21,9 @@ jobs:
     - name: Install mamba
       run: |
         wget -nv -O Mambaforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh
-        bash Mambaforge.sh -b -p /mambaforge
-        /mambaforge/bin/mamba init
-        source /mambaforge/etc/profile.d/conda.sh 
+        bash Mambaforge.sh -b -p ./mambaforge
+        ./mambaforge/bin/mamba init
+        source ./mambaforge/etc/profile.d/conda.sh 
     - name: Create generic environment
       run: |
         mamba env create -f environment.yml
