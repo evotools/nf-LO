@@ -61,7 +61,16 @@ The only dependencies that at this stage cannot be installed with anaconda is [m
 
 ## Mamba
 To speed up the process, you can install all of the dependencies using [mamba](https://github.com/mamba-org/mamba) instead.
-First install mamba in your anaconda environment:
+You can take advantage of `mamba` in two possible ways:
+1. Use the `--mamba` option
+2. Manually installing all the software, and then point to the environment.
+
+To use the first, simply add the `--mamba` option:
+```
+nextflow run evotools/nf-LO --igenome_source danRer7 --target /PATH/TO/target.fa --mamba -profile conda
+```
+
+To manually install the dependencies using `mamba`, first install it in your anaconda environment:
 ```
 conda install -c conda-forge -y mamba
 ```
