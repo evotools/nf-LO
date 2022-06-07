@@ -26,13 +26,13 @@ The workflow comes with a series of presets that the users can apply to their da
 
 |   Aligner |       Preset      |   Aligner settings    |
 |-----------|-------------------|-----------------------|
-| lastz     |       near        | B=0 C=0 E=150 H=0 K=4500 L=3000 M=254 O=600 T=2 Y=15000 |
+| lastz     |       near        | B=0 C=0 E=150 H=0 K=4500 L=3000 M=254 O=600 T=2 Y=15000 Q=human_chimp.v2.q |
 |           |       medium      | B=0 C=0 E=30 H=0 K=3000 L=3000 M=50 O=400 T=1 Y=9400  |
-|           |       far         | B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400  |
-|           |      primate      | E=30 H=3000 K=5000 L=5000 M=10 O=400 T=1  |
-|           |      general      | E=30 H=3000 K=5000 L=5000 M=10 O=400 T=1  |
+|           |       far         | B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400 Q=HoxD55.Q |
+|           |      primate      | E=30 H=3000 K=5000 L=5000 M=10 O=400 T=1 Q=human_chimp.v2.q |
+|           |      general      | E=30 H=3000 K=5000 L=5000 M=10 O=400 T=1 Q=general.q |
 | blat      |       near        | -t=dna -q=dna -fastMap -noHead -tileSize=11 -minScore=100 -minIdentity=98 |
-|           |       medium      | -t=dna -q=dna -fastMap -noHead -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000|
+|           |       medium      | -t=dna -q=dna -fastMap -noHead -tileSize=11 -stepSize=11 -oneOff=0 -minMatch=2 -minScore=30 -minIdentity=90 -maxGap=2 -maxIntron=75000 |
 |           |       far         | -t=dna -q=dna -fastMap -noHead -tileSize=12 -oneOff=1 -minMatch=1 -minScore=30 -minIdentity=80 -maxGap=3 -maxIntron=75000 |
 |           |       balanced    | -fastMap -tileSize=12 -minIdentity=98 |
 | minimap2  |       near        | -cx asm5 |
@@ -43,6 +43,7 @@ The workflow comes with a series of presets that the users can apply to their da
 |           |       far         | -sen -idy 70 |
 |           |       same        | -sen |
 
+In addition, the primate and near configuration use the human_chimp.v2.q scores, the general uses the general.q scores and the distant uses the HoxD55.q, all provided in the `assets` folder. These q-scores can be changed to reflect each use case by providing the `--qscores FILE.q` option, where `FILE.q` is a set of q-scores defined by the user.
 Presets for near, medium and far lastz aligner can be found [here](https://github.com/ENCODE-DCC/kentUtils/blob/master/src/hg/utils/automation/runLastzChain.sh). The parameters for lastz's primate and general are defined in the [ensembl compara pairwise genome alignments](https://m.ensembl.org/info/genome/compara/analyses.html). The general pre-set is applied to alignments, for example, of human and chicken or human and mouse. The primate is used for human to chimp, for example. 
 Blat presets for aligning same/near genomes are [here](https://github.com/ENCODE-DCC/kentUtils/blob/master/src/hg/utils/automation/doSameSpeciesLiftOver.pl). 
 **NOTE:** we strongly advise to test custom parameters to finely tune the analyses. These presets are meant to be used to generate results quickly, and might not be best suited for your purpose.
