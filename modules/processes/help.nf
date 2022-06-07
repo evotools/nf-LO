@@ -50,6 +50,7 @@ def helpMessage() {
                                         Specify the string of custom parameters for the alignments. If want to run with base parameters,
                                         just use ' '
       --no_netsynt                      Use disble netSyntenic (Default: false)
+      --qscores                         Override default Q-scores for lastz alignments (Default: false) 
     
     Liftover
       --annotation [file]               Path to BED/GFF file to lift. Not mandatory. (Default: false)
