@@ -94,6 +94,7 @@ The workflow will provide some custom configuration for the different algorithms
 **NOTE**: the alignment stage heavily affects the results of the chaining process, so we strongly recommend to perform different tests with different configurations, including custom ones.
 To see the presets available and how to fine-tune the pipeline go to our [Alignments](https://nf-lo.readthedocs.io/en/latest/align.html) wiki page.
 The chain/net generation can also be fine-tuned to achieve better results (see [Chain/Netting](https://nf-lo.readthedocs.io/en/latest/chain.html)).
+
 **UPDATE 07/06/2022**: it is now possible to specify customized conservation scores as q files (see [here](http://genomewiki.ucsc.edu/index.php/Hg19_conservation_lastz_parameters) for examples) using the `--qscores` options and providing the correct input file.  
 
 ## Resources
