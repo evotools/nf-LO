@@ -1,0 +1,7 @@
+name: nf-LO-r
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - genomedk::maftools
