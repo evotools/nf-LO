@@ -66,6 +66,9 @@ igenomes_base   : $params.igenomes_base
 igenomes_ignore : $params.igenomes_ignore
 mamba           : $params.mamba
 no_maf          : $params.no_maf"""
+if (params.qscores){
+        log.info"""q-scores        : $params.qscores"""
+} 
 if (params.mafTools){
         log.info"""mafTools        : $params.mafTools"""
 } 

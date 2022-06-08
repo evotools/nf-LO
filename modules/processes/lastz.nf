@@ -66,9 +66,10 @@ process lastz_primates{
     script:
     def qfile = params.qscores ? file(params.qscores) : null
     def qscores = params.qscores ? "Q=${qfile}" : "Q=${baseDir}/assets/human_chimp.v2.q"
+    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzPrimate
-    lastz ${srcfile} ${tgtfile} ${lastzPrimate} ‑‑allocate:traceback=2048.0M --ambiguous=iupac ${qscores} --format=lav |
+    lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastzPrimate} ‑‑allocate:traceback=2048.0M --ambiguous=iupac ${qscores} --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin
@@ -95,9 +96,10 @@ process lastz_general{
     script:
     def qfile = params.qscores ? file(params.qscores) : null
     def qscores = params.qscores ? "Q=${qfile}" : "Q=${baseDir}/assets/general.q"
+    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzGeneral
-    lastz ${srcfile} ${tgtfile} ${lastzGeneral} ‑‑allocate:traceback=2048.0M --ambiguous=iupac ${qscores} --format=lav |
+    lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastzGeneral} ‑‑allocate:traceback=2048.0M --ambiguous=iupac ${qscores} --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin
@@ -124,9 +126,10 @@ process lastz_near{
     script:
     def qfile = params.qscores ? file(params.qscores) : null
     def qscores = params.qscores ? "Q=${qfile}" : "Q=${baseDir}/assets/human_chimp.v2.q"
+    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzNear
-    lastz ${srcfile} ${tgtfile} ${lastzNear} --ambiguous=iupac ${qscores} --format=lav |
+    lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastzNear} --ambiguous=iupac ${qscores} --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
@@ -153,9 +156,10 @@ process lastz_medium{
     script:
     def qfile = params.qscores ? file(params.qscores) : null
     def qscores = params.qscores ? "Q=${qfile}" : ""
+    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzMedium
-    lastz ${srcfile} ${tgtfile} ${lastzMedium} ${qscores} --ambiguous=iupac --format=lav |
+    lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastzMedium} ${qscores} --ambiguous=iupac --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
@@ -182,9 +186,10 @@ process lastz_far{
     script:
     def qfile = params.qscores ? file(params.qscores) : null
     def qscores = params.qscores ? "Q=${qfile}" : "Q=${baseDir}/assets/HoxD55.q"
+    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzFar
-    lastz ${srcfile} ${tgtfile} --ambiguous=iupac ${qscores} ${lastzFar} --format=lav |
+    lastz ${srcfile}${srcmultiple} ${tgtfile} --ambiguous=iupac ${qscores} ${lastzFar} --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout $srclift warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
@@ -211,9 +216,10 @@ process lastz_custom{
     script:
     def qfile = params.qscores ? file(params.qscores) : null
     def qscores = params.qscores ? "Q=${qfile}" : ""
+    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo ${params.custom}
-    lastz ${srcfile} ${tgtfile} ${params.custom} ${qscores} --ambiguous=iupac --format=lav |
+    lastz ${srcfile}${srcmultiple} ${tgtfile} ${params.custom} ${qscores} --ambiguous=iupac --format=lav |
         lavToPsl stdin stdout |
             liftUp -type=.psl stdout ${srclift} warn stdin |
                 liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
