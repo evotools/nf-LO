@@ -116,6 +116,20 @@ elif [ ${machine} == "Mac" ]; then
         rm -rf ./minimap2-*
 fi
 
+# Install NCBI datasets
+if [[ ! \$(which datasets) ]]; then 
+    if [[ "\$OSTYPE" == "darwin"* ]]; then
+        curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/mac/datasets' 
+    else
+        curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' 
+    fi
+    chmod a+x ./datasets
+    ./datasets download genome accession --exclude-rna --exclude-protein --exclude-protein --exclude-gff3 --exclude-genomic-cds ${genome}
+else
+    datasets download genome accession --exclude-rna --exclude-protein --exclude-protein --exclude-gff3 --exclude-genomic-cds ${genome}
+fi 
+
+# Install maftools
 if [ "$(uname)" == "Darwin" ]; then
     if [ ! `which brew` ]; then /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; fi
     if [ ! `which gcc-9` ]; then brew install gcc@9; fi 
