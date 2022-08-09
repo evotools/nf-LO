@@ -96,7 +96,7 @@ docker build -t nflo:latest .
 
 Then, you can run *nf-LO* as follows:
 ```
-nextflow run evotools/nf-LO -profile test -with-docker nflo:latest
+nextflow run evotools/nf-LO -profile test,docker -with-docker nflo:latest
 ```
 
 ### Run with singularity
@@ -110,7 +110,7 @@ singularity build nflo.sif singularity.def
 
 Then, you can run the workflow as follows:
 ```
-nextflow run evotools/nf-LO -profile test -with-singularity ${PWD}/nflo.sif
+nextflow run evotools/nf-LO -profile test,singularity -with-singularity ${PWD}/nflo.sif
 ```
 
 ## Manual installation
