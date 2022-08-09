@@ -12,6 +12,7 @@ dependencies:
   - lastz=1.0.4
   - xorg-libxau=1.0.9
   - minimap2=2.17
+  - ncbi-datasets-cli=13.32.0
   - p7zip=16.02
   - ucsc-axtchain=377
   - ucsc-axttomaf=377
