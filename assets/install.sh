@@ -117,17 +117,12 @@ elif [ ${machine} == "Mac" ]; then
 fi
 
 # Install NCBI datasets
-if [[ ! \$(which datasets) ]]; then 
-    if [[ "\$OSTYPE" == "darwin"* ]]; then
-        curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/mac/datasets' 
-    else
-        curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' 
-    fi
-    chmod a+x ./datasets
-    ./datasets download genome accession --exclude-rna --exclude-protein --exclude-protein --exclude-gff3 --exclude-genomic-cds ${genome}
+if [ "$(uname)" == "Darwin" ]; then
+    curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/mac/datasets' 
 else
-    datasets download genome accession --exclude-rna --exclude-protein --exclude-protein --exclude-gff3 --exclude-genomic-cds ${genome}
-fi 
+    curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' 
+fi
+chmod a+x ./datasets
 
 # Install maftools
 if [ "$(uname)" == "Darwin" ]; then
