@@ -37,11 +37,6 @@ RUN apt-get update && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Install NCBI datasets
-RUN curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' && \
-  mv datasets /usr/local/bin && \
-  chmod a+x /usr/local/bin/datasets
-
 # Define working directory
 WORKDIR /app
 
