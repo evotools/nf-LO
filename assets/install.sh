@@ -15,6 +15,7 @@ case "${unameOut}" in
 esac
 echo ${machine}
 
+# Install UCSC dependencies
 if [ ${machine} == "Linux" ]; then
     if [ -e axtChain ]; then rm axtChain; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtChain 
     if [ -e axtToMaf ]; then rm lavToPsl; fi; wget https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/axtToMaf
