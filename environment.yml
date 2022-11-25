@@ -10,8 +10,7 @@ dependencies:
   - GSAlign=1.0.22
   - last=1060
   - lastz=1.0.4
-  - xorg-libxau=1.0.9
-  - minimap2=2.17
+  - minimap2=2.24
   - ncbi-datasets-cli=13.32.0
   - p7zip=16.02
   - r-tidyverse=1.3.1
@@ -37,4 +36,4 @@ dependencies:
   - ucsc-netsyntenic=377
   - ucsc-twobitinfo=377
   - ucsc-wigtobigwig=377
-  - zlib=1.2.11
+  - zlib=1.2.13
