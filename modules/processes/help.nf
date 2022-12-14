@@ -19,15 +19,15 @@ def helpMessage() {
 
       nextflow run evotools/nf-LO --source ./data/source.fa --target ./data/target.fa -profile standard
 
-    Source genome (use one of the three options):
+    Input genomes:
       --source [file]                 Path to fa(sta)[.gz] for source genome. (Default: './data/source.fa')
-      --ncbi_source [file]            Download source genome using NCBI ID 
-      --igenomes_source [file]         Download source genome from iGenome
-
-    Target genome (use one of the three options): 
       --target [file]                 Path to fa(sta)[.gz] for target genome. (Default: './data/target.fa')
-      --ncbi_target [file]            Download target genome using NCBI ID 
-      --igenomes_target [file]         Download target genome from iGenome 
+
+    Remote genome retrieval options (Use either NCBI or iGenomes):
+      --ncbi_source                   Download source genome using NCBI ID 
+      --igenomes_source               Download source genome from iGenome
+      --ncbi_target                   Download target genome using NCBI ID 
+      --igenomes_target               Download target genome from iGenome 
 
     Workflow profile
       -profile [str]                  Configuration profile to use. Can use multiple (comma separated)
