@@ -19,21 +19,23 @@ nextflow run evotools/nf-LO --source /PATH/TO/source.fa --target ftp://ncbi.nih.
 ``` 
 
 ## Download from iGenomes
-Genomes can be downloaded from iGenome simply by using the `--igenome_source`/`igenome_target` followed by the genome code:
+Genomes can be downloaded from iGenome simply by adding the `--igenome_source`/`igenome_target` for the appropriate genome:
 ```
-nextflow run evotools/nf-LO --igenome_source danRer7 --target /PATH/TO/target.fa
+nextflow run evotools/nf-LO --source "danRer7" --target /PATH/TO/target.fa --igenome_source
 ```
 
 ## Download from NCBI
-nf-LO can download the genomes of interest from NCBI simply by using the `--ncbi_source`/`ncbi_target` followed by the genome accession:
+nf-LO can download the genomes of interest from NCBI simply by adding the `--ncbi_source`/`ncbi_target` for the appropriate genome:
 ```
-nextflow run evotools/nf-LO --igenome_source danRer7 --ncbi_target GCA_001899175.1 
+nextflow run evotools/nf-LO --source "danRer7" --target "GCA_001899175.1" --igenome_source --ncbi_target
 ```
-nf-LO will use the [dataset](https://www.ncbi.nlm.nih.gov/datasets/) software to retrieve the genome of interest and process it
+nf-LO will use the [dataset](https://www.ncbi.nlm.nih.gov/datasets/) software to retrieve the genome of interest and then process it.
 
 ## Conflicts
 Remember that you can specify only 1 identifier for the source and 1 identifier for the target. 
 If multiple source are provided for the source or the target, the pipeline will stop, not knowing which one to process.
 Therefore, remember to use:
-1. One among `--source`, `--ncbi_source` or `--igenome_source`
-2. One among `--target`, `--ncbi_target` or `--igenome_target`
+1. `--source` followed by the path/URL/NCBI accession/iGenomes name
+2. `--target` followed by the path/URL/NCBI accession/iGenomes name
+3. One of `--ncbi_source` or `--igenome_source`, if required
+2. One of `--ncbi_target` or `--igenome_target`, if required

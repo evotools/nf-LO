@@ -5,8 +5,12 @@
 *nf-LO* is a [nextflow](https://www.nextflow.io/) workflow for generating genome alignment files compatible with the UCSC [liftOver](https://genome.ucsc.edu/cgi-bin/hgLiftOver) utility for converting genomic coordinates between assemblies. It can automatically pull genomes directly from NCBI or iGenomes (or the user can provide fasta files) and supports four different aligners ([lastz](https://github.com/UCSantaCruzComputationalGenomicsLab/lastz), [blat](https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/blat/), [minimap2](https://github.com/lh3/minimap2), [GSAlign](https://github.com/hsinnan75/GSAlign)). Together these provide solutions for both different-species (lastz and minimap2) as well as same-species alignments (blat and GSAlign), with both standard and ultra-fast algorithms from a source to a target genome. It comes with a series of presets, allowing alignments of genomes depending on their genomic distance (near, medium and far). 
 
 # Updates
-**UPDATE 07/06/2022**: Added the possibility of providing customized conservation scores in the q-format via the `--qscores` flag.  
+**UPDATE 14/12/2022**: Now the NCBI/iGenomes accession have to be provided in the `--source`/`--target` field, and then use the appropriate `--igenomes_source`/`--ncbi_source` and `--igenomes_target`/`--ncbi_target` as a modifier.  
+
 **UPDATE 08/06/2022**: fixed a bug in which lastz would not align small fragmented genomes, as well as small contigs, in the source assembly. Anyone interested in these small contigs should discard the previous version of `nf-LO` using `nextflow drop evotools/nf-LO`, and repeat the analyses.  
+
+**UPDATE 07/06/2022**: Added the possibility of providing customized conservation scores in the q-format via the `--qscores` flag.  
+
 
 ## Documentation
 You can find more details on the usage of *nf-LO* in the [readthedocs](https://nf-lo.readthedocs.io/en/latest/) or in the [wiki](https://github.com/evotools/nf-LO/wiki) pages. These also include a simple [step-by-step](https://nf-lo.readthedocs.io/en/latest/step.html) tutorial to run the analyses on your own genomes.
@@ -81,14 +85,14 @@ We recommend to use soft-masked genomes to reduce the computation time for align
 ### Custom fasta
 The source and target genomes can be specified as local or remote (un)compressed fasta files using the `--source` and `--target` flags. 
 ### Download from NCBI
-*nf-LO* can download fasta files from ncbi directly using the [datasets API](https://www.ncbi.nlm.nih.gov/datasets/). Users provide a GCA/GCF code using the `--ncbi_source` and `--ncbi_target` flags as follow:
+*nf-LO* can download fasta files from ncbi directly using the [datasets API](https://www.ncbi.nlm.nih.gov/datasets/). Users provide a GCA/GCF code in the `--source`/`--target` field, and add the `--ncbi_source` and `--ncbi_target` flags as follow:
 ```
-nextflow run evotools/nf-LO --ncbi_source GCF_001549955.1 --ncbi_target GCF_011751205.1 -profile conda 
+nextflow run evotools/nf-LO --source "GCF_001549955.1" --target "GCF_011751205.1" --ncbi_source --ncbi_target  -profile conda 
 ```
 ### Download from iGenomes
-*nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. To do this users provide a genome identifier with the `--igenomes_source` and `--igenomes_target` flags as follow:
+*nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. Users provide a GCA/GCF code in the `--source`/`--target` field, and add the `--igenomes_source` and `--igenomes_target` flags as follow:
 ```
-nextflow run evotools/nf-LO --igenomes_source equCab2 --target_igenome dm6 -profile conda 
+nextflow run evotools/nf-LO --source "equCab2" --target "dm6" --igenomes_source --target_igenome -profile conda 
 ```
 
 Note it is possible to mix source and target flags. For example using `--igenomes_source` with `--ncbi_target`.
