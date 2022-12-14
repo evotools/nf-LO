@@ -22,6 +22,11 @@ if (params.help) {
 // If params.custom is set, define that as distance
 if ( params.custom != '' && params.distance == 'custom' ) { params.distance = 'custom' }
 
+// If params.custom is set, define that as distance
+if ( !params.source || !params.target ) { exit 1 "You did not provide a source and a target files." }
+if ( !params.source && params.target ) { exit 1 "You did not provide a source file." }
+if ( params.source && !params.target ) { exit 1 "You did not provide a target file." }
+
 // Print run informations
 log.info '''
 ======================================
@@ -36,16 +41,16 @@ log.info """\
       Nextflow LiftOver v ${workflow.manifest.version}
 ======================================"""
 if (params.ncbi_source){
-        log.info"""source          : $params.ncbi_source (NCBI)"""
+        log.info"""source          : $params.source (NCBI)"""
 } else if (params.igenomes_source) {
-        log.info"""source          : $params.igenomes_source (iGenome)"""
+        log.info"""source          : $params.source (iGenome)"""
 } else {
         log.info"""source          : $params.source"""
 }
 if (params.ncbi_target){
-        log.info"""target          : $params.ncbi_target (NCBI)"""
+        log.info"""target          : $params.target (NCBI)"""
 } else if (params.igenomes_target) {
-        log.info"""target          : $params.igenomes_target (iGenome)"""
+        log.info"""target          : $params.target (iGenome)"""
 } else {
         log.info"""target          : $params.target"""
 }
