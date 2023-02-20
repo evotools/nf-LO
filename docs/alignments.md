@@ -75,7 +75,8 @@ Below the table used in [Talenti A. and Prendergast J., 2022](https://academic.o
 | H. sapiens (build 38) |      M. musculus      |      lastz      |  30,000,000  |  10,000,000  |        0        |     100,000     |
 | H. sapiens (build 38) |       G. gallus       |      lastz      |  20,000,000  |  10,000,000  |        0        |      50,000     |
 
-These should be seen as examples only, and each case should be considered independently. Fragmentation of the genomes doesn't apply to `minimap2` and `GSAlign`.
+These should be seen as examples only, and each case should be considered independently.
+Fragmentation of the genomes doesn't apply to `minimap2` and `GSAlign`.
 
 ## Custom parameters
 You can apply your own custom parameters to an alignment simply with the `--custom` flag:
