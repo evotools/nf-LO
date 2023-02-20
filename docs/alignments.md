@@ -61,6 +61,22 @@ Even though we **strongly** advise to test different parameters and configuratio
 
 Again, remember that these are just suggested presets. Each analyses should be considered differently, by testing user-defined sets of parameters.
 
+## Alignment fragmentation and optimization
+`nf-LO` speeds up the slow and computationally intensive alignment phase by splitting the alignments into smaller fragments.
+The predefined parameters for `nf-LO` are suitable for comparison between small genomes. However, if you are comparing genomes larger than 500Mb it is strongly recommended to tweak the fragmentation to avoid the issue of overwhelming your system with too many alignments files, depending on which aligner you choose to use.
+Below the table used in [Talenti A. and Prendergast J., 2022](https://academic.oup.com/gbe/article/13/9/evab183/6349174):
+
+|    Species 1 (src)    |    Species 2 (tgt)    |      Aligner    |   Src size   |   Tgt size   |   Src overlap   |   Tgt overlap   |
+|-----------------------|-----------------------|-----------------|--------------|--------------|-----------------|-----------------|
+| H. sapiens (build 38) | H. sapiens (build 37) |      blat       | Full genome  | 1Mb (4500bp) |        0        |       500       |
+| H. sapiens (build 38) | H. sapiens (build 37) |     GSAlign     | Full genome  | Full genome  |        0        |        0        |
+| H. sapiens (build 38) |     P. troglodytes    |      lastz      |  30,000,000  |  10,000,000  |        0        |     100,000     |
+| H. sapiens (build 38) |     P. troglodytes    |     minimap2    | Full genome  | Full genome  |        0        |        0        |
+| H. sapiens (build 38) |      M. musculus      |      lastz      |  30,000,000  |  10,000,000  |        0        |     100,000     |
+| H. sapiens (build 38) |       G. gallus       |      lastz      |  20,000,000  |  10,000,000  |        0        |      50,000     |
+
+These should be seen as examples only, and each case should be considered independently. Fragmentation of the genomes doesn't apply to `minimap2` and `GSAlign`.
+
 ## Custom parameters
 You can apply your own custom parameters to an alignment simply with the `--custom` flag:
 ```
