@@ -406,11 +406,11 @@ process crossmap{
         """
     else if ( params.annotation_format == 'vcf' )
         """
-        CrossMap.py vcf -a ${chain} ${annotation} ${tgt_ch} ${params.chain_name}.${params.annotation_format} 
+        CrossMap.py vcf ${chain} ${annotation} ${tgt_ch} ${params.chain_name}.${params.annotation_format} 
         """
     else if ( params.annotation_format == 'maf' )
         """
-        CrossMap.py maf -a ${chain} ${annotation} ${tgt_ch} ${params.maf_tgt_name} ${params.chain_name}.${params.annotation_format} 
+        CrossMap.py maf ${chain} ${annotation} ${tgt_ch} ${params.maf_tgt_name} ${params.chain_name}.${params.annotation_format} 
         """
     else 
         """
