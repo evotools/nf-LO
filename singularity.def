@@ -13,7 +13,7 @@ description="Docker image containing base requirements for nf-LO pipelines"
 export PATH=/opt/conda/bin:${PATH}
 
 # Add missing mamba dependency then clean cache
-apt-get update && apt-get install -y \
+apt-get update -qq && apt-get install -y -qq \
         libarchive-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
