@@ -7,7 +7,7 @@ LABEL authors="andrea.talenti@ed.ac.uk" \
 COPY environment.yml .
 
 # Add missing mamba dependency then clean cache
-RUN apt-get update && apt-get install -y \
+RUN apt-get update -qq && apt-get install -qq -y \
     libarchive-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
