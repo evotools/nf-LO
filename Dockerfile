@@ -1,10 +1,16 @@
-FROM continuumio/miniconda3 AS build
+FROM continuumio/miniconda3:23.5.2-0 AS build
 
 LABEL authors="andrea.talenti@ed.ac.uk" \
       description="Docker image containing base requirements for nf-LO pipelines"
 
 # Install the package as normal:
 COPY environment.yml .
+
+# Add missing mamba dependency then clean cache
+RUN apt-get update -qq && apt-get install -qq -y \
+    libarchive-dev \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install mamba to speed up the process
 RUN conda install -c conda-forge -y mamba

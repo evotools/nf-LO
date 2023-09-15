@@ -1,16 +1,22 @@
 Bootstrap: docker
-From: continuumio/miniconda3 
+From: continuumio/miniconda3:23.5.2-0
 Stage: build
 
 %files
 environment.yml .
 %labels
-authors="andrea.talenti@ed.ac.uk" 
+authors="andrea.talenti@ed.ac.uk"
 description="Docker image containing base requirements for nf-LO pipelines"
 
 %post
 # Add anaconda to path, if not already present
 export PATH=/opt/conda/bin:${PATH}
+
+# Add missing mamba dependency then clean cache
+apt-get update -qq && apt-get install -y -qq \
+        libarchive-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install mamba
 conda install -c conda-forge -y mamba
@@ -38,7 +44,7 @@ rm /tmp/env.tar
 
 
 Bootstrap: docker
-From: debian:buster 
+From: debian:buster
 Stage: runtime
 
 %files from build
@@ -48,7 +54,7 @@ Stage: runtime
 # Install procps in debian to make it compatible with reporting
 apt-get update && \
 apt install -y procps gcc g++ curl make pkg-config zlib1g-dev git python2.7 file && \
-apt-get clean 
+apt-get clean
 
 # Install NCBI datasets
 curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' && \
@@ -62,7 +68,7 @@ mkdir /app && cd /app
 apt-get update -y -qq && \
 apt-get upgrade -y -qq && \
 apt-get install -y -qq make pkg-config zlib1g-dev git python2.7 && \
-apt-get clean 
+apt-get clean
 
 # Link python2.7 to python
 ln /usr/bin/python2.7 /usr/bin/python
@@ -91,7 +97,7 @@ chmod a+x /usr/local/bin/*
 cd / && rm -rf /app/*
 apt-get remove -y -qq python2.7 make pkg-config git && \
 apt-get clean -y -qq && \
-apt-get autoremove -y -qq 
+apt-get autoremove -y -qq
 
 %environment
 export PATH=/venv/bin/:$PATH
