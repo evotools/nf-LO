@@ -5,7 +5,7 @@ minimap2Far="-cx asm20"
 
 process minimap2_near{    
     tag "minimap2.${params.distance}.${srcname}.${tgtname}"
-    label 'gsalign'
+    label 'minimap2'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -31,7 +31,7 @@ process minimap2_near{
 }
 process minimap2_medium{
     tag "minimap2.${params.distance}.${srcname}.${tgtname}"
-    label 'gsalign'
+    label 'minimap2'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -58,7 +58,7 @@ process minimap2_medium{
 
 process minimap2_far{
     tag "minimap2.${params.distance}.${srcname}.${tgtname}"
-    label 'gsalign'
+    label 'minimap2'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
@@ -85,7 +85,7 @@ process minimap2_far{
 
 process minimap2_custom{    
     tag "minimap2.${params.distance}.${srcname}.${tgtname}"
-    label 'gsalign'
+    label 'minimap2'
 
     input: 
         tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
