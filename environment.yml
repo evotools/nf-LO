@@ -10,7 +10,7 @@ dependencies:
   - GSAlign=1.0.22
   - last=1060
   - lastz=1.0.4
-  - minimap2=2.24
+  - minimap2=2.26
   - ncbi-datasets-cli=13.32.0
   - p7zip=16.02
   - r-tidyverse=1.3.1
