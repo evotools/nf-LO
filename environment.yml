@@ -4,12 +4,12 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - bedtools=2.30.0
-  - crossmap=0.5.2
+  - bedtools=2.31.0
+  - crossmap=0.6.4
   - graphviz=2.47.3
   - GSAlign=1.0.22
-  - last=1060
-  - lastz=1.0.4
+  - last=1454
+  - lastz=1.04.22
   - minimap2=2.26
   - ncbi-datasets-cli=13.32.0
   - p7zip=16.02
