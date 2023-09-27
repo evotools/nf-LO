@@ -149,7 +149,7 @@ process splitsrc {
     """
 
     script:
-    if ( params.aligner == "blat" || params.aligner == 'gsalign' || params.aligner == 'last' || params.aligner == "minimap2" || params.aligner == 'GSAlign' )
+    if ( params.aligner != "last" )
         """
         myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
@@ -250,7 +250,7 @@ process splittgt {
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift -extra=500 ${target} 4500 SPLIT_tgt/tmp
         """
-    else if ( params.aligner == "gsalign" || params.aligner == "minimap2" || params.aligner == 'GSAlign' )
+    else if ( params.aligner.toLowerCase() == "gsalign" )
         """
         myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
@@ -258,6 +258,15 @@ process splittgt {
         fi
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
+        """
+    else if ( params.aligner == "minimap2" )
+        """
+        myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
+        if [ -z \$myvalue ]; then
+            myvalue=`faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'`
+        fi
+        mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
+        faSplit size -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
         """
     else
         """
@@ -301,7 +310,7 @@ process grouptgt {
         toWrite = []
         for n,(size,seq) in enumerate(tmpdata):
             total += size
-            if total < int(${params.srcSize}):
+            if total < int(${params.tgtSize}):
                 toWrite.append(os.path.join(infld, seq))
             else:
                 if len(toWrite) > 0: 
