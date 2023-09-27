@@ -24,7 +24,7 @@ workflow PREPROC {
         // split and group source
         splitsrc(ch_source)
         src_lift = splitsrc.out.src_lift_ch
-        if ( params.aligner == 'blat' || params.aligner == 'gsalign' || params.aligner == 'last' || params.aligner == 'minimap2' || params.aligner == 'GSAlign' ){
+        if ( params.aligner == 'blat' || params.aligner.toLowerCase() == 'gsalign' || params.aligner == 'last' || params.aligner == 'minimap2' ){
             ch_fragm_src_out = splitsrc.out.srcsplit_ch
         } else {
             groupsrc(splitsrc.out.srcsplit_ch)
@@ -34,7 +34,7 @@ workflow PREPROC {
         // split and group target
         splittgt(ch_target)
         tgt_lift = splittgt.out.tgt_lift_ch
-        if ( params.aligner == 'gsalign' || params.aligner == 'GSAlign' || params.aligner == 'minimap2'){
+        if ( params.aligner.toLowerCase() == 'gsalign' || params.aligner == 'minimap2'){
             ch_fragm_tgt_out = splittgt.out.tgtsplit_ch
         } else {
             grouptgt(splittgt.out.tgtsplit_ch)
