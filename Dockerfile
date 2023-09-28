@@ -35,7 +35,7 @@ RUN /venv/bin/conda-unpack
 # The runtime-stage image; we can use Debian as the
 # base image since the Conda env also includes Python
 # for us.
-FROM debian:bookworm AS runtime
+FROM debian:buster AS runtime
 
 # Install procps in debian to make it compatible with reporting
 RUN apt-get update && \
