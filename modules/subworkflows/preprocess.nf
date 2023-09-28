@@ -34,7 +34,7 @@ workflow PREPROC {
         // split and group target
         splittgt(ch_target)
         tgt_lift = splittgt.out.tgt_lift_ch
-        if ( params.aligner.toLowerCase() == 'gsalign' ){
+        if ( params.aligner.toLowerCase() == 'gsalign'  || (params.aligner == 'minimap2' && params.full_alignment) ){
             ch_fragm_tgt_out = splittgt.out.tgtsplit_ch
         } else {
             grouptgt(splittgt.out.tgtsplit_ch)

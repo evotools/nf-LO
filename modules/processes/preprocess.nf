@@ -250,7 +250,7 @@ process splittgt {
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift -extra=500 ${target} 4500 SPLIT_tgt/tmp
         """
-    else if ( params.aligner.toLowerCase() == "gsalign" )
+    else if ( params.aligner.toLowerCase() == "gsalign" || (params.aligner == 'minimap2' && params.full_alignment) )
         """
         myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
@@ -259,7 +259,7 @@ process splittgt {
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
         """
-    else if ( params.aligner == "minimap2" )
+    else if ( params.aligner == "minimap2" && !params.full_alignment )
         """
         myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
