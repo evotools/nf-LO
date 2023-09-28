@@ -516,6 +516,7 @@ process make_report {
 
     script:
     """
-    R -e "rmarkdown::render('${rmd}',output_file='chainMetrics.html')"
+    cp $rmd ./report.Rmd
+    R -e "rmarkdown::render('./report.Rmd',output_file='chainMetrics.html')"
     """
 }
