@@ -64,8 +64,8 @@ process lastz_primates{
     """
 
     script:
-    def qfile = params.qscores ? file(params.qscores) : null
-    def qscores = params.qscores ? "Q=${qfile}" : "Q=${baseDir}/assets/human_chimp.v2.q"
+    def qfile = params.qscores ? file(params.qscores) : file("${projectDir}/assets/human_chimp.v2.q")
+    def qscores = "Q=${qfile}"
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzPrimate
@@ -94,8 +94,8 @@ process lastz_general{
     """
 
     script:
-    def qfile = params.qscores ? file(params.qscores) : null
-    def qscores = params.qscores ? "Q=${qfile}" : "Q=${baseDir}/assets/general.q"
+    def qfile = params.qscores ? file(params.qscores) : file("Q=${baseDir}/assets/general.q")
+    def qscores = "Q=${qfile}"
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzGeneral
@@ -124,8 +124,8 @@ process lastz_near{
     """
 
     script:
-    def qfile = params.qscores ? file(params.qscores) : null
-    def qscores = params.qscores ? "Q=${qfile}" : "Q=${baseDir}/assets/human_chimp.v2.q"
+    def qfile = params.qscores ? file(params.qscores) : file("Q=${baseDir}/assets/human_chimp.v2.q")
+    def qscores = "Q=${qfile}"
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzNear
@@ -155,7 +155,7 @@ process lastz_medium{
 
     script:
     def qfile = params.qscores ? file(params.qscores) : null
-    def qscores = params.qscores ? "Q=${qfile}" : ""
+    def qscores = qfile ? "Q=${qfile}" : ""
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzMedium
@@ -184,8 +184,8 @@ process lastz_far{
     """
 
     script:
-    def qfile = params.qscores ? file(params.qscores) : null
-    def qscores = params.qscores ? "Q=${qfile}" : "Q=${baseDir}/assets/HoxD55.q"
+    def qfile = params.qscores ? file(params.qscores) : file("Q=${baseDir}/assets/HoxD55.q")
+    def qscores = "Q=${qfile}"
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo $lastzFar
@@ -215,7 +215,7 @@ process lastz_custom{
 
     script:
     def qfile = params.qscores ? file(params.qscores) : null
-    def qscores = params.qscores ? "Q=${qfile}" : ""
+    def qscores = qfile ? "Q=${qfile}" : ""
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
     echo ${params.custom}
