@@ -514,7 +514,8 @@ process make_report {
     """
 
     script:
+    def rmd = file("${baseDir}/assets/gatherMetrics.Rmd")
     """
-    R -e "rmarkdown::render('${projectDir}/assets/gatherMetrics.Rmd',output_file='chainMetrics.html')"
+    R -e "rmarkdown::render('${rmd}',output_file='chainMetrics.html')"
     """
 }
