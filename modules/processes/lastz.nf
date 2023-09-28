@@ -94,7 +94,7 @@ process lastz_general{
     """
 
     script:
-    def qfile = params.qscores ? file(params.qscores) : file("Q=${baseDir}/assets/general.q")
+    def qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/general.q")
     def qscores = "Q=${qfile}"
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
@@ -124,7 +124,7 @@ process lastz_near{
     """
 
     script:
-    def qfile = params.qscores ? file(params.qscores) : file("Q=${baseDir}/assets/human_chimp.v2.q")
+    def qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/human_chimp.v2.q")
     def qscores = "Q=${qfile}"
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
@@ -184,7 +184,7 @@ process lastz_far{
     """
 
     script:
-    def qfile = params.qscores ? file(params.qscores) : file("Q=${baseDir}/assets/HoxD55.q")
+    def qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/HoxD55.q")
     def qscores = "Q=${qfile}"
     def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
     """
