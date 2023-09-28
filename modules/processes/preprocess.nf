@@ -176,7 +176,7 @@ process groupsrc {
     path "./CLUST_src", emit: srcclst_ch
 
     script:
-    if (params.aligner != 'lastz')
+    // if (params.aligner != 'lastz')
     $/
     #!/usr/bin/env python
 
@@ -216,10 +216,10 @@ process groupsrc {
         [outf.write(line) for f in toWrite for line in open(f) ]
         outf.close()
     /$
-    else
-    """
-    cp -r ${src_fld} ./CLUST_src
-    """
+    // else
+    // """
+    // cp -r ${src_fld} ./CLUST_src
+    // """
 }
 
 
