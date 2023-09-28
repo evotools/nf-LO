@@ -149,7 +149,7 @@ process splitsrc {
     """
 
     script:
-    if ( params.aligner != "last" )
+    if ( params.aligner != "lastz" )
         """
         myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
