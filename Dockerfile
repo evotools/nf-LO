@@ -49,7 +49,7 @@ WORKDIR /app
 # Add minimal dependencies
 RUN apt-get update -y -qq && \
     apt-get upgrade -y -qq && \
-    apt-get install -y -qq make pkg-config zlib1g-dev git python2.7 libxext6 && \
+    apt-get install -y -qq make pkg-config zlib1g-dev git python2.7 libxrender1 libxext6 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
