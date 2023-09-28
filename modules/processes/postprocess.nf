@@ -504,6 +504,7 @@ process make_report {
     path mafcov
     path mafidn
     path feat
+    path rmd
 
     output:
     path "chainMetrics.html"
@@ -514,7 +515,6 @@ process make_report {
     """
 
     script:
-    def rmd = file("${baseDir}/assets/gatherMetrics.Rmd")
     """
     R -e "rmarkdown::render('${rmd}',output_file='chainMetrics.html')"
     """
