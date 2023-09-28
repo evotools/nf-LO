@@ -44,7 +44,7 @@ rm /tmp/env.tar
 
 
 Bootstrap: docker
-From: debian:bookworm
+From: debian:buster
 Stage: runtime
 
 %files from build
