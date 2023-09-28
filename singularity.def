@@ -67,7 +67,7 @@ mkdir /app && cd /app
 # Add minimal dependencies
 apt-get update -y -qq && \
 apt-get upgrade -y -qq && \
-apt-get install -y -qq make pkg-config zlib1g-dev git python2.7 libxrender-dev && \
+apt-get install -y -qq make pkg-config zlib1g-dev git python2.7 libxrender1 libxrender-dev && \
 apt-get clean
 
 # Link python2.7 to python
