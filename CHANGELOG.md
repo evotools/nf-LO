@@ -3,6 +3,8 @@
 ## [unreleased]
 - `--aligner minimap2` now runs on individual target sequences to reduce the memory footprint and improve performances in large distributed systems
 - updated dependencies (minimap2 v2.26.0, last v1454, crossmap v0.6.4, bedtools v2.31.0, lastz v1.04.22)
+- fix bug in creating report using singularity/docker images
+- better lastz management of the input files
 
 ## [v1.8.1]
 - Now `--source`/`--target` have to be used to pass local, remote or accession IDs (GCAs, GCFs and iGenomes alike)
