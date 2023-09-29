@@ -10,6 +10,8 @@ It comes with a series of presets, allowing alignments of genomes depending on t
 
 Updates
 ==================
+**UPDATE 29/09/2023**: The `--aligner minimap2` mode now runs in multiple processes, splitting the target genome in fragments of at least `--tgtSize` bases; individual contigs and scaffolds **will not be fragmented**, and each chunk will contain entire sequences. The old approach is still accessible through the `--full_alignment` option. The anaconda recipe with the dependencies has been updated, so please ensure to re-create the container where needed.
+
 **UPDATE 14/12/2022**: Now the NCBI/iGenomes accession have to be provided in the `--source`/`--target` field, and then use the appropriate `--igenomes_source`/`--ncbi_source` and `--igenomes_target`/`--ncbi_target` as a modifier.  
 
 **UPDATE 08/06/2022**: fixed a bug in which lastz would not align small fragmented genomes, as well as small contigs, in the source assembly. Anyone interested in these small contigs should discard the previous version of `nf-LO` using `nextflow drop evotools/nf-LO`, and repeat the analyses.  
