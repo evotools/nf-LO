@@ -262,7 +262,7 @@ process splittgt {
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
         """
-    else if ( params.aligner == "minimap2" && !params.full_alignment )
+    else if ( params.aligner == "minimap2" && !params.full_alignment && !params.minimap2_lowmem )
         """
         myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
@@ -467,7 +467,8 @@ process make_mmi {
     """
 
     script:
+    def minimap2_conf = params.distance == 'near' ? "-x asm5" : params.distance == 'medium' ? "-x asm10" : "-x asm20"
     """
-    minimap2 -d ${fasta.baseName}.mmi ${fasta}
+    minimap2 ${minimap2_conf} -d ${fasta.baseName}.mmi ${fasta}
     """
 }

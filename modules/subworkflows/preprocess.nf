@@ -4,7 +4,6 @@ include {splitsrc} from "../processes/preprocess" params(params)
 include {splittgt} from "../processes/preprocess" params(params)
 include {groupsrc} from "../processes/preprocess" params(params)
 include {grouptgt} from "../processes/preprocess" params(params)
-include {pairs} from "../processes/preprocess" params(params)
 include {make_mmi as make_mmi_tgt; make_mmi as make_mmi_src} from "../processes/preprocess" params(params)
 
 // Create minimap2 alignments workflow
