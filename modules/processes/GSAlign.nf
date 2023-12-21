@@ -5,7 +5,7 @@ process gsalign_same{
     label 'gsalign'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
         path tgtlift 
         path srclift 
         path index
@@ -40,7 +40,7 @@ process gsalign_near{
     label 'gsalign'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
         path tgtlift 
         path srclift 
         path index
@@ -75,7 +75,7 @@ process gsalign_medium{
     label 'gsalign'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
         path tgtlift 
         path srclift 
         path index
@@ -110,7 +110,7 @@ process gsalign_far{
     label 'gsalign'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
         path tgtlift 
         path srclift 
         path index
@@ -145,7 +145,7 @@ process gsalign_custom{
     label 'gsalign'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
         path tgtlift 
         path srclift 
         path index
@@ -181,7 +181,7 @@ process bwt_index{
     label 'small'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
 
     output: 
         path "${srcname}.*"

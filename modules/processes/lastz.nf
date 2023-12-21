@@ -51,7 +51,7 @@ process lastz_primates{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
         path tgtlift 
         path srclift 
 
@@ -81,7 +81,7 @@ process lastz_general{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
         path tgtlift 
         path srclift 
 
@@ -111,7 +111,7 @@ process lastz_near{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
         path tgtlift 
         path srclift 
 
@@ -141,7 +141,7 @@ process lastz_medium{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
         path tgtlift 
         path srclift 
 
@@ -171,7 +171,7 @@ process lastz_far{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
         path tgtlift 
         path srclift 
 
@@ -201,7 +201,7 @@ process lastz_custom{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
         path tgtlift 
         path srclift 
 

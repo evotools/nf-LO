@@ -11,11 +11,11 @@ process blat_near{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
-        file ooc11
-        file ooc12
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
+        path ooc11
+        path ooc12
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
@@ -39,11 +39,11 @@ process blat_medium{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
-        file ooc11
-        file ooc12
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
+        path ooc11
+        path ooc12
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
@@ -67,11 +67,11 @@ process blat_far{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
-        file ooc11
-        file ooc12
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
+        path ooc11
+        path ooc12
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
@@ -95,11 +95,11 @@ process blat_balanced{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
-        file ooc11
-        file ooc12
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
+        path ooc11
+        path ooc12
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
@@ -123,11 +123,11 @@ process blat{
     label 'medium'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
-        file ooc11
-        file ooc12
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
+        path ooc11
+        path ooc12
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch

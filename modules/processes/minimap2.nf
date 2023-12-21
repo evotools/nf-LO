@@ -8,9 +8,9 @@ process minimap2_near{
     label 'minimap2'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
@@ -29,14 +29,15 @@ process minimap2_near{
         liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl $tgtlift warn stdin 
     """
 }
+
 process minimap2_medium{
     tag "minimap2.${params.distance}.${srcname}.${tgtname}"
     label 'minimap2'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
@@ -61,9 +62,9 @@ process minimap2_far{
     label 'minimap2'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
@@ -88,9 +89,9 @@ process minimap2_custom{
     label 'minimap2'
 
     input: 
-        tuple val(srcname), val(srcfile), val(tgtname), val(tgtfile) 
-        file tgtlift 
-        file srclift 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile) 
+        path tgtlift 
+        path srclift 
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch

@@ -137,6 +137,7 @@ process splitsrc {
 
     output:
     path "SPLIT_src", emit: srcsplit_ch
+    path "SPLIT_src/*", emit: srcfas_ch
     path "source.lift", emit: src_lift_ch
 
     stub:
@@ -173,7 +174,8 @@ process groupsrc {
     path src_fld
 
     output:
-    path "./CLUST_src", emit: srcclst_ch
+    path "CLUST_src", emit: srcclst_ch
+    path "CLUST_src/*", emit: srcfas_ch
 
     script:
     if (params.aligner != 'lastz')
@@ -233,6 +235,7 @@ process splittgt {
 
     output:
     path "SPLIT_tgt", emit: tgtsplit_ch
+    path "SPLIT_tgt/*", emit: tgtfas_ch
     path "target.lift", emit: tgt_lift_ch
 
     stub:
@@ -283,7 +286,8 @@ process grouptgt {
     path tgt_fld
 
     output:
-    path "./CLUST_tgt", emit: tgtclst_ch
+    path "CLUST_tgt", emit: tgtclst_ch
+    path "CLUST_tgt/*", emit: tgtfas_ch
 
     script:
     if( params.aligner != "blat" )
@@ -356,59 +360,6 @@ process grouptgt {
     /$
 
 }
-
-/*
- * Step 2: Make pairs of chromosomes to process
- */
-
-process pairs {
-    tag "mkpairs"
-    label 'small'
-
-    input:
-    path sources
-    path targets
-
-    output:
-    path "pairs.csv", emit: pairspath
-
-    stub:
-    $/
-    #!/usr/bin/env python
-    import os
-    infld1 = os.path.realpath( "${sources}" )
-    infld2 = os.path.realpath( "${targets}" )
-    files1 = os.listdir(infld1)
-    files2 = os.listdir(infld2)
-    of = open("pairs.csv", "w")
-    for f in files1:
-        fname1 = os.path.join( infld1, f)
-        bname1= '.'.join( f.split('.')[0:-1] )
-        for f2 in files2:
-            fname2 = os.path.join(infld2, f2)
-            bname2 = '.'.join( f2.split('.')[0:-1] )
-            of.write( "{},{},{},{}\n".format(bname1, fname1, bname2, fname2) )
-    /$
-
-    script:
-    $/
-    #!/usr/bin/env python
-    import os
-    infld1 = os.path.realpath( "${sources}" )
-    infld2 = os.path.realpath( "${targets}" )
-    files1 = os.listdir(infld1)
-    files2 = os.listdir(infld2)
-    of = open("pairs.csv", "w")
-    for f in files1:
-        fname1 = os.path.join( infld1, f)
-        bname1= '.'.join( f.split('.')[0:-1] )
-        for f2 in files2:
-            fname2 = os.path.join(infld2, f2)
-            bname2 = '.'.join( f2.split('.')[0:-1] )
-            of.write( "{},{},{},{}\n".format(bname1, fname1, bname2, fname2) )
-    /$
-}
-
 
 
 process make2bitS {
@@ -497,5 +448,26 @@ process makeSizeT {
     script:
     """
     twoBitInfo ${tgt} target.sizes
+    """
+}
+
+process make_mmi {
+    tag "mmi"
+    label 'small'
+
+    input:
+    path fasta
+
+    output:
+    path "${fasta.baseName}.mmi", emit: sizesTgt
+
+    stub:
+    """
+    touch ${fasta.baseName}.mmi
+    """
+
+    script:
+    """
+    minimap2 -d ${fasta.baseName}.mmi ${fasta}
     """
 }
