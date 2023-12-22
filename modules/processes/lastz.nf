@@ -51,7 +51,7 @@ process lastz_primates{
     label 'medium'
 
     input: 
-        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile), val(nseq) 
         path tgtlift 
         path srclift 
 
@@ -66,7 +66,7 @@ process lastz_primates{
     script:
     def qfile = params.qscores ? file(params.qscores) : file("${projectDir}/assets/human_chimp.v2.q")
     def qscores = "Q=${qfile}"
-    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
+    def srcmultiple = nseq > 1 ? "[multiple]" : "" 
     """
     echo $lastzPrimate
     lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastzPrimate} ‑‑allocate:traceback=2048.0M --ambiguous=iupac ${qscores} --format=lav |
@@ -81,7 +81,7 @@ process lastz_general{
     label 'medium'
 
     input: 
-        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile), val(nseq) 
         path tgtlift 
         path srclift 
 
@@ -96,7 +96,7 @@ process lastz_general{
     script:
     def qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/general.q")
     def qscores = "Q=${qfile}"
-    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
+    def srcmultiple = nseq > 1 ? "[multiple]" : "" 
     """
     echo $lastzGeneral
     lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastzGeneral} ‑‑allocate:traceback=2048.0M --ambiguous=iupac ${qscores} --format=lav |
@@ -111,7 +111,7 @@ process lastz_near{
     label 'medium'
 
     input: 
-        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile), val(nseq) 
         path tgtlift 
         path srclift 
 
@@ -126,7 +126,7 @@ process lastz_near{
     script:
     def qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/human_chimp.v2.q")
     def qscores = "Q=${qfile}"
-    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
+    def srcmultiple = nseq > 1 ? "[multiple]" : "" 
     """
     echo $lastzNear
     lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastzNear} --ambiguous=iupac ${qscores} --format=lav |
@@ -141,7 +141,7 @@ process lastz_medium{
     label 'medium'
 
     input: 
-        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile), val(nseq) 
         path tgtlift 
         path srclift 
 
@@ -156,7 +156,7 @@ process lastz_medium{
     script:
     def qfile = params.qscores ? file(params.qscores) : null
     def qscores = qfile ? "Q=${qfile}" : ""
-    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
+    def srcmultiple = nseq > 1 ? "[multiple]" : "" 
     """
     echo $lastzMedium
     lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastzMedium} ${qscores} --ambiguous=iupac --format=lav |
@@ -171,7 +171,7 @@ process lastz_far{
     label 'medium'
 
     input: 
-        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile), val(nseq) 
         path tgtlift 
         path srclift 
 
@@ -186,7 +186,7 @@ process lastz_far{
     script:
     def qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/HoxD55.q")
     def qscores = "Q=${qfile}"
-    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
+    def srcmultiple = nseq > 1 ? "[multiple]" : "" 
     """
     echo $lastzFar
     lastz ${srcfile}${srcmultiple} ${tgtfile} --ambiguous=iupac ${qscores} ${lastzFar} --format=lav |
@@ -201,7 +201,7 @@ process lastz_custom{
     label 'medium'
 
     input: 
-        tuple val(srcname), path(srcfile), val(tgtname), val(tgtfile) 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile), val(nseq) 
         path tgtlift 
         path srclift 
 
@@ -216,7 +216,7 @@ process lastz_custom{
     script:
     def qfile = params.qscores ? file(params.qscores) : null
     def qscores = qfile ? "Q=${qfile}" : ""
-    def srcmultiple = file(srcfile).countFasta() > 1 ? "[multiple]" : "" 
+    def srcmultiple = nseq > 1 ? "[multiple]" : "" 
     """
     echo ${params.custom}
     lastz ${srcfile}${srcmultiple} ${tgtfile} ${params.custom} ${qscores} --ambiguous=iupac --format=lav |

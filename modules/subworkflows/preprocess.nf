@@ -28,7 +28,7 @@ workflow PREPROC {
             ch_fragm_src_out = splitsrc.out.srcsplit_ch
             ch_fragm_src_fa = splitsrc.out.srcfas_ch.flatten()
         } else {
-            groupsrc(splitsrc.out.srcsplit_ch)
+            splitsrc.out.srcsplit_ch | groupsrc
             ch_fragm_src_out = groupsrc.out.srcclst_ch
             ch_fragm_src_fa = groupsrc.out.srcfas_ch.flatten()
         }
@@ -36,13 +36,17 @@ workflow PREPROC {
         // split and group target
         splittgt(ch_target)
         tgt_lift = splittgt.out.tgt_lift_ch
-        if ( params.aligner.toLowerCase() == 'gsalign'  || (params.aligner == 'minimap2' && params.full_alignment) ){
+        if ( params.aligner.toLowerCase() == 'gsalign'  || (params.aligner == 'minimap2' && params.mm2_full_alignment) ){
             ch_fragm_tgt_out = splittgt.out.tgtsplit_ch
-            ch_fragm_tgt_fa = splittgt.out.tgtfas_ch.flatten().map{it -> [it.baseName, it]}
+            ch_fragm_tgt_fa = splittgt.out.tgtfas_ch
+                .flatten()
+                .map{it -> [it.baseName, it]}
         } else {
-            grouptgt(splittgt.out.tgtsplit_ch)
+            splittgt.out.tgtsplit_ch | grouptgt
             ch_fragm_tgt_out = grouptgt.out.tgtclst_ch
-            ch_fragm_tgt_fa = grouptgt.out.tgtfas_ch.flatten().map{it -> [it.baseName, it]}
+            ch_fragm_tgt_fa = grouptgt.out.tgtfas_ch
+                .flatten()
+                .map{it -> [it.baseName, it]}
         }
 
         // If minimap2 requested, convert reference to mmi to save memory
@@ -52,7 +56,7 @@ workflow PREPROC {
             ch_fragm_src_fa = ch_fragm_src_fa.map{it -> [it.baseName, it]}
         }
 
-        // prepare pairs
+        // Prepare pairs of sequences
         ch_fragm_src_fa
             .combine(ch_fragm_tgt_fa)
             .transpose()
