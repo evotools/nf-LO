@@ -10,7 +10,7 @@ It comes with a series of presets, allowing alignments of genomes depending on t
 
 Updates
 ==================
-**UPDATE 29/09/2023**: The `--aligner minimap2` mode now runs in multiple processes, splitting the target genome in fragments of at least `--tgtSize` bases; individual contigs and scaffolds **will not be fragmented**, and each chunk will contain entire sequences. The old approach is still accessible through the `--full_alignment` option. The anaconda recipe with the dependencies has been updated, so please ensure to re-create the container where needed.
+**UPDATE 22/12/2023**: The `--aligner minimap2` mode now runs in multiple processes, splitting the target genome in fragments of at least `--tgtSize` bases; individual contigs and scaffolds **will not be fragmented**, and each chunk will contain entire sequences, unless the `--mm2_lowmem` option is provided. The old approach is still accessible through the `--mm2_full_alignment` option. The anaconda recipe with the dependencies has been updated, so please ensure to re-create the container where needed.
 
 **UPDATE 14/12/2022**: Now the NCBI/iGenomes accession have to be provided in the `--source`/`--target` field, and then use the appropriate `--igenomes_source`/`--ncbi_source` and `--igenomes_target`/`--ncbi_target` as a modifier.  
 
