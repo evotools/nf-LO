@@ -98,6 +98,10 @@ nextflow run evotools/nf-LO \
 
 ## Custom minimap2 options
 Due to its flexible design, we have added some specific configurations for `minimap2` and changed its behaviour as of the recent update.
-The default minimap2 behaviour is now to align each sequence from the target genome separately, using one task at the time. This should achieve a good balance of number of processes and low number of cores per process.
+The workflow now minimizes the memory impact of `minimap2` by generating an `.mmi` index for the source genome, using the same configurations as for the alignments. This will prevent each process to regenerate the individual indexes at run time, saving time and memory for the individual processes.
+
+The default `minimap2` behaviour is now to align each sequence from the target genome separately, using one task at the time. This should achieve a good balance of number of processes and low number of cores per process.
+
 If the user wishes to use a single process, as in the previous version of the workflow, they can do so by providing `--mm2_full_alignment`. This will perform a single genome-to-genome process. You might want to increase the number of cores provided to minimap2 with `--minimap2_threads`.
+
 If the user needs to perform the alignment in a particularly low-memory environment, they can provide `--mm2_lowmem`. This will perform the scattering of the target genome using `--tgtSize`, and with the overlap specified in `--tgtOvlp`.

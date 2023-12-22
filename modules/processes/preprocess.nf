@@ -468,6 +468,9 @@ process make_mmi {
 
     script:
     def minimap2_conf = params.distance == 'near' ? "-x asm5" : params.distance == 'medium' ? "-x asm10" : "-x asm20"
+    if (params.custom){
+        minimap2_conf = params.custom
+    }
     """
     minimap2 ${minimap2_conf} -d ${fasta.baseName}.mmi ${fasta}
     """
