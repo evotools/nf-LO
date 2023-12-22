@@ -23,9 +23,9 @@ if (params.help) {
 if ( params.custom != '' && params.distance == 'custom' ) { params.distance = 'custom' }
 
 // If params.custom is set, define that as distance
-if ( !params.source || !params.target ) { exit 1 "You did not provide a source and a target files." }
-if ( !params.source && params.target ) { exit 1 "You did not provide a source file." }
-if ( params.source && !params.target ) { exit 1 "You did not provide a target file." }
+if ( !params.source && !params.target ) { log.error "You did not provide a source and a target files."; exit 1 }
+if ( !params.source && params.target ) { log.error "You did not provide a source file."; exit 1 }
+if ( params.source && !params.target ) { log.error "You did not provide a target file."; exit 1 }
 
 // Print run informations
 log.info '''
