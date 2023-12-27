@@ -26,6 +26,7 @@ if ( params.custom != '' && params.distance == 'custom' ) { params.distance = 'c
 if ( !params.source && !params.target ) { log.error "You did not provide a source and a target files."; exit 1 }
 if ( !params.source && params.target ) { log.error "You did not provide a source file."; exit 1 }
 if ( params.source && !params.target ) { log.error "You did not provide a target file."; exit 1 }
+if ( params.mm2_full_alignment && params.mm2_lowmem ) { log.error "Incompatible options: --mm2_lowmem and --mm2_full_alignment."; exit 1 }
 
 // Print run informations
 log.info '''
