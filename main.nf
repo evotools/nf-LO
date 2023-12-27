@@ -74,6 +74,18 @@ no_maf          : $params.no_maf"""
 if (params.qscores){
         log.info"""q-scores        : $params.qscores"""
 } 
+if (params.minimap2_threads && params.aligner == 'minimap2'){
+        log.info"""low memory (mm2): $params.minimap2_threads"""
+} 
+if (params.gsalign_threads && params.aligner == 'gsalign'){
+        log.info"""low memory (mm2): $params.gsalign_threads"""
+} 
+if (params.mm2_lowmem){
+        log.info"""low memory (mm2): $params.mm2_lowmem"""
+} 
+if (params.mm2_full_alignment){
+        log.info"""full-alignment  : $params.mm2_full_alignment"""
+} 
 if (params.mafTools){
         log.info"""mafTools        : $params.mafTools"""
 } 
