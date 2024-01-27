@@ -4,11 +4,12 @@ name: minimap2
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-  pull_request:
     branches:
       - main
+  pull_request:
+  release:
+    types: [published]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
