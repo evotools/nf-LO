@@ -3,7 +3,16 @@
 name: lastz
 
 # Controls when the action will run. 
-on: [push]
+on: 
+  push:
+    branches:
+      - 'main'
+      - 'dev'
+      - '*test'
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
