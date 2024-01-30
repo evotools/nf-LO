@@ -352,6 +352,34 @@ process mafstats {
     """
 }
 
+process makevcf {
+    tag "mafstats"
+    publishDir "${params.outdir}/vcf", mode: 'copy', overwrite: true
+    label 'medium'
+ 
+    input:
+        path final_maf
+        val sourceFa
+        val targetFa
+
+    output:
+        path "mafCoverage.*"
+        path "mafIdentity.*"
+        path "mafStats.*"
+
+    stub:
+    """
+    touch mafCoverage.out
+    touch mafIdentity.out
+    touch mafStats.out
+    """
+
+    script:
+    """
+    mafToFastaStitcher --maf $final_maf --seqs ${sourceFa},${targetFa} --breakpointPenalty 5 --interstitialSequence 20 --outMfa ${final_maf.baseName}.mfa
+    """
+}
+
 // Liftover functions
 process liftover{
     tag "liftover"
