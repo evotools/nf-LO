@@ -53,6 +53,15 @@ workflow LASTZ {
         twoBitTN  
 
     main:
+        // Add number of sequences for source fragment
+        pairspath_ch
+            .map{
+                srcname, srcfile, tgtname, tgtfile ->
+                def nseq = srcfile.countFasta()
+                [srcname, srcfile, tgtname, tgtfile, nseq]
+            }
+            .set{pairspath_ch}
+
         // Run lastz
         lastz(pairspath_ch, tgt_lift, src_lift)  
         axtChain( lastz.out.al_files_ch, twoBitS, twoBitT)   

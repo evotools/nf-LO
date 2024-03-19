@@ -137,6 +137,7 @@ process splitsrc {
 
     output:
     path "SPLIT_src", emit: srcsplit_ch
+    path "SPLIT_src/*", emit: srcfas_ch
     path "source.lift", emit: src_lift_ch
 
     stub:
@@ -149,7 +150,7 @@ process splitsrc {
     """
 
     script:
-    if ( params.aligner == "blat" || params.aligner == 'gsalign' || params.aligner == 'last' || params.aligner == "minimap2" || params.aligner == 'GSAlign' )
+    if ( params.aligner != "lastz" )
         """
         myvalue=`faSize -tab ${source} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
@@ -173,7 +174,8 @@ process groupsrc {
     path src_fld
 
     output:
-    path "./CLUST_src", emit: srcclst_ch
+    path "CLUST_src", emit: srcclst_ch
+    path "CLUST_src/*", emit: srcfas_ch
 
     script:
     if (params.aligner != 'lastz')
@@ -233,6 +235,7 @@ process splittgt {
 
     output:
     path "SPLIT_tgt", emit: tgtsplit_ch
+    path "SPLIT_tgt/*", emit: tgtfas_ch
     path "target.lift", emit: tgt_lift_ch
 
     stub:
@@ -250,7 +253,7 @@ process splittgt {
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift -extra=500 ${target} 4500 SPLIT_tgt/tmp
         """
-    else if ( params.aligner == "gsalign" || params.aligner == "minimap2" || params.aligner == 'GSAlign' )
+    else if ( params.aligner.toLowerCase() == "gsalign" || (params.aligner == 'minimap2' && params.mm2_full_alignment) )
         """
         myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
@@ -258,6 +261,15 @@ process splittgt {
         fi
         mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
         faSplit size -oneFile -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
+        """
+    else if ( params.aligner == "minimap2" && !params.mm2_full_alignment && !params.mm2_lowmem )
+        """
+        myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
+        if [ -z \$myvalue ]; then
+            myvalue=`faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'`
+        fi
+        mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
+        faSplit size -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
         """
     else
         """
@@ -274,7 +286,8 @@ process grouptgt {
     path tgt_fld
 
     output:
-    path "./CLUST_tgt", emit: tgtclst_ch
+    path "CLUST_tgt", emit: tgtclst_ch
+    path "CLUST_tgt/*", emit: tgtfas_ch
 
     script:
     if( params.aligner != "blat" )
@@ -301,7 +314,7 @@ process grouptgt {
         toWrite = []
         for n,(size,seq) in enumerate(tmpdata):
             total += size
-            if total < int(${params.srcSize}):
+            if total < int(${params.tgtSize}):
                 toWrite.append(os.path.join(infld, seq))
             else:
                 if len(toWrite) > 0: 
@@ -347,59 +360,6 @@ process grouptgt {
     /$
 
 }
-
-/*
- * Step 2: Make pairs of chromosomes to process
- */
-
-process pairs {
-    tag "mkpairs"
-    label 'small'
-
-    input:
-    path sources
-    path targets
-
-    output:
-    path "pairs.csv", emit: pairspath
-
-    stub:
-    $/
-    #!/usr/bin/env python
-    import os
-    infld1 = os.path.realpath( "${sources}" )
-    infld2 = os.path.realpath( "${targets}" )
-    files1 = os.listdir(infld1)
-    files2 = os.listdir(infld2)
-    of = open("pairs.csv", "w")
-    for f in files1:
-        fname1 = os.path.join( infld1, f)
-        bname1= '.'.join( f.split('.')[0:-1] )
-        for f2 in files2:
-            fname2 = os.path.join(infld2, f2)
-            bname2 = '.'.join( f2.split('.')[0:-1] )
-            of.write( "{},{},{},{}\n".format(bname1, fname1, bname2, fname2) )
-    /$
-
-    script:
-    $/
-    #!/usr/bin/env python
-    import os
-    infld1 = os.path.realpath( "${sources}" )
-    infld2 = os.path.realpath( "${targets}" )
-    files1 = os.listdir(infld1)
-    files2 = os.listdir(infld2)
-    of = open("pairs.csv", "w")
-    for f in files1:
-        fname1 = os.path.join( infld1, f)
-        bname1= '.'.join( f.split('.')[0:-1] )
-        for f2 in files2:
-            fname2 = os.path.join(infld2, f2)
-            bname2 = '.'.join( f2.split('.')[0:-1] )
-            of.write( "{},{},{},{}\n".format(bname1, fname1, bname2, fname2) )
-    /$
-}
-
 
 
 process make2bitS {
@@ -488,5 +448,30 @@ process makeSizeT {
     script:
     """
     twoBitInfo ${tgt} target.sizes
+    """
+}
+
+process make_mmi {
+    tag "mmi"
+    label 'medium'
+
+    input:
+    path fasta
+
+    output:
+    path "${fasta.baseName}.mmi", emit: sizesTgt
+
+    stub:
+    """
+    touch ${fasta.baseName}.mmi
+    """
+
+    script:
+    def minimap2_conf = params.distance == 'near' ? "-x asm5" : params.distance == 'medium' ? "-x asm10" : "-x asm20"
+    if (params.custom){
+        minimap2_conf = params.custom
+    }
+    """
+    minimap2 ${minimap2_conf} -d ${fasta.baseName}.mmi ${fasta}
     """
 }

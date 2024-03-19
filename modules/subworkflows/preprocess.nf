@@ -1,10 +1,8 @@
 // Include dependencies
 include {make2bit; src2bit; tgt2bit} from "../processes/preprocess" params(params)
-include {splitsrc} from "../processes/preprocess" params(params)
-include {splittgt} from "../processes/preprocess" params(params)
-include {groupsrc} from "../processes/preprocess" params(params)
-include {grouptgt} from "../processes/preprocess" params(params)
-include {pairs} from "../processes/preprocess" params(params)
+include {splitsrc; splittgt} from "../processes/preprocess" params(params)
+include {groupsrc; grouptgt} from "../processes/preprocess" params(params)
+include {make_mmi} from "../processes/preprocess" params(params)
 
 // Create minimap2 alignments workflow
 workflow PREPROC {
@@ -24,29 +22,43 @@ workflow PREPROC {
         // split and group source
         splitsrc(ch_source)
         src_lift = splitsrc.out.src_lift_ch
-        if ( params.aligner == 'blat' || params.aligner == 'gsalign' || params.aligner == 'last' || params.aligner == 'minimap2' || params.aligner == 'GSAlign' ){
+        if ( params.aligner == 'blat' || params.aligner.toLowerCase() == 'gsalign' || params.aligner == 'last' || params.aligner == 'minimap2' ){
             ch_fragm_src_out = splitsrc.out.srcsplit_ch
+            ch_fragm_src_fa = splitsrc.out.srcfas_ch.flatten()
         } else {
-            groupsrc(splitsrc.out.srcsplit_ch)
+            splitsrc.out.srcsplit_ch | groupsrc
             ch_fragm_src_out = groupsrc.out.srcclst_ch
+            ch_fragm_src_fa = groupsrc.out.srcfas_ch.flatten()
         }
 
         // split and group target
         splittgt(ch_target)
         tgt_lift = splittgt.out.tgt_lift_ch
-        if ( params.aligner == 'gsalign' || params.aligner == 'GSAlign' || params.aligner == 'minimap2'){
+        if ( params.aligner.toLowerCase() == 'gsalign'  || (params.aligner == 'minimap2' && params.mm2_full_alignment) ){
             ch_fragm_tgt_out = splittgt.out.tgtsplit_ch
+            ch_fragm_tgt_fa = splittgt.out.tgtfas_ch
+                .flatten()
+                .map{it -> [it.baseName, it]}
         } else {
-            grouptgt(splittgt.out.tgtsplit_ch)
+            splittgt.out.tgtsplit_ch | grouptgt
             ch_fragm_tgt_out = grouptgt.out.tgtclst_ch
+            ch_fragm_tgt_fa = grouptgt.out.tgtfas_ch
+                .flatten()
+                .map{it -> [it.baseName, it]}
         }
 
-        // prepare pairs
-        pairs( ch_fragm_src_out, ch_fragm_tgt_out )
-        pairs.out.pairspath
-            .splitCsv(header: ['srcname', 'srcfile', 'tgtname', 'tgtfile'])
-            .map{ row-> tuple(row.srcname, row.srcfile, row.tgtname, row.tgtfile) }
-            .set{ pairspath_ch }
+        // If minimap2 requested, convert reference to mmi to save memory
+        if (params.aligner.toLowerCase() == 'minimap2'){
+            ch_fragm_src_fa = ch_fragm_src_fa | make_mmi | map{it -> [it.baseName, it]}
+        } else {
+            ch_fragm_src_fa = ch_fragm_src_fa.map{it -> [it.baseName, it]}
+        }
+
+        // Prepare pairs of sequences
+        ch_fragm_src_fa
+            .combine(ch_fragm_tgt_fa)
+            .transpose()
+            .set{pairspath_ch}
 
     emit:
         pairspath_ch

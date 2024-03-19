@@ -76,7 +76,15 @@ Below the table used in [Talenti A. and Prendergast J., 2022](https://academic.o
 | H. sapiens (build 38) |       G. gallus       |      lastz      |  20,000,000  |  10,000,000  |        0        |      50,000     |
 
 These should be seen as examples only, and each case should be considered independently.
-Fragmentation of the genomes doesn't apply to `minimap2` and `GSAlign`.
+Fragmentation of the genomes doesn't apply to `GSAlign` and, with specific settings, [minimap2](#custom-minimap2-options).
+
+You can define the fragmentation of the target genome using:
+1. `--tgtSize`: size of the target fragment to consider (in bp)
+2. `--tgtOvlp`: overlapping sequence between pairs of fragments from the target genome (in bp)
+
+Analogously, you can define the fragmentation of the source genome using:
+1. `--srcSize`: size of the source fragment to consider (in bp)
+2. `--srcOvlp`: overlapping sequence between pairs of fragments from the source genome (in bp)
 
 ## Custom parameters
 You can apply your own custom parameters to an alignment simply with the `--custom` flag:
@@ -87,3 +95,13 @@ nextflow run evotools/nf-LO \
    --custom '-cx asm5 -l 10000' \
    --aligner minimap2  
 ``` 
+
+## Custom minimap2 options
+Due to its flexible design, we have added some specific configurations for `minimap2` and changed its behaviour as of the recent update.
+The workflow now minimizes the memory impact of `minimap2` by generating an `.mmi` index for the source genome, using the same configurations as for the alignments. This will prevent each process to regenerate the individual indexes at run time, saving time and memory for the individual processes.
+
+The default `minimap2` behaviour is now to align each sequence from the target genome separately, using one task at the time. This should achieve a good balance of number of processes and low number of cores per process.
+
+If the user wishes to use a single process, as in the previous version of the workflow, they can do so by providing `--mm2_full_alignment`. This will perform a single genome-to-genome process. You might want to increase the number of cores provided to minimap2 with `--minimap2_threads`.
+
+If the user needs to perform the alignment in a particularly low-memory environment, they can provide `--mm2_lowmem`. This will perform the scattering of the target genome using `--tgtSize`, and with the overlap specified in `--tgtOvlp`.
