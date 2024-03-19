@@ -1,10 +1,8 @@
 // Include dependencies
 include {make2bit; src2bit; tgt2bit} from "../processes/preprocess" params(params)
-include {splitsrc} from "../processes/preprocess" params(params)
-include {splittgt} from "../processes/preprocess" params(params)
-include {groupsrc} from "../processes/preprocess" params(params)
-include {grouptgt} from "../processes/preprocess" params(params)
-include {make_mmi as make_mmi_tgt; make_mmi as make_mmi_src} from "../processes/preprocess" params(params)
+include {splitsrc; splittgt} from "../processes/preprocess" params(params)
+include {groupsrc; grouptgt} from "../processes/preprocess" params(params)
+include {make_mmi} from "../processes/preprocess" params(params)
 
 // Create minimap2 alignments workflow
 workflow PREPROC {
@@ -51,7 +49,7 @@ workflow PREPROC {
 
         // If minimap2 requested, convert reference to mmi to save memory
         if (params.aligner.toLowerCase() == 'minimap2'){
-            ch_fragm_src_fa = ch_fragm_src_fa | make_mmi_src | map{it -> [it.baseName, it]}
+            ch_fragm_src_fa = ch_fragm_src_fa | make_mmi | map{it -> [it.baseName, it]}
         } else {
             ch_fragm_src_fa = ch_fragm_src_fa.map{it -> [it.baseName, it]}
         }
