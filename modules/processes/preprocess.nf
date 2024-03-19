@@ -453,7 +453,7 @@ process makeSizeT {
 
 process make_mmi {
     tag "mmi"
-    label 'small'
+    label 'medium'
 
     input:
     path fasta
