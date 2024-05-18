@@ -22,7 +22,7 @@ process minimap2_near{
 
     script:
     """
-    minimap2 -t ${task.cpus} ${minimap2Near} --cs=long ${srcfile} ${tgtfile} | 
+    minimap2 -t ${task.cpus} ${minimap2Near} --cap-kalloc 100m --cap-sw-mem 50m --cs=long ${srcfile} ${tgtfile} | 
         paftools.js view -f maf - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
@@ -49,7 +49,7 @@ process minimap2_medium{
 
     script:
     """
-    minimap2 -t ${task.cpus} --cs=long ${minimap2Medium} ${srcfile} ${tgtfile} | 
+    minimap2 -t ${task.cpus} --cap-kalloc 100m --cap-sw-mem 50m --cs=long ${minimap2Medium} ${srcfile} ${tgtfile} | 
         paftools.js view -f maf - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
@@ -76,7 +76,7 @@ process minimap2_far{
 
     script:
     """
-    minimap2 -t ${task.cpus} --cs=long ${minimap2Far} ${srcfile} ${tgtfile} | 
+    minimap2 -t ${task.cpus} --cap-kalloc 100m --cap-sw-mem 50m --cs=long ${minimap2Far} ${srcfile} ${tgtfile} | 
         paftools.js view -f maf - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
@@ -103,7 +103,7 @@ process minimap2_custom{
 
     script:
     """
-    minimap2 -t ${task.cpus} --cs=long ${params.custom} ${srcfile} ${tgtfile} | 
+    minimap2 -t ${task.cpus} --cap-kalloc 100m --cap-sw-mem 50m --cs=long ${params.custom} ${srcfile} ${tgtfile} | 
         paftools.js view -f maf - |
         maf-convert psl - |
         liftUp -type=.psl stdout $srclift warn stdin |
