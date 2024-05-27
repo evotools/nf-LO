@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+
+name: lastz
+
+# Controls when the action will run. 
+on: 
+  push:
+    branches:
+      - 'main'
+      - 'dev'
+      - '*test'
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    name: Run workflow tests
+    # Only run on push if this is the nf-core dev branch (merged PRs)
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    env:
+      NXF_VER: ${{ matrix.nxf_ver }}
+      NXF_ANSI_LOG: false
+    strategy:
+      matrix:
+        # Nextflow versions: check pipeline minimum and current latest
+        nxf_ver: ["23.04.0"]
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v2
+
+      - name: Install Nextflow
+        run: |
+          wget -qO- get.nextflow.io | bash
+          sudo mv nextflow /usr/local/bin/
+
+      - name: Install Dependencies
+        run: |
+          chmod a+x ./assets/install.sh
+          assets/install.sh
+
+      - name: Run pipeline with test data
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile test

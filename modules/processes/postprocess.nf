@@ -14,8 +14,8 @@ process axtchain_near {
 
     input:
         tuple val(srcname), val(tgtname), file(psl) 
-        file twoBitS
-        file twoBitT
+        path twoBitS
+        path twoBitT
 
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
@@ -38,8 +38,8 @@ process axtchain_medium {
 
     input:
         tuple val(srcname), val(tgtname), file(psl) 
-        file twoBitS
-        file twoBitT
+        path twoBitS
+        path twoBitT
 
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
@@ -62,8 +62,8 @@ process axtchain_far {
 
     input:
         tuple val(srcname), val(tgtname), file(psl) 
-        file twoBitS
-        file twoBitT
+        path twoBitS
+        path twoBitT
 
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
@@ -86,8 +86,8 @@ process axtchain_custom {
 
     input:
         tuple val(srcname), val(tgtname), file(psl) 
-        file twoBitS
-        file twoBitT
+        path twoBitS
+        path twoBitT
 
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
@@ -109,7 +109,7 @@ process chainMerge {
     label 'medium'
 
     input: 
-        file chains
+        path chains
         
     output: 
         path "rawchain.chain", emit: rawchain_ch  
@@ -132,11 +132,11 @@ process chainNet_old{
     label 'medium'
  
     input:
-        file rawchain  
-        file twoBitS
-        file twoBitT
-        file twoBitsizeS
-        file twoBitsizeT
+        path rawchain  
+        path twoBitS
+        path twoBitT
+        path twoBitsizeS
+        path twoBitsizeT
         
     output: 
         path "liftover.chain", emit: liftover_ch  
@@ -163,11 +163,11 @@ process chainNet{
     label 'medium'
  
     input:
-        file rawchain  
-        file twoBitS
-        file twoBitT
-        file twoBitsizeS
-        file twoBitsizeT
+        path rawchain  
+        path twoBitS
+        path twoBitT
+        path twoBitsizeS
+        path twoBitsizeT
         
     output: 
         path "netfile.net"
@@ -190,7 +190,7 @@ process netSynt {
     label 'medium'
  
     input:
-        file netfile  
+        path netfile  
         
     output: 
         path "netfile.synt.net", emit: netfile_ch  
@@ -212,8 +212,8 @@ process chainsubset{
     label 'medium'
  
     input:
-        file netfile
-        file rawchain
+        path netfile
+        path rawchain
         
     output: 
         path "liftover.chain", emit: liftover_ch  
@@ -532,6 +532,7 @@ process make_report {
     path mafcov
     path mafidn
     path feat
+    path rmd
 
     output:
     path "chainMetrics.html"
@@ -543,7 +544,6 @@ process make_report {
 
     script:
     """
-    cp ${baseDir}/assets/gatherMetrics.Rmd ./
-    R -e "rmarkdown::render('gatherMetrics.Rmd',output_file='chainMetrics.html')"
+    R -e "rmarkdown::render('${rmd}',output_file='chainMetrics.html')"
     """
 }
