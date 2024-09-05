@@ -152,7 +152,7 @@ process chainNet_old{
     if ( params.aligner != "blat" & params.aligner != "nucmer" & params.aligner != "GSAlign")
     def haplotypes = params.haplotypes ? "-inclHap" : ""
     """
-    chainPreNet $${haplotypes} {rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
+    chainPreNet ${haplotypes} {rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
         chainNet -verbose=0 ${haplotypes} stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null | netSyntenic stdin netfile.net
     netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
     """
