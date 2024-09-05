@@ -37,10 +37,12 @@ jobs:
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
 
-      - name: Install Dependencies
+      - name: Install mamba
         run: |
-          chmod a+x ./assets/install.sh
-          assets/install.sh
+          wget -nv -O Mambaforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh
+          bash Mambaforge.sh -b -p ./mambaforge
+          ./mambaforge/bin/mamba init
+          source ./mambaforge/etc/profile.d/conda.sh 
 
       - name: Run pipeline with test data and minimap2
         run: |
