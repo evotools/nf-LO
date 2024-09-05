@@ -9,15 +9,11 @@ on:
       - 'main'
       - 'dev'
       - '*test'
+      - 'v*'
   pull_request:
   workflow_dispatch:
   release:
     types: [published]
-  # Try run minimap2 also if trying to fix an issue, to ensure
-  # that, overall, things work
-  issues:
-    types:
-      - opened
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
