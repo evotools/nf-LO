@@ -49,4 +49,4 @@ jobs:
       - name: Run pipeline with test data and blat
         run: |
           source ./mambaforge/etc/profile.d/conda.sh
-          nextflow run ${GITHUB_WORKSPACE} --aligner blat -profile test
+          nextflow run ${GITHUB_WORKSPACE} --aligner blat --mamba -profile test,conda

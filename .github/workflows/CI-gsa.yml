@@ -49,4 +49,4 @@ jobs:
       - name: Run pipeline with test data and GSAlign
         run: |
           source ./mambaforge/etc/profile.d/conda.sh
-          nextflow run ${GITHUB_WORKSPACE} --aligner gsalign -profile test
+          nextflow run ${GITHUB_WORKSPACE} --aligner gsalign --mamba -profile test,conda
