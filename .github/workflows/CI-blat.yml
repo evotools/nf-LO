@@ -8,7 +8,9 @@ on:
     branches:
       - 'main'
       - 'dev'
-      - '*test'
+      - 'dev/'
+      - '*CI'
+      - 'v*'
   pull_request:
   workflow_dispatch:
   release:
@@ -44,6 +46,7 @@ jobs:
           ./mambaforge/bin/mamba init
           source ./mambaforge/etc/profile.d/conda.sh 
 
-      - name: Run pipeline with test data and minimap2
+      - name: Run pipeline with test data and blat
         run: |
+          source ./mambaforge/etc/profile.d/conda.sh
           nextflow run ${GITHUB_WORKSPACE} --aligner blat -profile test
