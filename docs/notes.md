@@ -1,4 +1,6 @@
 # Changelog
+## [v1.8.3]
+- Added `--haplotypes` mode, that allows to create liftover files between haplotypes of the same individual with UCSC naming convention 
 
 ## [v1.8.2]
 - `--aligner minimap2` now runs on individual target sequences to reduce the memory footprint and improve performances in large distributed systems

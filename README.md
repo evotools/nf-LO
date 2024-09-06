@@ -144,6 +144,10 @@ This analysis will run using genome1 and genome2 as source and target, respectiv
 whereas the target will be fragmented in 10Mb chunks overlapping 100Kb. It will use lastz as the aligner using the preset for closely related genomes (near).
 The output files will be copied into the folder my_liftover.
 
+## Frequently asked questions
+
++ _How do I liftover between two haplotypes of the same genome?_ You can lift over positions between haplotypes of the same individual (i.e. having the sequences named `*_hap*` or `*_alt*`) by providing the `--haplotypes` option.
+
 ## Citing nf-LO
 To cite nf-LO, please refer to:
 ```

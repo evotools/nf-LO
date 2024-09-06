@@ -36,3 +36,6 @@ nextflow run evotools/nf-LO --igenome_source GRCh37 \
    --no_netsynt \
    --chainCustom '-minScore=5000 -linearGap=medium'
 ```  
+
+## Haplotype-resolved assemblies
+Normally, the workflow will not liftover positions between haplotype sequences (i.e. having the sequences named `*_hap*` or `*_alt*`). This can cause the workflow to generate empty liftovers when the process only involves sequences with the aforementioned naming, for example when lifting `hap1` to `hap2` of the same individual. To still generate liftovers in such cases, users have to provide the `--haplotypes` option, which will allow the workflow to retain such alignments downstream.
