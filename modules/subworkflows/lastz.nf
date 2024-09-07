@@ -77,10 +77,10 @@ workflow LASTZ {
             net_ch = netSynt.out
         }
         chainsubset(net_ch, chainMerge.out)
-        if(!params.no_maf){ 
+        if(!params.no_maf || params.vcf){ 
             chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) 
-            name_maf_seq( chain2maf.out )
-            mafstats( name_maf_seq.out, ch_source.simpleName, ch_target.simpleName ) 
+            maf = name_maf_seq( chain2maf.out )
+            mafstats( maf, ch_source.simpleName, ch_target.simpleName ) 
             mafs = mafstats.out[0]
             mafc = mafstats.out[1]
             mafi = mafstats.out[2]
@@ -96,4 +96,5 @@ workflow LASTZ {
         mafs
         mafc
         mafi
+        maf
 }

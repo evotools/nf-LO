@@ -354,6 +354,58 @@ process mafstats {
     """
 }
 
+process maf2mfa {
+    tag "mafstats"
+    publishDir "${params.outdir}/maf", mode: 'copy', overwrite: true
+    label 'medium'
+ 
+    input:
+        path final_maf
+        val sourceFa
+        val targetFa
+
+    output:
+        path "${final_maf.baseName}.mfa"
+
+    stub:
+    """
+    touch ${final_maf.baseName}.mfa
+    """
+
+    script:
+    """
+    mafToFastaStitcher --maf ${final_maf} --seqs ${sourceFa},${targetFa} --breakpointPenalty 5 --interstitialSequence 20 --outMfa ${final_maf.baseName}.mfa
+    """
+}
+
+process mfa2vcf {
+    tag "mafstats"
+    publishDir "${params.outdir}/vcf", mode: 'copy', overwrite: true
+    label 'medium'
+    conda "bioconda::ucsc-fatovcf bioconda::tabix"
+ 
+    input:
+        path mfa
+
+    output:
+        path "${mfa.baseName}.vcf.gz"
+        path "${mfa.baseName}.vcf.gz.tbi"
+
+    stub:
+    """
+    touch ${mfa.baseName}.vcf.gz
+    touch ${mfa.baseName}.vcf.gz.tbi
+    """
+
+    script:
+    """
+    faToVcf ${mfa} ${mfa.baseName}.vcf
+    bgzip ${mfa.baseName}.vcf
+    tabix -p vcf ${mfa.baseName}.vcf.gz
+    """
+}
+
+
 // Liftover functions
 process liftover{
     tag "liftover"
