@@ -117,6 +117,7 @@ include {PREPROC} from './modules/subworkflows/preprocess' params(params)
 include {LIFTOVER} from './modules/subworkflows/liftover' params(params)
 include {DATA} from './modules/subworkflows/data' params(params)
 include {make_report} from './modules/processes/postprocess' params(params)
+include {maf2mfa; mfa2vcf} from "./modules/processes/postprocess" params(params)
 workflow {
         DATA()
         ch_source = DATA.out.ch_source
@@ -134,5 +135,10 @@ workflow {
         if (params.mafTools || params.annotation || workflow.containerEngine){
                 rmd = Channel.fromPath("${baseDir}/assets/gatherMetrics.Rmd")
                 make_report(ALIGNER.out.mafs, ALIGNER.out.mafc, ALIGNER.out.mafi, liftstats, rmd)
+
+                // Make VCF file
+        }
+        if (params.vcf){
+                maf2mfa(ALIGNER.out.maf, ch_source, ch_target) | mfa2vcf
         }
 }

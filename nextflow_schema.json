@@ -22,36 +22,36 @@
                 },
                 "source": {
                     "type": "string",
-                    "default": "null"
+                    "default": null
                 },
                 "target": {
                     "type": "string",
-                    "default": "null"
+                    "default": null
                 },
                 "ncbi_source": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "ncbi_target": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "igenomes_source": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "igenomes_target": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "annotation": {
                     "type": "string",
-                    "default": "null"
+                    "default": null
                 },
                 "annotation_format": {
                     "type": "string",
-                    "default": "null",
-                    "enum": ["null", "gff", "bed", "gtf", "vcf", "bam", "maf"]
+                    "default": null,
+                    "enum": [null, "gff", "bed", "gtf", "vcf", "bam", "maf"]
                 }
             }
         },
@@ -93,11 +93,11 @@
                 },
                 "qscores": {
                     "type": "string",
-                    "default": "null"
+                    "default": null
                 },
                 "custom": {
                     "type": "string",
-                    "default": "null"
+                    "default": null
                 }
             }
         },
@@ -109,7 +109,7 @@
             "properties": {
                 "chainCustom": {
                     "type": "string",
-                    "default": "null"
+                    "default": null
                 },
                 "chain_name": {
                     "type": "string",
@@ -117,7 +117,7 @@
                 },
                 "no_netsynt": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 }        
             }
         },
@@ -146,11 +146,15 @@
                 },
                 "no_maf": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
+                },
+                "vcf": {
+                    "type": "boolean",
+                    "default": false
                 },
                 "mafTools": {
                     "type": "string",
-                    "default": "null"
+                    "default": null
                 }
             }
         },
@@ -252,7 +256,7 @@
                 "mamba": {
                     "description": "Use mamba instead of conda to create the anaconda environment.",
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "extra_cluster_options": {
                     "description": "Additional cluster options to be used; valid in some clusters only.",
