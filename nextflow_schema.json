@@ -66,6 +66,10 @@
                     "default": "medium",
                     "enum": ["same", "near", "medium", "far", "balanced", "custom"]
                 },
+                "haplotypes": {
+                    "type": "boolean",
+                    "default": false
+                },
                 "aligner": {
                     "type": "string",
                     "default": "lastz",

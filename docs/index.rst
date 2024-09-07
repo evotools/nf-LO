@@ -55,6 +55,7 @@ User guide
   liftover
   output
   reports
+  faq
   changelog
   citations
 
