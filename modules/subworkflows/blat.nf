@@ -50,8 +50,8 @@ workflow BLAT {
         chainsubset(net_ch, chainMerge.out)
         if(!params.no_maf){ 
             chain2maf( chainsubset.out.liftover_ch, twoBitS, twoBitT, twoBitSN, twoBitTN ) 
-            name_maf_seq( chain2maf.out )
-            mafstats( name_maf_seq.out, ch_source.map { it.simpleName }, ch_target.map { it.simpleName }  ) 
+            maf = name_maf_seq( chain2maf.out )
+            mafstats( maf, ch_source.map { it.simpleName }, ch_target.map { it.simpleName }  ) 
             mafs = mafstats.out[0]
             mafc = mafstats.out[1]
             mafi = mafstats.out[2]
@@ -67,4 +67,5 @@ workflow BLAT {
         mafs = mafs
         mafc = mafc
         mafi = mafi
+        maf = maf
 }
