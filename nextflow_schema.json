@@ -22,31 +22,36 @@
                 },
                 "source": {
                     "type": "string",
-                    "default": "null"
+                    "format": "file-path"
                 },
                 "target": {
                     "type": "string",
-                    "default": "null"
+                    "format": "file-path"
                 },
                 "ncbi_source": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "ncbi_target": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "igenomes_source": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "igenomes_target": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
+                },
+                "report": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Save HTML report."
                 },
                 "annotation": {
                     "type": "string",
-                    "default": "null"
+                    "format": "file-path"
                 },
                 "annotation_format": {
                     "type": "string",
@@ -77,27 +82,32 @@
                 },
                 "srcSize": {
                     "type": "integer",
-                    "default": 20000000
-                },
-                "tgtSize": {
-                    "type": "integer",
-                    "default": 10000000
-                },
-                "tgtOvlp": {
-                    "type": "integer",
-                    "default": 100000
+                    "default": 20000000,
+                    "description": "Chunk size of the source genome for the alignment" 
                 },
                 "srcOvlp": {
                     "type": "integer",
-                    "default": 0
+                    "default": 0,
+                    "description": "Overlap size between chunks of the source genome"
+                },
+                "tgtSize": {
+                    "type": "integer",
+                    "default": 10000000,
+                    "description": "Chunk size of the target genome for the alignment"
+                },
+                "tgtOvlp": {
+                    "type": "integer",
+                    "default": 100000,
+                    "description": "Overlap size between chunks of the target genome"
                 },
                 "qscores": {
                     "type": "string",
-                    "default": "null"
+                    "format": "file-path",
+                    "description": "Path to the Q-scores to be used by the `lastz` alignment"
                 },
                 "custom": {
                     "type": "string",
-                    "default": "null"
+                    "description": "Alignment custom options"
                 }
             }
         },
@@ -109,7 +119,7 @@
             "properties": {
                 "chainCustom": {
                     "type": "string",
-                    "default": "null"
+                    "description": "Chaining custom options"
                 },
                 "chain_name": {
                     "type": "string",
@@ -117,7 +127,7 @@
                 },
                 "no_netsynt": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 }        
             }
         },
@@ -146,11 +156,12 @@
                 },
                 "no_maf": {
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "mafTools": {
                     "type": "string",
-                    "default": "null"
+                    "format": "directory-path",
+                    "description": "Path to the installation directory of mafTools"
                 }
             }
         },
@@ -252,7 +263,7 @@
                 "mamba": {
                     "description": "Use mamba instead of conda to create the anaconda environment.",
                     "type": "boolean",
-                    "default": "false"
+                    "default": false
                 },
                 "extra_cluster_options": {
                     "description": "Additional cluster options to be used; valid in some clusters only.",

@@ -1,4 +1,9 @@
 # Changelog
+## [v1.8.4]
+- Fix broken anaconda environment creation due to wrong repository order 
+- Better schema file
+- Report generation is now optional and enabled with `--report`
+- Report now working with anaconda runs
 
 ## [v1.8.3]
 - Added `--haplotypes` mode, that allows to create liftover files between haplotypes of the same individual with UCSC naming convention 

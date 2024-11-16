@@ -424,6 +424,7 @@ process features_stats {
     tag "feat_stats"
     publishDir "${params.outdir}/stats", mode: params.publish_dir_mode, overwrite: true
     label 'medium'
+    conda "genomedk::maftools"
 
     input:
         path all_feature

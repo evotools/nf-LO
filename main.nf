@@ -131,7 +131,7 @@ workflow {
         } else {
                 liftstats = file("${params.outdir}/stats/placeholder4")
         }
-        if (params.mafTools || params.annotation || workflow.containerEngine){
+        if (params.report){
                 rmd = Channel.fromPath("${baseDir}/assets/gatherMetrics.Rmd")
                 make_report(ALIGNER.out.mafs, ALIGNER.out.mafc, ALIGNER.out.mafi, liftstats, rmd)
         }
