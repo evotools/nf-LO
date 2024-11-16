@@ -70,6 +70,7 @@ annot type      : $params.annotation_format
 liftover meth.  : $params.liftover_algorithm
 igenomes_base   : $params.igenomes_base
 igenomes_ignore : $params.igenomes_ignore
+report          : $params.report
 mamba           : $params.mamba
 no_maf          : $params.no_maf"""
 if (params.qscores){
