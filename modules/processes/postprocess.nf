@@ -424,6 +424,7 @@ process features_stats {
     tag "feat_stats"
     publishDir "${params.outdir}/stats", mode: params.publish_dir_mode, overwrite: true
     label 'medium'
+    conda "${baseDir}/assets/maf-environment.yml"
 
     input:
         path all_feature
