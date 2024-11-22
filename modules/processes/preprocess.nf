@@ -4,11 +4,6 @@
  * the intervals for the analyses
  */
 
-tgtChunkSize=params.tgtSize
-srcChunkSize=params.srcSize
-tgtOvlpSize=params.tgtOvlp
-srcOvlpSize=params.srcOvlp
-
 process make2bit {
     tag "twoBit"
     publishDir "$params.outdir/genome2bit", mode: params.publish_dir_mode, overwrite: true
@@ -24,20 +19,20 @@ process make2bit {
     path "source.sizes", emit: twoBsrcNFO
     path "target.sizes", emit: twoBtgtNFO
 
-    stub:
-    """
-    touch source.2bit
-    touch source.sizes
-    touch target.2bit
-    touch target.sizes
-    """
-
     script:
     """
     faToTwoBit ${source} source.2bit
     twoBitInfo source.2bit source.sizes
     faToTwoBit ${target} target.2bit
     twoBitInfo target.2bit target.sizes
+    """
+
+    stub:
+    """
+    touch source.2bit
+    touch source.sizes
+    touch target.2bit
+    touch target.sizes
     """
 }
 
@@ -54,12 +49,6 @@ process src2bit {
     path "source.2bit", emit: twoBsrc
     path "source.sizes", emit: twoBsrcNFO
 
-    stub:
-    """
-    touch source.2bit
-    touch source.sizes
-    """
-
     script:
     """
     if [ `faSize -tab ${source} | awk '\$1=="baseCount" {print \$2}'` -lt 4000000000 ]; then
@@ -69,6 +58,12 @@ process src2bit {
         faToTwoBit -long ${source} source.2bit
         twoBitInfo source.2bit source.sizes
     fi
+    """
+
+    stub:
+    """
+    touch source.2bit
+    touch source.sizes
     """
 }
 
@@ -84,12 +79,6 @@ process tgt2bit {
     path "target.2bit", emit: twoBtgt
     path "target.sizes", emit: twoBtgtNFO
 
-    stub:
-    """
-    touch target.2bit
-    touch target.sizes
-    """
-
     script:
     """
     if [ `faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'` -lt 4000000000 ]; then
@@ -99,6 +88,12 @@ process tgt2bit {
         faToTwoBit -long ${target} target.2bit
         twoBitInfo target.2bit target.sizes
     fi
+    """
+
+    stub:
+    """
+    touch target.2bit
+    touch target.sizes
     """
 }
 
@@ -114,16 +109,16 @@ process makeooc {
     path "11.ooc", emit: ooc11
     path "12.ooc", emit: ooc12
 
-    stub:
-    """
-    touch 11.ooc
-    touch 12.ooc
-    """
-
     script:
     """
     blat ${source} /dev/null /dev/null -makeOoc=11.ooc -repMatch=1024
     blat ${source} /dev/null /dev/null -makeOoc=12.ooc -repMatch=1024 -tileSize=12
+    """
+
+    stub:
+    """
+    touch 11.ooc
+    touch 12.ooc
     """
 }
 
@@ -140,15 +135,6 @@ process splitsrc {
     path "SPLIT_src/*", emit: srcfas_ch
     path "source.lift", emit: src_lift_ch
 
-    stub:
-    """
-    touch mkdir SPLIT_src/
-    touch SPLIT_src/src0.fa
-    touch SPLIT_src/src1.fa
-    touch SPLIT_src/src2.fa
-    touch source.lift
-    """
-
     script:
     if ( params.aligner != "lastz" )
         """
@@ -162,8 +148,17 @@ process splitsrc {
     else 
         """
         mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-        faSplit size -lift=source.lift -extra=${srcOvlpSize} ${source} ${srcChunkSize} SPLIT_src/
+        faSplit size -lift=source.lift -extra=${params.srcOvlp} ${source} ${params.srcSize} SPLIT_src/
         """
+
+    stub:
+    """
+    touch mkdir SPLIT_src/
+    touch SPLIT_src/src0.fa
+    touch SPLIT_src/src1.fa
+    touch SPLIT_src/src2.fa
+    touch source.lift
+    """
 }
 
 process groupsrc {
@@ -179,7 +174,7 @@ process groupsrc {
 
     script:
     if (params.aligner != 'lastz')
-    $/
+    """
     #!/usr/bin/env python
 
     def faSize(infile):
@@ -217,7 +212,7 @@ process groupsrc {
         outf = open(fname.format(outFld, n), "w" )
         [outf.write(line) for f in toWrite for line in open(f) ]
         outf.close()
-    /$
+    """
     else
     """
     cp -r ${src_fld} ./CLUST_src
@@ -237,15 +232,6 @@ process splittgt {
     path "SPLIT_tgt", emit: tgtsplit_ch
     path "SPLIT_tgt/*", emit: tgtfas_ch
     path "target.lift", emit: tgt_lift_ch
-
-    stub:
-    """
-    touch mkdir SPLIT_tgt/
-    touch SPLIT_tgt/tgt0.fa
-    touch SPLIT_tgt/tgt1.fa
-    touch SPLIT_tgt/tgt2.fa
-    touch target.lift
-    """
 
     script:
     if( params.aligner == "blat" )
@@ -274,8 +260,17 @@ process splittgt {
     else
         """
         mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
-        faSplit size -lift=target.lift -extra=${tgtOvlpSize} ${target} ${tgtChunkSize} SPLIT_tgt/
+        faSplit size -lift=target.lift -extra=${params.tgtOvlp} ${target} ${params.tgtSize} SPLIT_tgt/
         """
+
+    stub:
+    """
+    touch mkdir SPLIT_tgt/
+    touch SPLIT_tgt/tgt0.fa
+    touch SPLIT_tgt/tgt1.fa
+    touch SPLIT_tgt/tgt2.fa
+    touch target.lift
+    """
 }
 
 process grouptgt {
@@ -291,7 +286,7 @@ process grouptgt {
 
     script:
     if( params.aligner != "blat" )
-    $/
+    """
     #!/usr/bin/env python
 
     def faSize(infile):
@@ -327,9 +322,9 @@ process grouptgt {
         outf = open(fname.format(outFld, n), "w" )
         [outf.write(line) for f in toWrite for line in open(f) ]
         outf.close()
-    /$
-    else    
-    $/
+    """
+    else
+    """
     #!/usr/bin/env python
 
     if __name__ == "__main__":
@@ -357,8 +352,7 @@ process grouptgt {
                 outf = open(fname.format(outFld, n), "w" )
                 tot = 1
             outf.write(line)
-    /$
-
+    """
 }
 
 
@@ -373,14 +367,14 @@ process make2bitS {
     output:
     path "source.2bit", emit: twoBsrc
 
-    stub:
-    """
-    touch source.2bit
-    """
-
     script:
     """
     faToTwoBit ${source} source.2bit
+    """
+
+    stub:
+    """
+    touch source.2bit
     """
 }
 
@@ -396,14 +390,14 @@ process makeSizeS {
     output:
     path "source.sizes", emit: sizesSrc
 
-    stub:
-    """
-    touch source.sizes
-    """
-
     script:
     """
     twoBitInfo ${src} source.sizes
+    """
+
+    stub:
+    """
+    touch source.sizes
     """
 }
 
@@ -418,14 +412,14 @@ process make2bitT {
     output:
     path "target.2bit", emit: twoBtgt
 
-    stub:
-    """
-    touch target.2bit
-    """
-
     script:
     """
     faToTwoBit ${target} target.2bit
+    """
+
+    stub:
+    """
+    touch target.2bit
     """
 }
 
@@ -440,14 +434,14 @@ process makeSizeT {
     output:
     path "target.sizes", emit: sizesTgt
 
-    stub:
-    """
-    touch target.sizes
-    """
-
     script:
     """
     twoBitInfo ${tgt} target.sizes
+    """
+
+    stub:
+    """
+    touch target.sizes
     """
 }
 
@@ -461,11 +455,6 @@ process make_mmi {
     output:
     path "${fasta.baseName}.mmi", emit: sizesTgt
 
-    stub:
-    """
-    touch ${fasta.baseName}.mmi
-    """
-
     script:
     def minimap2_conf = params.distance == 'near' ? "-x asm5" : params.distance == 'medium' ? "-x asm10" : "-x asm20"
     if (params.custom){
@@ -473,5 +462,10 @@ process make_mmi {
     }
     """
     minimap2 ${minimap2_conf} -d ${fasta.baseName}.mmi ${fasta}
+    """
+
+    stub:
+    """
+    touch ${fasta.baseName}.mmi
     """
 }
