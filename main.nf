@@ -102,9 +102,18 @@ no_maf          : $params.no_maf"""
         if (params.mafTools){
                 log.info"""mafTools        : $params.mafTools"""
         } 
+        if (params.max_cpus){
+                log.info"""max cpus        : $params.max_cpus"""
+        } 
+        if (params.max_memory){
+                log.info"""max memory      : $params.max_memory"""
+        } 
+        if (params.max_time){
+                log.info"""max run time    : $params.max_time"""
+        } 
         if (workflow.containerEngine){
                 log.info """container       : $workflow.containerEngine"""
-        } 
+        }
 
         DATA()
         ch_source = DATA.out.ch_source
