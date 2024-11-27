@@ -1,12 +1,4 @@
-
-// Pre-defined chaining parameters 
-chainNear="-minScore=5000 -linearGap=medium"
-chainMedium="-minScore=3000 -linearGap=medium"
-chainFar="-minScore=5000 -linearGap=loose"
-
-// Import mafTools, if specified
-if (params.mafTools){ mafTools_ch=file(params.mafTools) }
-
+// post processing processes
 process axtchain_near {
     tag "axtchain_n"
     publishDir "${params.outdir}/singlechains", mode: params.publish_dir_mode, overwrite: true
@@ -20,14 +12,15 @@ process axtchain_near {
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
+    script:
+    def chain_args = "-minScore=5000 -linearGap=medium"
+    """
+    axtChain ${chain_args} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+
     stub:
     """
     touch ${srcname}.${tgtname}.chain
-    """
-
-    script:
-    """
-    axtChain $chainNear -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
     """
 }
 
@@ -44,14 +37,15 @@ process axtchain_medium {
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
+    script:
+    def chain_args = "-minScore=3000 -linearGap=medium"
+    """
+    axtChain ${chain_args} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+
     stub:
     """
     touch ${srcname}.${tgtname}.chain
-    """
-
-    script:
-    """
-    axtChain $chainMedium -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
     """
 }
 
@@ -68,15 +62,16 @@ process axtchain_far {
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
+    script:
+    def chain_args = "-minScore=5000 -linearGap=loose"
+    """
+    axtChain ${chain_args} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """        
+
     stub:
     """
     touch ${srcname}.${tgtname}.chain
     """
-
-    script:
-    """
-    axtChain $chainFar -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
-    """        
 }
 
 process axtchain_custom {
@@ -92,14 +87,48 @@ process axtchain_custom {
     output:
         path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
+    script:
+    """
+    axtChain ${params.chainCustom} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+
     stub:
     """
     touch ${srcname}.${tgtname}.chain
     """
+}
+
+process axtChain {
+    tag "axtchain"
+    publishDir "${params.outdir}/singlechains", mode: params.publish_dir_mode, overwrite: true
+    label 'small'
+
+    input:
+        tuple val(srcname), val(tgtname), file(psl) 
+        path twoBitS
+        path twoBitT
+
+    output:
+        path "${srcname}.${tgtname}.chain", emit: chain_files_ch
 
     script:
+    def chain_args = ""
+    if (params.chainCustom){
+        chain_args = params.chainCustom
+    } else if (params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate"){
+        chain_args = "-minScore=5000 -linearGap=medium"
+    } else if (params.distance == 'medium' || params.distance == 'general') {
+        chain_args = "-minScore=3000 -linearGap=medium"
+    } else if (params.distance == 'far') {
+        chain_args = "-minScore=5000 -linearGap=loose"
+    }
     """
-    axtChain ${params.chainCustom} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    axtChain ${chain_args} -verbose=0 -psl $psl ${twoBitS} ${twoBitT} stdout | chainAntiRepeat ${twoBitS} ${twoBitT} stdin stdout > ${srcname}.${tgtname}.chain
+    """
+
+    stub:
+    """
+    touch ${srcname}.${tgtname}.chain
     """
 }
 
@@ -113,17 +142,17 @@ process chainMerge {
         
     output: 
         path "rawchain.chain", emit: rawchain_ch  
-  
-    stub:
-    """
-    touch rawchain.chain
-    """
 
     script:
         """
         chainMergeSort $chains | chainSplit run stdin -lump=1 
         mv run/000.chain ./rawchain.chain
         """
+  
+    stub:
+    """
+    touch rawchain.chain
+    """
 }
 
 process chainNet_old{
@@ -141,12 +170,6 @@ process chainNet_old{
     output: 
         path "liftover.chain", emit: liftover_ch  
         path "netfile.net", emit: netfile_ch  
-  
-    stub:
-    """
-    touch liftover.chain
-    touch netfile.net
-    """
 
     script:
     if ( params.aligner != "blat" & params.aligner != "nucmer" & params.aligner != "GSAlign")
@@ -155,6 +178,12 @@ process chainNet_old{
     chainPreNet ${haplotypes} {rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
         chainNet -verbose=0 ${haplotypes} stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null | netSyntenic stdin netfile.net
     netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
+    """
+  
+    stub:
+    """
+    touch liftover.chain
+    touch netfile.net
     """
 }
 
@@ -172,17 +201,17 @@ process chainNet{
         
     output: 
         path "netfile.net"
-  
-    stub:
-    """
-    touch netfile.net
-    """
 
     script:
     def haplotypes = params.haplotypes ? "-inclHap" : ""
     """
     chainPreNet ${haplotypes} ${rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
         chainNet ${haplotypes} -verbose=0 stdin ${twoBitsizeS} ${twoBitsizeT} netfile.net /dev/null 
+    """
+  
+    stub:
+    """
+    touch netfile.net
     """
 }
 
@@ -196,15 +225,15 @@ process netSynt {
         
     output: 
         path "netfile.synt.net", emit: netfile_ch  
-  
-    stub:
-    """
-    touch netfile.synt.net
-    """
 
     script:
     """
     netSyntenic ${netfile} netfile.synt.net
+    """
+  
+    stub:
+    """
+    touch netfile.synt.net
     """
 }
 
@@ -218,16 +247,16 @@ process chainsubset{
         path rawchain
         
     output: 
-        path "liftover.chain", emit: liftover_ch  
-  
-    stub:
-    """
-    touch liftover.chain
-    """
+        path "liftover.chain", emit: liftover_ch
 
     script:
     """
     netChainSubset -verbose=0 ${netfile} ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
+    """
+  
+    stub:
+    """
+    touch liftover.chain
     """
 }
 
@@ -246,15 +275,15 @@ process chain2maf {
     output:
         path "${params.chain_name}.maf"
 
-    stub:
-    """
-    touch ${params.chain_name}.maf
-    """
-
     script:
     """
     chainToAxt ${chain} ${twoBitS} ${twoBitT} /dev/stdout | \
         axtToMaf /dev/stdin ${twoBitsizeS} ${twoBitsizeT} ${params.chain_name}.maf
+    """
+
+    stub:
+    """
+    touch ${params.chain_name}.maf
     """
 }
 
@@ -270,35 +299,35 @@ process name_maf_seq {
     output:
         path "${maf.simpleName}.fixed.maf"
 
+    script:
+    """
+    #!/usr/bin/env python
+    import sys
+
+    n=0
+    with open("${maf.simpleName}.fixed.maf", "w") as of:
+        for line in open("${maf}"):
+            line = line.split()
+            if len(line) == 0:
+                of.write('\\t'.join(line) + "\\n")
+                continue
+            if "s" == line[0] and n == 1:
+                line[1] = 'target.' + line[1]
+                n = 0
+                of.write('\\t'.join(line) + "\\n")
+                continue
+            if "s" == line[0] and n == 0:
+                line[1] = 'source.' + line[1]
+                n = 1
+                of.write('\\t'.join(line) + "\\n")
+                continue
+            of.write('\\t'.join(line) + "\\n")
+    """
+
     stub:
     """
     touch ${maf.simpleName}.fixed.maf
     """
-
-    script:
-    $/
-    #!/usr/bin/env python
-    import sys
-    
-    n=0
-    of = open("${maf.simpleName}.fixed.maf", "w")
-    for line in open("$maf"):
-        line = line.split()
-        if len(line) == 0:
-            of.write('\t'.join(line) + "\n")
-            continue
-        if "s" == line[0] and n == 1:
-            line[1] = 'target.' + line[1]
-            n = 0
-            of.write('\t'.join(line) + "\n")
-            continue
-        if "s" == line[0] and n == 0:
-            line[1] = 'source.' + line[1]
-            n = 1
-            of.write('\t'.join(line) + "\n")
-            continue
-        of.write('\t'.join(line) + "\n")
-    /$
 }
 
 
@@ -317,40 +346,42 @@ process mafstats {
         path "mafIdentity.*"
         path "mafStats.*"
 
+    script:
+    if (workflow.containerEngine){
+        """
+        mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
+        mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
+        mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out    
+        """
+    } else if (params.mafTools && !workflow.containerEngine){
+        def mafTools_ch = file(params.mafTools)
+        """
+        ${mafTools_ch}/bin/mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
+        ${mafTools_ch}/bin/mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
+        ${mafTools_ch}/bin/mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out
+        """ 
+    } else { 
+        """
+        if [ `which mafCoverage` ]; then
+            mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
+            mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
+        else
+            touch mafCoverage.dum
+            touch mafIdentity.dum
+        fi
+        if [ `which mafStats` ]; then
+            mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out    
+        else
+            touch mafStats.dum
+        fi
+        """
+    }
+
     stub:
     """
     touch mafCoverage.out
     touch mafIdentity.out
     touch mafStats.out
-    """
-
-    script:
-    if (workflow.containerEngine)
-    """
-    mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
-    mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
-    mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out    
-    """
-    else if (params.mafTools && !workflow.containerEngine)
-    """
-    ${mafTools_ch}/bin/mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
-    ${mafTools_ch}/bin/mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
-    ${mafTools_ch}/bin/mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out
-    """ 
-    else 
-    """
-    if [ `which mafCoverage` ]; then
-        mafCoverage -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafCoverage.out
-        mafCoverage -m ${final_maf} --identity | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafIdentity.out
-    else
-        touch mafCoverage.dum
-        touch mafIdentity.dum
-    fi
-    if [ `which mafStats` ]; then
-        mafStats -m ${final_maf} | sed 's/source/${sourceName}/g' | sed 's/target/${targetName}/g' > mafStats.out    
-    else
-        touch mafStats.dum
-    fi
     """
 }
 
@@ -368,15 +399,15 @@ process liftover{
         path "${params.chain_name}.bed", emit: lifted_ch
         path "${params.chain_name}.unmapped.bed", emit: unmapped_ch
 
+    script:
+    """
+    liftOver ${annotation} ${chain} ${params.chain_name}.bed ${params.chain_name}.unmapped.bed
+    """
+
     stub:
     """
     touch ${params.chain_name}.bed
     touch ${params.chain_name}.unmapped.bed
-    """
-
-    script:
-    """
-    liftOver ${annotation} ${chain} ${params.chain_name}.bed ${params.chain_name}.unmapped.bed
     """
 }
 
@@ -396,11 +427,6 @@ process crossmap{
         path "${params.chain_name}.${params.annotation_format}", emit: lifted_ch
         path "*unmap*",  optional: true, emit: unmapped_ch
 
-    stub:
-    """
-    touch ${params.chain_name}.${params.annotation_format}
-    """
-
     script:
     if ( params.annotation_format == 'bam' )
         """
@@ -418,6 +444,11 @@ process crossmap{
         """
         CrossMap.py ${params.annotation_format} ${chain} ${annotation} ${params.chain_name}.${params.annotation_format}     
         """
+
+    stub:
+    """
+    touch ${params.chain_name}.${params.annotation_format}
+    """
 }
 
 process features_stats {
@@ -432,11 +463,6 @@ process features_stats {
 
     output:
         path "features.txt"
-
-    stub:
-    """
-    touch features.txt
-    """
 
     script:
     if ( params.annotation_format == 'gff' || params.annotation_format == "gtf" || params.annotation_format == "bed" )
@@ -495,6 +521,11 @@ process features_stats {
         echo nFEATURES nFEATURES_lifted nGENES nGENES_lifted > features.txt
         echo \$allfeat \$liftedfeat NA NA>> features.txt
         """
+
+    stub:
+    """
+    touch features.txt
+    """
 }
 
 process make_report {
@@ -512,13 +543,13 @@ process make_report {
     output:
     path "chainMetrics.html"
 
-    stub:
-    """
-    touch chainMetrics.html
-    """
-
     script:
     """
     R -e "rmarkdown::render('${rmd}',output_file='chainMetrics.html')"
+    """
+
+    stub:
+    """
+    touch chainMetrics.html
     """
 }
