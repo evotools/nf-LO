@@ -12,7 +12,7 @@ nextflow.enable.dsl=2
  * chromosomes can be added after comma (e.g. 1-22,X,Y,Mt).
  */
 // Include all stuff
-include {helpMessage} from './modules/processes/help.nf'
+include {helpMessage} from './modules/processes/help'
 include {LASTZ} from './modules/subworkflows/lastz'
 include {BLAT} from './modules/subworkflows/blat'
 include {MINIMAP2} from './modules/subworkflows/minimap2'
