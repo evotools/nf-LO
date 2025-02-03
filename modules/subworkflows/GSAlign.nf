@@ -1,36 +1,6 @@
 // Include dependencies
- if (params.custom) {
-    include {gsalign_custom as gsalign} from '../processes/GSAlign'
-} else if (params.distance == 'near'){
-    include {gsalign_near as gsalign} from '../processes/GSAlign'
-} else if (params.distance == 'medium'){
-    include {gsalign_medium as gsalign} from '../processes/GSAlign'
-} else if (params.distance == 'far') {
-    include {gsalign_far as gsalign} from '../processes/GSAlign'
-} else if (params.distance == 'same') {
-    include {gsalign_same as gsalign} from '../processes/GSAlign'
-} else {
-    include {gsalign_same as gsalign} from '../processes/GSAlign'
-    log.info"""Preset ${params.distance} not available for GSAlign"""   
-    log.info"""The software will use the same instead."""   
-    log.info"""If it is not ok for you, re-run selecting among the following options:"""   
-    log.info""" 1 - near"""   
-    log.info""" 2 - medium"""   
-    log.info""" 3 - far"""   
-    log.info""" 4 - same"""   
-}
-
-
-if (params.chainCustom) {
-    include {axtchain_custom as axtChain} from "../processes/postprocess"
-} else if (params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate"){
-    include {axtchain_near as axtChain} from "../processes/postprocess"
-} else if (params.distance == 'medium' || params.distance == 'general') {
-    include {axtchain_medium as axtChain} from "../processes/postprocess"
-} else if (params.distance == 'far') {
-    include {axtchain_far as axtChain} from "../processes/postprocess"
-}
-
+include {gsalign} from '../processes/GSAlign'
+include {axtChain} from "../processes/postprocess"
 include {bwt_index} from '../processes/GSAlign'
 include {chainMerge; chainNet; netSynt; chainsubset} from "../processes/postprocess"
 include {chain2maf; name_maf_seq; mafstats} from "../processes/postprocess"
@@ -79,9 +49,9 @@ workflow GSALIGN {
         }
         
     emit:
-        chainsubset.out
-        net_ch
-        mafs
-        mafc
-        mafi
+        liftover = chainsubset.out.liftover_ch
+        net = net_ch
+        mafs = mafs
+        mafc = mafc
+        mafi = mafi
 }

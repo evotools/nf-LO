@@ -1,37 +1,7 @@
 // Include dependencies
-include {makeooc} from "../processes/preprocess" params(params)
-
-if (params.custom) {
-    include {blat_custom as blat} from '../processes/blat'
-} else if (params.distance == 'near'){
-    include {blat_near as blat} from '../processes/blat'
-} else if (params.distance == 'medium'){
-    include {blat_medium as blat} from '../processes/blat'
-} else if (params.distance == 'far') {
-    include {blat_far as blat} from '../processes/blat'
-} else if (params.distance == 'balanced') {
-    include {blat_balanced as blat} from '../processes/blat'
-} else {
-    include {blat_balanced as blat} from '../processes/blat'
-    log.info"""Preset ${params.distance} not available for blat"""   
-    log.info"""The software will use the balanced instead."""   
-    log.info"""If it is not ok for you, re-run selecting among the following options:"""   
-    log.info""" 1 - near"""   
-    log.info""" 2 - medium"""   
-    log.info""" 3 - far"""   
-    log.info""" 4 - balanced"""   
-}
-
-if (params.chainCustom) {
-    include {axtchain_custom as axtChain} from "../processes/postprocess"
-} else if (params.distance == 'near' || params.distance == "balanced" || params.distance == "same" || params.distance == "primate"){
-    include {axtchain_near as axtChain} from "../processes/postprocess"
-} else if (params.distance == 'medium' || params.distance == 'general') {
-    include {axtchain_medium as axtChain} from "../processes/postprocess"
-} else if (params.distance == 'far') {
-    include {axtchain_far as axtChain} from "../processes/postprocess"
-}
-
+include {makeooc} from "../processes/preprocess"
+include {blat} from '../processes/blat'
+include {axtChain} from "../processes/postprocess"
 include {chainMerge; chainNet; netSynt; chainsubset} from "../processes/postprocess"
 include {chain2maf; name_maf_seq; mafstats} from "../processes/postprocess"
 
@@ -70,7 +40,7 @@ workflow BLAT {
         }
         chainsubset(net_ch, chainMerge.out)
         if(!params.no_maf){ 
-            chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) 
+            chain2maf( chainsubset.out.liftover_ch, twoBitS, twoBitT, twoBitSN, twoBitTN ) 
             name_maf_seq( chain2maf.out )
             mafstats( name_maf_seq.out, ch_source.simpleName, ch_target.simpleName ) 
             mafs = mafstats.out[0]
@@ -83,9 +53,9 @@ workflow BLAT {
         }
         
     emit:
-        chainsubset.out
-        net_ch
-        mafs
-        mafc
-        mafi
+        liftover = chainsubset.out.liftover_ch
+        net = net_ch
+        mafs = mafs
+        mafc = mafc
+        mafi = mafi
 }

@@ -1,8 +1,8 @@
 // Include dependencies
-include {make2bit; src2bit; tgt2bit} from "../processes/preprocess" params(params)
-include {splitsrc; splittgt} from "../processes/preprocess" params(params)
-include {groupsrc; grouptgt} from "../processes/preprocess" params(params)
-include {make_mmi} from "../processes/preprocess" params(params)
+include {make2bit; src2bit; tgt2bit} from "../processes/preprocess"
+include {splitsrc; splittgt} from "../processes/preprocess"
+include {groupsrc; grouptgt} from "../processes/preprocess"
+include {make_mmi} from "../processes/preprocess"
 
 // Create minimap2 alignments workflow
 workflow PREPROC {
@@ -61,11 +61,11 @@ workflow PREPROC {
             .set{pairspath_ch}
 
     emit:
-        pairspath_ch
-        tgt_lift
-        src_lift
-        twoBitS
-        twoBitT
-        twoBitSN
-        twoBitTN     
+        pairspath_ch=pairspath_ch
+        tgt_lift=tgt_lift
+        src_lift=src_lift
+        twoBitS=twoBitS
+        twoBitT=twoBitT
+        twoBitSN=twoBitSN
+        twoBitTN=twoBitTN
 }

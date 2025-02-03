@@ -1,4 +1,7 @@
 # Changelog
+## [v1.8.5]
+- Upkeep release.
+
 ## [v1.8.4]
 - Fix broken anaconda environment creation due to wrong repository order 
 - Better schema file

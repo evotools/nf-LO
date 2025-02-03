@@ -108,6 +108,28 @@
                 "custom": {
                     "type": "string",
                     "description": "Alignment custom options"
+                },
+                "minimap2_threads": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Threads for the minimap2 alignment"
+                },
+                "gsalign_threads": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Threads for the GSAlign alignment"
+                },
+                "mm2_full_alignment": {
+                    "type": "boolean",
+                    "default": false,
+                    "hidden": true,
+                    "description": "Full minimap2 alignment; faster, but requires more memory"
+                },
+                "mm2_lowmem": {
+                    "type": "boolean",
+                    "default": false,
+                    "hidden": true,
+                    "description": "Smaller minimap2 chunks; slower, but requires less memory"
                 }
             }
         },
@@ -315,9 +337,6 @@
         },
         {
             "$ref": "#/definitions/institutional_config_options"
-        },
-        {
-            "$ref": "#/definitions/max_job_request_options"
         },
         {
             "$ref": "#/definitions/generic_options"
