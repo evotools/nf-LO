@@ -41,34 +41,28 @@ process lastz{
     label 'medium'
 
     input: 
-        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile), val(nseq) 
-        path tgtlift 
-        path srclift 
+        tuple val(srcname), path(srcfile), val(tgtname), path(tgtfile), val(nseq)
+        path tgtlift
+        path srclift
+        path qmatrix
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
 
     script:
-    def qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/general.q")
     def lastz_args = "E=30 H=2200 K=3000 L=3000 O=400 T=1 ‑‑allocate:traceback=2048.0M"
     def srcmultiple = nseq > 1 ? "[multiple]" : ""
     if (params.custom) {
-        qfile = params.qscores ? file(params.qscores) : null
         lastz_args = params.custom
     } else if (params.distance == 'near'){
-        qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/human_chimp.v2.q")
         lastz_args = "B=0 C=0 E=150 H=0 K=4500 L=3000 M=254 O=600 T=2 Y=15000"
     } else if (params.distance == 'medium'){
-        qfile = params.qscores ? file(params.qscores) : null
         lastz_args = "B=0 C=0 E=30 H=0 K=3000 L=3000 M=50 O=400 T=1 Y=9400"
     } else if (params.distance == 'far') {
-        qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/HoxD55.q")
         lastz_args = "B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400"
     } else if (params.distance == 'primate') {
         lastz_args = "E=30 H=3000 K=5000 L=5000 M=10 O=400 T=1 ‑‑allocate:traceback=2048.0M"
-        qfile = params.qscores ? file(params.qscores) : file("${projectDir}/assets/human_chimp.v2.q")
     } else if (params.distance == 'general') {
-        qfile = params.qscores ? file(params.qscores) : file("${baseDir}/assets/general.q")
         lastz_args = "E=30 H=2200 K=3000 L=3000 O=400 T=1 ‑‑allocate:traceback=2048.0M"
     } else {
         log.info"""Preset ${params.distance} not available for lastz"""   
@@ -80,7 +74,7 @@ process lastz{
         log.info""" 4 - primate"""   
         log.info""" 5 - general"""   
     }
-    def qscores = qfile ? "Q=${qfile}" : ""
+    def qscores = qmatrix.simpleName != "OPTIONAL_FILE" ? "Q=${qmatrix}" : ""
     """
     echo ${lastz_args}
     lastz ${srcfile}${srcmultiple} ${tgtfile} ${lastz_args} --ambiguous=iupac ${qscores} --format=lav |
