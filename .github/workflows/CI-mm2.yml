@@ -41,8 +41,8 @@ jobs:
 
       - name: Install mamba
         run: |
-          wget -nv -O Mambaforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh
-          bash Mambaforge.sh -b -p ./mambaforge
+          wget -nv -O Miniforge.sh https://github.com/conda-forge/miniforge/releases/download/24.11.3-0/Miniforge3-24.11.3-0-$(uname)-$(uname -m).sh
+          bash Miniforge.sh -b -p ./mambaforge
           ./mambaforge/bin/mamba init
           source ./mambaforge/etc/profile.d/conda.sh 
 
