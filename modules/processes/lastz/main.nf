@@ -62,17 +62,8 @@ process lastz{
         lastz_args = "B=0 C=0 E=30 H=2000 K=2200 L=6000 M=50 O=400 T=2 Y=3400"
     } else if (params.distance == 'primate') {
         lastz_args = "E=30 H=3000 K=5000 L=5000 M=10 O=400 T=1 ‑‑allocate:traceback=2048.0M"
-    } else if (params.distance == 'general') {
-        lastz_args = "E=30 H=2200 K=3000 L=3000 O=400 T=1 ‑‑allocate:traceback=2048.0M"
     } else {
-        log.info"""Preset ${params.distance} not available for lastz"""   
-        log.info"""The software will use general instead."""   
-        log.info"""If it is not ok for you, re-run selecting among the following options:"""   
-        log.info""" 1 - near"""   
-        log.info""" 2 - medium"""   
-        log.info""" 3 - far"""   
-        log.info""" 4 - primate"""   
-        log.info""" 5 - general"""   
+        lastz_args = "E=30 H=2200 K=3000 L=3000 O=400 T=1 ‑‑allocate:traceback=2048.0M"
     }
     def qscores = qmatrix.simpleName != "OPTIONAL_FILE" ? "Q=${qmatrix}" : ""
     """

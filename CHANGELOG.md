@@ -1,4 +1,7 @@
 # Changelog
+## [v1.8.6]
+- Fix bugs originated after the workflow simplification.
+
 ## [v1.8.5]
 - Upkeep release.
 

@@ -20,6 +20,15 @@ workflow BLAT {
 
     main:
         // Check that preset is among the available ones
+        if (params.distance != "near" && params.distance != "medium" && params.distance != "far" && params.distance != "balanced" && params.distance != "custom"){
+            log.info"""Preset ${params.distance} not available for blat"""
+            log.info"""The software will use the balanced instead."""
+            log.info"""If it is not ok for you, re-run selecting among the following options:"""
+            log.info""" 1 - near"""
+            log.info""" 2 - medium"""
+            log.info""" 3 - far"""
+            log.info""" 4 - balanced"""
+        }
 
 
         // Prepare Ooc files
