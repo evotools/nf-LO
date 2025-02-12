@@ -18,6 +18,16 @@ workflow MINIMAP2 {
         twoBitTN  
 
     main:
+        // Log if the preset is not available
+        if (params.distance != "near" && params.distance != "medium" && params.distance != "far" && params.distance != "custom"){
+            log.info"""Preset ${params.distance} not available for minimap2"""
+            log.info"""The software will use the medium instead."""
+            log.info"""If it is not ok for you, re-run selecting among the following options:"""
+            log.info""" 1 - near"""
+            log.info""" 2 - medium"""
+            log.info""" 3 - far"""
+        }
+
         // Run minimap2
         minimap2(pairspath_ch, tgt_lift, src_lift)  
         axtChain( minimap2.out.al_files_ch, twoBitS, twoBitT)   

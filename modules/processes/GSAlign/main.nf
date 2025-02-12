@@ -23,17 +23,8 @@ process gsalign{
         command = "GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -idy 75 -no_vcf -o ${srcname}.${tgtname}.tmp"
     } else if (params.distance == 'far') {
         command = "GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -idy 70 -no_vcf -o ${srcname}.${tgtname}.tmp"
-    } else if (params.distance == 'same') {
-        command = "GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -no_vcf -o ${srcname}.${tgtname}.tmp"
     } else {
         command = "GSAlign -i ${srcname} -q ${tgtfile} -sen -t ${task.cpus} -no_vcf -o ${srcname}.${tgtname}.tmp"
-        log.info"""Preset ${params.distance} not available for GSAlign"""   
-        log.info"""The software will use the same instead."""   
-        log.info"""If it is not ok for you, re-run selecting among the following options:"""   
-        log.info""" 1 - near"""   
-        log.info""" 2 - medium"""   
-        log.info""" 3 - far"""   
-        log.info""" 4 - same"""   
     }
     """
     ${command}
