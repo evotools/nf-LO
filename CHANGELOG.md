@@ -1,5 +1,5 @@
 # Changelog
-## [v1.8.6]
+## [v1.8.7]
 - Add options to tweak minimap2 and GSAlign memory (e.g. `--gsalign_memory 6.GB` or `--minimap2_memory 8.GB`).
 - Uniform minimap2 options by prefixing with `--minimap2_`
 - Remove unnecessary configurations
