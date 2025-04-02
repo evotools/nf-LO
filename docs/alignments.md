@@ -102,6 +102,6 @@ The workflow now minimizes the memory impact of `minimap2` by generating an `.mm
 
 The default `minimap2` behaviour is now to align each sequence from the target genome separately, using one task at the time. This should achieve a good balance of number of processes and low number of cores per process.
 
-If the user wishes to use a single process, as in the previous version of the workflow, they can do so by providing `--mm2_full_alignment`. This will perform a single genome-to-genome process. You might want to increase the number of cores provided to minimap2 with `--minimap2_threads`.
+If the user wishes to use a single process, as in the previous version of the workflow, they can do so by providing `--minimap2_full_alignment`. This will perform a single genome-to-genome process. You might want to increase the number of cores provided to minimap2 with `--minimap2_threads` and memory with e.g. `--minimap2_memory 8.GB`.
 
-If the user needs to perform the alignment in a particularly low-memory environment, they can provide `--mm2_lowmem`. This will perform the scattering of the target genome using `--tgtSize`, and with the overlap specified in `--tgtOvlp`.
+If the user needs to perform the alignment in a particularly low-memory environment, they can provide `--minimap2_lowmem`. This will perform the scattering of the target genome using `--tgtSize`, and with the overlap specified in `--tgtOvlp`.
