@@ -1,4 +1,15 @@
 # Changelog
+## [v1.8.6]
+- Add options to tweak minimap2 and GSAlign memory (e.g. `--gsalign_memory 6.GB` or `--minimap2_memory 8.GB`).
+- Uniform minimap2 options by prefixing with `--minimap2_`
+- Remove unnecessary configurations
+
+## [v1.8.6]
+- Fix bugs originated after the workflow simplification.
+
+## [v1.8.5]
+- Upkeep release.
+
 ## [v1.8.4]
 - Fix broken anaconda environment creation due to wrong repository order 
 - Better schema file

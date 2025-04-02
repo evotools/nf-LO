@@ -109,23 +109,37 @@
                     "type": "string",
                     "description": "Alignment custom options"
                 },
-                "minimap2_threads": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "Threads for the minimap2 alignment"
+                "gsalign_memory": {
+                    "type": "string",
+                    "default": "8.GB",
+                    "description": "Memory for the GSAlign alignment",
+                    "fa_icon": "fas fa-memory",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$"
                 },
                 "gsalign_threads": {
                     "type": "integer",
                     "default": 2,
                     "description": "Threads for the GSAlign alignment"
                 },
-                "mm2_full_alignment": {
+                "minimap2_threads": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Threads for the minimap2 alignment"
+                },
+                "minimap2_memory": {
+                    "type": "string",
+                    "default": "8.GB",
+                    "description": "Memory for the minimap2 alignment",
+                    "fa_icon": "fas fa-memory",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$"
+                },
+                "minimap2_full_alignment": {
                     "type": "boolean",
                     "default": false,
                     "hidden": true,
                     "description": "Full minimap2 alignment; faster, but requires more memory"
                 },
-                "mm2_lowmem": {
+                "minimap2_lowmem": {
                     "type": "boolean",
                     "default": false,
                     "hidden": true,
