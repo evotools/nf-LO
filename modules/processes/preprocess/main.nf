@@ -142,13 +142,11 @@ process splitsrc {
         if [ -z \$myvalue ]; then
             myvalue=`faSize -tab ${source} | awk '\$1=="baseCount" {print \$2}'`
         fi
-        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-        faSplit size -oneFile -lift=source.lift ${source} \$myvalue SPLIT_src/src
+        mkdir ./SPLIT_src && faSplit size -oneFile -lift=source.lift ${source} \$myvalue SPLIT_src/src
         """
     else 
         """
-        mkdir ./SPLIT_src && chmod a+rw ./SPLIT_src
-        faSplit size -lift=source.lift -extra=${params.srcOvlp} ${source} ${params.srcSize} SPLIT_src/
+        mkdir ./SPLIT_src && faSplit size -lift=source.lift -extra=${params.srcOvlp} ${source} ${params.srcSize} SPLIT_src/
         """
 
     stub:
@@ -236,31 +234,27 @@ process splittgt {
     script:
     if( params.aligner == "blat" )
         """
-        mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
-        faSplit size -oneFile -lift=target.lift -extra=500 ${target} 4500 SPLIT_tgt/tmp
+        mkdir ./SPLIT_tgt && faSplit size -oneFile -lift=target.lift -extra=500 ${target} 4500 SPLIT_tgt/tmp
         """
-    else if ( params.aligner.toLowerCase() == "gsalign" || (params.aligner == 'minimap2' && params.mm2_full_alignment) )
-        """
-        myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
-        if [ -z \$myvalue ]; then
-            myvalue=`faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'`
-        fi
-        mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
-        faSplit size -oneFile -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
-        """
-    else if ( params.aligner == "minimap2" && !params.mm2_full_alignment && !params.mm2_lowmem )
+    else if ( params.aligner.toLowerCase() == "gsalign" || (params.aligner == 'minimap2' && params.minimap2_full_alignment) )
         """
         myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
         if [ -z \$myvalue ]; then
             myvalue=`faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'`
         fi
-        mkdir ./SPLIT_tgt && chmod a+rw ./SPLIT_tgt
-        faSplit size -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
+        mkdir ./SPLIT_tgt && faSplit size -oneFile -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
+        """
+    else if ( params.aligner == "minimap2" && !params.minimap2_full_alignment && !params.minimap2_lowmem )
+        """
+        myvalue=`faSize -tab ${target} | awk '\$1=="maxSize" {print \$2}'`
+        if [ -z \$myvalue ]; then
+            myvalue=`faSize -tab ${target} | awk '\$1=="baseCount" {print \$2}'`
+        fi
+        mkdir ./SPLIT_tgt && faSplit size -lift=target.lift ${target} \$myvalue SPLIT_tgt/tgt
         """
     else
         """
-        mkdir SPLIT_tgt && chmod a+rw SPLIT_tgt
-        faSplit size -lift=target.lift -extra=${params.tgtOvlp} ${target} ${params.tgtSize} SPLIT_tgt/
+        mkdir SPLIT_tgt && faSplit size -lift=target.lift -extra=${params.tgtOvlp} ${target} ${params.tgtSize} SPLIT_tgt/
         """
 
     stub:
