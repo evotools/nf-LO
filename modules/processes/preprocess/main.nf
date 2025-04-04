@@ -441,7 +441,7 @@ process makeSizeT {
 
 process make_mmi {
     tag "mmi"
-    label 'medium'
+    label 'minimap2'
 
     input:
     path fasta
@@ -455,7 +455,7 @@ process make_mmi {
         minimap2_conf = params.custom
     }
     """
-    minimap2 ${minimap2_conf} -d ${fasta.baseName}.mmi ${fasta}
+    minimap2 -t ${task.cpus} ${minimap2_conf} -d ${fasta.baseName}.mmi ${fasta}
     """
 
     stub:
