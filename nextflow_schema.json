@@ -121,6 +121,10 @@
                     "default": 2,
                     "description": "Threads for the GSAlign alignment"
                 },
+                "skip_mmi": {
+                    "type": "boolean",
+                    "description": "Skip MMI index generation"
+                },
                 "minimap2_threads": {
                     "type": "integer",
                     "default": 2,
