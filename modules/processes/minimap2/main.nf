@@ -10,10 +10,11 @@ process minimap2 {
 
     output: 
         tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.psl"), emit: al_files_ch
+        tuple val(srcname), val(tgtname), file("${srcname}.${tgtname}.paf.gz"), emit: paf_files_ch
 
     script:
     def mm2_args = "-cx asm10"
-    if (params.custom) {
+    if (params.custom && params.distance == "custom") {
         mm2_args = params.custom
     } else if (params.distance == 'near'){
         mm2_args = "-cx asm5"
@@ -25,8 +26,8 @@ process minimap2 {
         mm2_args = "-cx asm10"
     }
     """
-    minimap2 -t ${task.cpus} ${mm2_args} --cap-kalloc 100m --cap-sw-mem 50m --cs=long ${srcfile} ${tgtfile} | 
-        paftools.js view -f maf - |
+    minimap2 -t ${task.cpus} ${mm2_args} --cs=long ${srcfile} ${tgtfile} | gzip -c > ${srcname}.${tgtname}.paf.gz
+    paftools.js view -f maf ${srcname}.${tgtname}.paf.gz |
         maf-convert psl - |
         liftUp -type=.psl stdout ${srclift} warn stdin |
         liftUp -type=.psl -pslQ ${srcname}.${tgtname}.psl ${tgtlift} warn stdin 

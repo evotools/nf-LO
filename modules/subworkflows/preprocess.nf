@@ -49,7 +49,11 @@ workflow PREPROC {
 
         // If minimap2 requested, convert reference to mmi to save memory
         if (params.aligner.toLowerCase() == 'minimap2'){
-            ch_fragm_src_fa = ch_fragm_src_fa | make_mmi | map{it -> [it.baseName, it]}
+            if (!params.skip_mmi){
+                ch_fragm_src_fa = ch_fragm_src_fa | make_mmi | map{it -> [it.baseName, it]}
+            } else {
+                ch_fragm_src_fa = ch_fragm_src_fa | map{it -> [it.baseName, it]}
+            }
         } else {
             ch_fragm_src_fa = ch_fragm_src_fa.map{it -> [it.baseName, it]}
         }
