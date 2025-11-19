@@ -155,38 +155,6 @@ process chainMerge {
     """
 }
 
-process chainNet_old{
-    tag "chainnet"
-    publishDir "${params.outdir}/chainnet", mode: 'copy', overwrite: true
-    label 'medium'
- 
-    input:
-        path rawchain  
-        path twoBitS
-        path twoBitT
-        path twoBitsizeS
-        path twoBitsizeT
-        
-    output: 
-        path "liftover.chain", emit: liftover_ch  
-        path "netfile.net", emit: netfile_ch  
-
-    script:
-    if ( params.aligner != "blat" & params.aligner != "nucmer" & params.aligner != "GSAlign")
-    def haplotypes = params.haplotypes ? "-inclHap" : ""
-    """
-    chainPreNet ${haplotypes} {rawchain} ${twoBitsizeS} ${twoBitsizeT} stdout |
-        chainNet -verbose=0 ${haplotypes} stdin ${twoBitsizeS} ${twoBitsizeT} stdout /dev/null | netSyntenic stdin netfile.net
-    netChainSubset -verbose=0 netfile.net ${rawchain} stdout | chainStitchId stdin stdout > liftover.chain
-    """
-  
-    stub:
-    """
-    touch liftover.chain
-    touch netfile.net
-    """
-}
-
 process chainNet{
     tag "chainnet"
     publishDir "${params.outdir}/chainnet", mode: 'copy', overwrite: true
