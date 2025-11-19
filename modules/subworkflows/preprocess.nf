@@ -59,6 +59,8 @@ workflow PREPROC {
         }
 
         // Prepare pairs of sequences
+        ch_fragm_src_fa.count().subscribe{ nqry -> log.info "Found ${nqry} source fragments" }
+        ch_fragm_tgt_fa.count().subscribe{ ntgt -> log.info "Found ${ntgt} target fragments" }
         ch_fragm_src_fa
             .combine(ch_fragm_tgt_fa)
             .transpose()
