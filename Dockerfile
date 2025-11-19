@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3:23.5.2-0 AS build
+FROM continuumio/miniconda3:25.3.1-1 as build
 
 LABEL authors="andrea.talenti@ed.ac.uk" \
       description="Docker image containing base requirements for nf-LO pipelines"
@@ -35,7 +35,9 @@ RUN /venv/bin/conda-unpack
 # The runtime-stage image; we can use Debian as the
 # base image since the Conda env also includes Python
 # for us.
-FROM debian:buster AS runtime
+FROM debian:bookworm AS runtime
+
+RUN echo "deb http://archive.debian.org/debian/ stretch contrib main non-free" | tee -a /etc/apt/sources.list
 
 # Install procps in debian to make it compatible with reporting
 RUN apt-get update && \
