@@ -8,7 +8,7 @@ workflow LIFTOVER {
         ch_annot
         ch_tgt
     main:   
-        if (params.annotation_type != 'bed'){ 
+        if (params.annotation_format != 'bed'){ 
             log.info "Using CrossMap"
             lifted = crossmap(chain, ch_annot, ch_tgt)
         } else {
