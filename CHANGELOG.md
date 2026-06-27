@@ -1,4 +1,7 @@
 # Changelog
+## [unreleased]
+- Fixed a broken reference to `params.annotation` by using the new `params.annotation_format` instead
+  
 ## [v1.8.6]
 - Fix bugs originated after the workflow simplification.
 
