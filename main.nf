@@ -171,7 +171,7 @@ no_maf          : $params.no_maf"""
                 LIFTOVER(aligned_ch.liftover, ch_annot, ch_target) 
                 liftstats = LIFTOVER.out
         } else {
-                liftstats = file("${params.outdir}/stats/placeholder4")
+                liftstats = Channel.fromPath("${params.outdir}/stats/placeholder4")
         }
         if (params.report){
                 rmd = Channel.fromPath("${baseDir}/assets/gatherMetrics.Rmd")
