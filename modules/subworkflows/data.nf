@@ -14,10 +14,10 @@ workflow DATA {
                 }
                 else { 
                         params.fasta_src = params.source ? params.genomes[ params.source ].fasta ?: false : false
-                        if (params.fasta_src) { ch_source = file(params.fasta_src, checkIfExists: true) }
+                        if (params.fasta_src) { ch_source = Channel.fromPath(params.fasta_src, checkIfExists: true) }
                 }
         } else if (!params.igenomes_source && !params.ncbi_source) {
-                ch_source = file(params.source)
+                ch_source = Channel.fromPath(params.source, checkIfExists: true)
         } else {                
                 log.info"Too many source options provided"
                 exit 1, 'Too many source options provided'
@@ -36,10 +36,10 @@ workflow DATA {
                 }
                 else { 
                         params.fasta_tgt = params.target ? params.genomes[ params.target ].fasta ?: false : false
-                        if (params.fasta_tgt) { ch_target = file(params.fasta_tgt, checkIfExists: true) }
+                        if (params.fasta_tgt) { ch_target = Channel.fromPath(params.fasta_tgt, checkIfExists: true) }
                 }
         } else if (!params.ncbi_target && !params.igenomes_target) {
-                ch_target = file(params.target)
+                ch_target = Channel.fromPath(params.target, checkIfExists: true)
         } else {
                 log.info"Too many target options provided"
                 exit 1, 'Too many target options provided'
