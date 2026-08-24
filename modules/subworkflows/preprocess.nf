@@ -9,7 +9,7 @@ workflow PREPROC {
     take:
         ch_source
         ch_target
-    main:        
+    main:
         // Make 2bit genomes
         // make2bit(ch_source, ch_target)
         src2bit(ch_source)

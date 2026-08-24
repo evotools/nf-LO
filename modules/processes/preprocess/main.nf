@@ -3,6 +3,27 @@
  * Step 1. Builds the genome index required by the mapping process and
  * the intervals for the analyses
  */
+process decompress {
+    tag "decompress"
+    label 'small'
+
+    input:
+    path fasta
+
+    output:
+    path "${fasta.baseName}.fa", emit: decompressed_fasta
+
+    script:
+    """
+    gunzip -c ${fasta} > ${fasta.baseName}.fa
+    """
+
+    stub:
+    """
+    touch ${fasta.baseName}.fa
+    """
+}
+
 
 process make2bit {
     tag "twoBit"

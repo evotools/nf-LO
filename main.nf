@@ -115,6 +115,8 @@ no_maf          : $params.no_maf"""
         DATA()
         ch_source = DATA.out.ch_source
         ch_target = DATA.out.ch_target
+
+        // Preprocess the data
         preproc_ch = PREPROC( ch_source, ch_target )
         if ( params.aligner == 'lastz' ){
                 aligned_ch = LASTZ(

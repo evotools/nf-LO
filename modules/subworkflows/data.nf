@@ -1,4 +1,6 @@
 include {dataset_genome as dataset_source; dataset_genome as dataset_target; dataset_genome as dataset} from "../processes/datasets" 
+include {decompress as decompress_src} from "../processes/preprocess"
+include {decompress as decompress_tgt} from "../processes/preprocess"
 
 workflow DATA {
     main:
@@ -22,8 +24,16 @@ workflow DATA {
                 log.info"Too many source options provided"
                 exit 1, 'Too many source options provided'
         }
+        // Autodecompress the fasta files if necessary
+        ch_src_branched = ch_source
+        .branch {
+                compressed: it.name.endsWith('.gz') | it.name.endsWith('.bgz')
+                plain: true
+        }
+        ch_src_decompressed = decompress_src(ch_src_branched.compressed)
+        ch_source = ch_src_branched.plain.mix(ch_src_decompressed)
 
-
+        // Process the target genome
         if (!params.target){
                 exit 1, 'Target genome not specified!'
         } else if (params.igenomes_target && params.ncbi_target){
@@ -44,6 +54,14 @@ workflow DATA {
                 log.info"Too many target options provided"
                 exit 1, 'Too many target options provided'
         }
+        // Autodecompress the fasta files if necessary
+        ch_tgt_branched = ch_target
+        .branch {
+                compressed: it.name.endsWith('.gz') | it.name.endsWith('.bgz')
+                plain: true
+        }
+        ch_tgt_decompressed = decompress_tgt(ch_tgt_branched.compressed)
+        ch_target = ch_tgt_branched.plain.mix(ch_tgt_decompressed)
 
     emit:
         ch_source
