@@ -26,7 +26,7 @@ workflow DATA {
         }
         // Autodecompress the fasta files if necessary
         ch_src_branched = ch_source
-        .branch {
+        | branch {
                 compressed: it.name.endsWith('.gz') | it.name.endsWith('.bgz')
                 plain: true
         }
@@ -56,7 +56,7 @@ workflow DATA {
         }
         // Autodecompress the fasta files if necessary
         ch_tgt_branched = ch_target
-        .branch {
+        | branch {
                 compressed: it.name.endsWith('.gz') | it.name.endsWith('.bgz')
                 plain: true
         }
