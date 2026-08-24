@@ -71,14 +71,14 @@ workflow LASTZ {
         if(!params.no_maf){ 
             chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) 
             name_maf_seq( chain2maf.out )
-            mafstats( name_maf_seq.out, ch_source.simpleName, ch_target.simpleName ) 
+            mafstats( name_maf_seq.out, ch_source.map { it.simpleName }, ch_target.map { it.simpleName }  ) 
             mafs = mafstats.out[0]
             mafc = mafstats.out[1]
             mafi = mafstats.out[2]
         } else {
-            mafs = file("${params.outdir}/stats/placeholder1")
-            mafc = file("${params.outdir}/stats/placeholder2")
-            mafi = file("${params.outdir}/stats/placeholder3")
+            mafs = Channel.fromPath("${params.outdir}/stats/placeholder1")
+            mafc = Channel.fromPath("${params.outdir}/stats/placeholder2")
+            mafi = Channel.fromPath("${params.outdir}/stats/placeholder3")
         }
         
     emit:

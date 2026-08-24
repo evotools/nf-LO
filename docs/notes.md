@@ -1,4 +1,22 @@
 # Changelog
+## [v1.8.7]
+- Fixed a broken reference to `params.annotation` by using the new `params.annotation_format` instead
+- Add options to tweak minimap2 and GSAlign memory (e.g. `--gsalign_memory 6.GB` or `--minimap2_memory 8.GB`).
+- Uniform minimap2 options by prefixing with `--minimap2_`
+- Remove unnecessary configurations
+
+## [v1.8.6]
+- Fix bugs originated after the workflow simplification.
+
+## [v1.8.5]
+- Upkeep release.
+
+## [v1.8.4]
+- Fix broken anaconda environment creation due to wrong repository order 
+- Better schema file
+- Report generation is now optional and enabled with `--report`
+- Report now working with anaconda runs
+
 ## [v1.8.3]
 - Added `--haplotypes` mode, that allows to create liftover files between haplotypes of the same individual with UCSC naming convention 
 

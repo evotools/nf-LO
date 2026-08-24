@@ -21,6 +21,7 @@ include {PREPROC} from './modules/subworkflows/preprocess'
 include {LIFTOVER} from './modules/subworkflows/liftover'
 include {DATA} from './modules/subworkflows/data'
 include {make_report} from './modules/processes/postprocess'
+include {decompress as DECOMPRESS_ANNOTATION} from "./modules/processes/preprocess"
 
 // Run the workflow
 workflow {
@@ -30,13 +31,10 @@ workflow {
         }
 
         // If params.custom is set, define that as distance
-        if ( params.custom != '' && params.distance == 'custom' ) { params.distance = 'custom' }
-
-        // If params.custom is set, define that as distance
         if ( !params.source && !params.target ) { log.error "You did not provide a source and a target files."; exit 1 }
         if ( !params.source && params.target ) { log.error "You did not provide a source file."; exit 1 }
         if ( params.source && !params.target ) { log.error "You did not provide a target file."; exit 1 }
-        if ( params.mm2_full_alignment && params.mm2_lowmem ) { log.error "Incompatible options: --mm2_lowmem and --mm2_full_alignment."; exit 1 }
+        if ( params.minimap2_full_alignment && params.minimap2_lowmem ) { log.error "Incompatible options: --mm2_lowmem and --mm2_full_alignment."; exit 1 }
 
         // Print run informations
         log.info '''
@@ -93,11 +91,11 @@ no_maf          : $params.no_maf"""
         if (params.gsalign_threads && params.aligner == 'gsalign'){
                 log.info"""low memory (mm2): $params.gsalign_threads"""
         } 
-        if (params.mm2_lowmem){
-                log.info"""low memory (mm2): $params.mm2_lowmem"""
+        if (params.minimap2_lowmem){
+                log.info"""low memory (mm2): $params.minimap2_lowmem"""
         } 
-        if (params.mm2_full_alignment){
-                log.info"""full-alignment  : $params.mm2_full_alignment"""
+        if (params.minimap2_full_alignment){
+                log.info"""full-alignment  : $params.minimap2_full_alignment"""
         } 
         if (params.mafTools){
                 log.info"""mafTools        : $params.mafTools"""
@@ -118,6 +116,8 @@ no_maf          : $params.no_maf"""
         DATA()
         ch_source = DATA.out.ch_source
         ch_target = DATA.out.ch_target
+
+        // Preprocess the data
         preproc_ch = PREPROC( ch_source, ch_target )
         if ( params.aligner == 'lastz' ){
                 aligned_ch = LASTZ(
@@ -171,10 +171,17 @@ no_maf          : $params.no_maf"""
         if (params.annotation) {
                 if (!file(params.annotation).exists()) exit 0, "Genome annotation file ${params.annotation} not found. Closing."
                 ch_annot = Channel.fromPath(params.annotation)
+                ch_annotation_branched = ch_annot
+                | branch {
+                        compressed: it.name.endsWith('.gz') | it.name.endsWith('.bgz')
+                        plain: true
+                }
+                ch_annot_decompressed = DECOMPRESS_ANNOTATION(ch_annotation_branched.compressed)
+                ch_annot = ch_annotation_branched.plain.mix(ch_annot_decompressed)
                 LIFTOVER(aligned_ch.liftover, ch_annot, ch_target) 
                 liftstats = LIFTOVER.out
         } else {
-                liftstats = file("${params.outdir}/stats/placeholder4")
+                liftstats = Channel.fromPath("${params.outdir}/stats/placeholder4")
         }
         if (params.report){
                 rmd = Channel.fromPath("${baseDir}/assets/gatherMetrics.Rmd")

@@ -1,6 +1,10 @@
 # Changelog
-## [unreleased]
+## [v1.8.7]
 - Fixed a broken reference to `params.annotation` by using the new `params.annotation_format` instead
+- Add options to tweak minimap2 and GSAlign memory (e.g. `--gsalign_memory 6.GB` or `--minimap2_memory 8.GB`).
+- Uniform minimap2 options by prefixing with `--minimap2_`
+- Remove unnecessary configurations
+- Work with compressed files from EBI/ENA
 
 ## [v1.8.6]
 - Fix bugs originated after the workflow simplification.

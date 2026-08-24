@@ -9,7 +9,7 @@ workflow PREPROC {
     take:
         ch_source
         ch_target
-    main:        
+    main:
         // Make 2bit genomes
         // make2bit(ch_source, ch_target)
         src2bit(ch_source)
@@ -34,7 +34,7 @@ workflow PREPROC {
         // split and group target
         splittgt(ch_target)
         tgt_lift = splittgt.out.tgt_lift_ch
-        if ( params.aligner.toLowerCase() == 'gsalign'  || (params.aligner == 'minimap2' && params.mm2_full_alignment) ){
+        if ( params.aligner.toLowerCase() == 'gsalign'  || (params.aligner == 'minimap2' && params.minimap2_full_alignment) ){
             ch_fragm_tgt_out = splittgt.out.tgtsplit_ch
             ch_fragm_tgt_fa = splittgt.out.tgtfas_ch
                 .flatten()
@@ -49,12 +49,18 @@ workflow PREPROC {
 
         // If minimap2 requested, convert reference to mmi to save memory
         if (params.aligner.toLowerCase() == 'minimap2'){
-            ch_fragm_src_fa = ch_fragm_src_fa | make_mmi | map{it -> [it.baseName, it]}
+            if (!params.skip_mmi){
+                ch_fragm_src_fa = ch_fragm_src_fa | make_mmi | map{it -> [it.baseName, it]}
+            } else {
+                ch_fragm_src_fa = ch_fragm_src_fa | map{it -> [it.baseName, it]}
+            }
         } else {
             ch_fragm_src_fa = ch_fragm_src_fa.map{it -> [it.baseName, it]}
         }
 
         // Prepare pairs of sequences
+        ch_fragm_src_fa.count().subscribe{ nqry -> log.info "Found ${nqry} source fragments" }
+        ch_fragm_tgt_fa.count().subscribe{ ntgt -> log.info "Found ${ntgt} target fragments" }
         ch_fragm_src_fa
             .combine(ch_fragm_tgt_fa)
             .transpose()
