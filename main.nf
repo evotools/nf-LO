@@ -21,6 +21,7 @@ include {PREPROC} from './modules/subworkflows/preprocess'
 include {LIFTOVER} from './modules/subworkflows/liftover'
 include {DATA} from './modules/subworkflows/data'
 include {make_report} from './modules/processes/postprocess'
+include {decompress as DECOMPRESS_ANNOTATION} from "./modules/processes/preprocess"
 
 // Run the workflow
 workflow {
@@ -170,6 +171,13 @@ no_maf          : $params.no_maf"""
         if (params.annotation) {
                 if (!file(params.annotation).exists()) exit 0, "Genome annotation file ${params.annotation} not found. Closing."
                 ch_annot = Channel.fromPath(params.annotation)
+                ch_annotation_branched = ch_annot
+                | branch {
+                        compressed: it.name.endsWith('.gz') | it.name.endsWith('.bgz')
+                        plain: true
+                }
+                ch_annot_decompressed = DECOMPRESS_ANNOTATION(ch_annotation_branched.compressed)
+                ch_annot = ch_annotation_branched.plain.mix(ch_annot_decompressed)
                 LIFTOVER(aligned_ch.liftover, ch_annot, ch_target) 
                 liftstats = LIFTOVER.out
         } else {

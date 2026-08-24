@@ -8,19 +8,19 @@ process decompress {
     label 'small'
 
     input:
-    path fasta
+    path infile
 
     output:
-    path "${fasta.baseName}.fa", emit: decompressed_fasta
+    path "${infile.baseName}", emit: decompressed_fasta
 
     script:
     """
-    gunzip -c ${fasta} > ${fasta.baseName}.fa
+    gunzip -c ${infile} > ${infile.baseName}
     """
 
     stub:
     """
-    touch ${fasta.baseName}.fa
+    touch ${infile.baseName}
     """
 }
 
