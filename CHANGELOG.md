@@ -1,4 +1,10 @@
 # Changelog
+## [v1.8.8]
+- Fix compatibility issues with NCBI datasets >= 14
+- Update documentation for iGenomes examples
+- Fix bug running a single alignment instance per genome
+    - The bug was linked to moving from `file` to `Channel`
+
 ## [v1.8.7]
 - Fixed a broken reference to `params.annotation` by using the new `params.annotation_format` instead
 - Add options to tweak minimap2 and GSAlign memory (e.g. `--gsalign_memory 6.GB` or `--minimap2_memory 8.GB`).
