@@ -114,8 +114,8 @@ no_maf          : $params.no_maf"""
         }
 
         DATA()
-        ch_source = DATA.out.ch_source
-        ch_target = DATA.out.ch_target
+        ch_source = DATA.out.ch_source | collect
+        ch_target = DATA.out.ch_target | collect
 
         // Preprocess the data
         preproc_ch = PREPROC( ch_source, ch_target )
