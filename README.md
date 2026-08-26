@@ -91,7 +91,7 @@ The source and target genomes can be specified as local or remote (un)compressed
 ### Download from NCBI
 *nf-LO* can download fasta files from ncbi directly using the [datasets API](https://www.ncbi.nlm.nih.gov/datasets/). Users provide a GCA/GCF code in the `--source`/`--target` field, and add the `--ncbi_source` and `--ncbi_target` flags as follow:
 ```
-nextflow run evotools/nf-LO --source "GCF_001549955.1" --target "GCF_011751205.1" --ncbi_source --ncbi_target  -profile conda 
+nextflow run evotools/nf-LO --source "GCF_001549955.1" --target "GCF_011751205.1" --ncbi_source --ncbi_target -profile conda 
 ```
 ### Download from iGenomes
 *nf-LO* can also download genomes from the [iGenomes](https://emea.support.illumina.com/sequencing/sequencing_software/igenome.html) site. Users provide a GCA/GCF code in the `--source`/`--target` field, and add the `--igenomes_source` and `--igenomes_target` flags as follow:

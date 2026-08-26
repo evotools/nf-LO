@@ -90,8 +90,10 @@ Analogously, you can define the fragmentation of the source genome using:
 You can apply your own custom parameters to an alignment simply with the `--custom` flag:
 ```
 nextflow run evotools/nf-LO \
-   --igenome_source GRCh37 \
-   --igenome_target GRCh38 \
+   --source GRCh37 \
+   --target GRCh38 \
+   --igenome_source \
+   --igenome_target \
    --custom '-cx asm5 -l 10000' \
    --aligner minimap2  
 ``` 
