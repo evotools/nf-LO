@@ -55,8 +55,8 @@
                 },
                 "annotation_format": {
                     "type": "string",
-                    "default": "null",
-                    "enum": ["null", "gff", "bed", "gtf", "vcf", "bam", "maf"]
+                    "default": null,
+                    "enum": [null, "gff", "bed", "gtf", "vcf", "bam", "maf"]
                 }
             }
         },
@@ -195,6 +195,10 @@
                     "default": "tgt"
                 },
                 "no_maf": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "vcf": {
                     "type": "boolean",
                     "default": false
                 },

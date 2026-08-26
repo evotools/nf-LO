@@ -22,6 +22,7 @@ include {LIFTOVER} from './modules/subworkflows/liftover'
 include {DATA} from './modules/subworkflows/data'
 include {make_report} from './modules/processes/postprocess'
 include {decompress as DECOMPRESS_ANNOTATION} from "./modules/processes/preprocess"
+include {maf2mfa; mfa2vcf} from "./modules/processes/postprocess" params(params)
 
 // Run the workflow
 workflow {
@@ -186,5 +187,8 @@ no_maf          : $params.no_maf"""
         if (params.report){
                 rmd = Channel.fromPath("${baseDir}/assets/gatherMetrics.Rmd")
                 make_report(aligned_ch.mafs, aligned_ch.mafc, aligned_ch.mafi, liftstats, rmd)
+        }
+        if (params.vcf){
+                maf2mfa(ALIGNER.out.maf, ch_source, ch_target) | mfa2vcf
         }
 }

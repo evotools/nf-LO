@@ -42,10 +42,10 @@ workflow MINIMAP2 {
             net_ch = netSynt.out
         }
         chainsubset(net_ch, chainMerge.out)
-        if(!params.no_maf){ 
+        if(!params.no_maf || params.vcf){ 
             chain2maf( chainsubset.out[0], twoBitS, twoBitT, twoBitSN, twoBitTN ) 
-            name_maf_seq( chain2maf.out )
-            mafstats( name_maf_seq.out, ch_source.map { it.simpleName }, ch_target.map { it.simpleName } )
+            maf = name_maf_seq( chain2maf.out )
+            mafstats( maf, ch_source.map { it.simpleName }, ch_target.map { it.simpleName }  ) 
             mafs = mafstats.out[0]
             mafc = mafstats.out[1]
             mafi = mafstats.out[2]
@@ -61,4 +61,5 @@ workflow MINIMAP2 {
         mafs = mafs
         mafc = mafc
         mafi = mafi
+        maf = maf
 }
