@@ -4,20 +4,20 @@ process dataset_genome {
     label "small"
 
     input:
-    val genome
+    val accession
     
     output:
-    path "${genome}.fasta"
+    path "${accession}.fasta"
 
     script:
     """
-    datasets download genome accession --exclude-rna --exclude-protein --exclude-protein --exclude-gff3 --exclude-genomic-cds ${genome} &&
-        7za x ncbi_dataset.zip && \
-        cat ncbi_dataset/data/${genome}/*.fna > ${genome}.fasta && rm -rf ncbi_dataset*
+    datasets download genome accession ${accession} --include genome && \\
+        7za x ncbi_dataset.zip && \\
+        cat ncbi_dataset/data/${accession}/*.fna > ${accession}.fasta && rm -rf ncbi_dataset*
     """
 
     stub:
     """
-    touch ${genome}.fasta
+    touch ${accession}.fasta
     """
 }
